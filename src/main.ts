@@ -1,4 +1,5 @@
 import { Plugin } from "obsidian";
+import { CSSView, VIEW_TYPE_CSS } from "./view";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface CSSEditorPluginSettings {}
@@ -10,6 +11,10 @@ export default class CSSEditorPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
+
+		this.registerView(VIEW_TYPE_CSS, (leaf) => new CSSView(leaf));
+
+		this.registerExtensions(["css"], VIEW_TYPE_CSS);
 	}
 
 	onunload() {}
