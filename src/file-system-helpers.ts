@@ -1,13 +1,11 @@
 import { App } from "obsidian";
-import * as fs from "fs/promises";
 
 export async function readSnippetFile(
 	app: App,
 	fileName: string
 ): Promise<string> {
-	const data = await fs.readFile(
-		`${app.vault.adapter.basePath}/.obsidian/snippets/${fileName}.css`,
-		"utf-8"
+	const data = await app.vault.adapter.read(
+		`${app.vault.configDir}/snippets/${fileName}.css`
 	);
 	return data;
 }
@@ -17,8 +15,8 @@ export async function writeSnippetFile(
 	fileName: string,
 	data: string
 ): Promise<void> {
-	await fs.writeFile(
-		`${app.vault.adapter.basePath}/.obsidian/snippets/${fileName}.css`,
+	await app.vault.adapter.write(
+		`${app.vault.configDir}/snippets/${fileName}.css`,
 		data
 	);
 }

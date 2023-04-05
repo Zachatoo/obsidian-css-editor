@@ -10,8 +10,4 @@ declare module "obsidian" {
 			| null
 			| undefined;
 	}
-
-	interface DataAdapter {
-		basePath: string | null | undefined;
-	}
 }
