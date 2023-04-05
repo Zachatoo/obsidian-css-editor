@@ -1,5 +1,5 @@
 import { FuzzySuggestModal } from "obsidian";
-import { CSSView } from "./CssEditorView";
+import { CSSEditorView } from "./CssEditorView";
 
 export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<string> {
 	getItems(): string[] {
@@ -15,6 +15,6 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<string> {
 
 	onChooseItem(item: string, evt: MouseEvent | KeyboardEvent): void {
 		const leaf = app.workspace.getLeaf();
-		leaf.open(new CSSView(leaf, item));
+		leaf.open(new CSSEditorView(leaf, item));
 	}
 }

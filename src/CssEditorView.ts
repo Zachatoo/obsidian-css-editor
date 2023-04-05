@@ -4,7 +4,7 @@ import { readSnippetFile, writeSnippetFile } from "./file-system-helpers";
 
 export const VIEW_TYPE_CSS = "css-editor-view";
 
-export class CSSView extends TextFileView {
+export class CSSEditorView extends TextFileView {
 	component: CSSViewComponent;
 	fileName?: string;
 

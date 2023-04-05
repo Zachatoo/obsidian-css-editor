@@ -1,5 +1,5 @@
 import { Plugin } from "obsidian";
-import { CSSView, VIEW_TYPE_CSS } from "./CssEditorView";
+import { CSSEditorView, VIEW_TYPE_CSS } from "./CssEditorView";
 import { CssSnippetFuzzySuggestModal } from "./CssSnippetFuzzySuggestModal";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -21,7 +21,7 @@ export default class CSSEditorPlugin extends Plugin {
 			},
 		});
 
-		this.registerView(VIEW_TYPE_CSS, (leaf) => new CSSView(leaf));
+		this.registerView(VIEW_TYPE_CSS, (leaf) => new CSSEditorView(leaf));
 
 		this.registerExtensions(["css"], VIEW_TYPE_CSS);
 	}
