@@ -14,7 +14,7 @@ export default class CSSEditorPlugin extends Plugin {
 		await this.loadSettings();
 
 		this.addCommand({
-			id: "edot-css-snippet",
+			id: "edit-css-snippet",
 			name: "Edit CSS Snippet",
 			callback: async () => {
 				new CssSnippetFuzzySuggestModal(app).open();
