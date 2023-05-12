@@ -21,7 +21,7 @@ export default class CSSEditorPlugin extends Plugin {
 			},
 		});
 
-		this.registerView(VIEW_TYPE_CSS, (leaf) => new CSSEditorView(leaf));
+		this.registerView(VIEW_TYPE_CSS, (leaf) => new CSSEditorView(leaf, ""));
 
 		this.registerExtensions(["css"], VIEW_TYPE_CSS);
 	}

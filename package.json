@@ -14,6 +14,10 @@
 	"author": "Zachatoo",
 	"license": "MIT",
 	"devDependencies": {
+		"@codemirror/commands": "^6.2.4",
+		"@codemirror/lang-css": "^6.2.0",
+		"@codemirror/lint": "^6.2.1",
+		"@codemirror/search": "^6.4.0",
 		"@tsconfig/svelte": "^3.0.0",
 		"@types/node": "^16.11.6",
 		"@typescript-eslint/eslint-plugin": "5.29.0",

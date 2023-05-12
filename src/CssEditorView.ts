@@ -1,46 +1,66 @@
 import { TextFileView, WorkspaceLeaf } from "obsidian";
-import CSSViewComponent from "./CssEditorView.svelte";
 import { readSnippetFile, writeSnippetFile } from "./file-system-helpers";
+import { EditorView, ViewUpdate } from "@codemirror/view";
+import { basicExtensions } from "./basic-extensions";
 
 export const VIEW_TYPE_CSS = "css-editor-view";
 
 export class CSSEditorView extends TextFileView {
-	component: CSSViewComponent;
-	fileName?: string;
+	editor: EditorView;
+	fileName: string;
 
-	constructor(leaf: WorkspaceLeaf, fileName?: string) {
+	constructor(leaf: WorkspaceLeaf, fileName: string) {
 		super(leaf);
-		if (fileName) {
-			this.fileName = fileName;
-			readSnippetFile(app, fileName).then((data) => {
-				this.setViewData(data, false);
-			});
+		this.fileName = fileName;
+		this.editor = new EditorView({
+			parent: this.contentEl,
+			extensions: [
+				basicExtensions,
+				EditorView.updateListener.of((update) => {
+					this.onUpdate(update);
+				}),
+			],
+		});
+		readSnippetFile(this.app, fileName).then((data) => {
+			this.setViewData(data, false);
+		});
+	}
+
+	onUpdate(update: ViewUpdate) {
+		if (update.docChanged) {
+			this.updateData(update.state.doc.toString());
 		}
 	}
 
 	getViewData() {
-		return this.data;
+		return this.editor.state.doc.toString();
 	}
 
 	setViewData(data: string, clear: boolean) {
-		this.data = data;
-
-		this.component = new CSSViewComponent({
-			target: this.contentEl,
-			props: {
-				data: this.data,
-				updateData: (data: string) => this.updateData(data),
+		this.editor.dispatch({
+			changes: {
+				from: 0,
+				to: this.editor.state.doc.length,
+				insert: data,
 			},
 		});
 	}
 
 	clear() {
 		this.data = "";
-		this.component.$destroy();
+		this.editor.destroy();
 	}
 
 	getViewType() {
 		return VIEW_TYPE_CSS;
+	}
+
+	getIcon() {
+		return "file-code";
+	}
+
+	getDisplayText(): string {
+		return this.file?.name || this.fileName;
 	}
 
 	updateData(data: string) {
@@ -51,7 +71,7 @@ export class CSSEditorView extends TextFileView {
 	async save(clear?: boolean | undefined): Promise<void> {
 		super.save(clear);
 		if (this.fileName) {
-			writeSnippetFile(app, this.fileName, this.data);
+			writeSnippetFile(this.app, this.fileName, this.data);
 		}
 	}
 }
