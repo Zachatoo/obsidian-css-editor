@@ -1,6 +1,7 @@
 import { Plugin } from "obsidian";
 import { CSSEditorView, VIEW_TYPE_CSS } from "./CssEditorView";
 import { CssSnippetFuzzySuggestModal } from "./CssSnippetFuzzySuggestModal";
+import { CssSnippetCreateModal } from "./CssSnippetCreateModal";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface CSSEditorPluginSettings {}
@@ -18,6 +19,13 @@ export default class CSSEditorPlugin extends Plugin {
 			name: "Edit CSS Snippet",
 			callback: async () => {
 				new CssSnippetFuzzySuggestModal(app).open();
+			},
+		});
+		this.addCommand({
+			id: "create-css-snippet",
+			name: "Create CSS Snippet",
+			callback: async () => {
+				new CssSnippetCreateModal(app).open();
 			},
 		});
 

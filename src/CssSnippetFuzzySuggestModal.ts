@@ -5,7 +5,7 @@ import { getSnippetDirectory } from "./file-system-helpers";
 export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<string> {
 	getItems(): string[] {
 		if (this.app.customCss?.snippets) {
-			return this.app.customCss.snippets;
+			return this.app.customCss.snippets.map((x) => `${x}.css`);
 		}
 		return [];
 	}
@@ -18,9 +18,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<string> {
 		super.renderSuggestion(item, el);
 		el.appendChild(
 			createDiv({ cls: "css-editor-suggestion-description" }, (el) =>
-				el.appendText(
-					`${getSnippetDirectory(this.app)}${item.item}.css`
-				)
+				el.appendText(`${getSnippetDirectory(this.app)}${item.item}`)
 			)
 		);
 	}
