@@ -1,10 +1,11 @@
-import { FuzzySuggestModal } from "obsidian";
+import { FuzzyMatch, FuzzySuggestModal } from "obsidian";
 import { CSSEditorView } from "./CssEditorView";
+import { getSnippetDirectory } from "./file-system-helpers";
 
 export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<string> {
 	getItems(): string[] {
-		if (app.customCss?.snippets) {
-			return app.customCss.snippets;
+		if (this.app.customCss?.snippets) {
+			return this.app.customCss.snippets;
 		}
 		return [];
 	}
@@ -13,8 +14,19 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<string> {
 		return item;
 	}
 
+	renderSuggestion(item: FuzzyMatch<string>, el: HTMLElement): void {
+		super.renderSuggestion(item, el);
+		el.appendChild(
+			createDiv({ cls: "css-editor-suggestion-description" }, (el) =>
+				el.appendText(
+					`${getSnippetDirectory(this.app)}${item.item}.css`
+				)
+			)
+		);
+	}
+
 	onChooseItem(item: string, evt: MouseEvent | KeyboardEvent): void {
-		const leaf = app.workspace.getLeaf();
+		const leaf = this.app.workspace.getLeaf();
 		leaf.open(new CSSEditorView(leaf, item));
 	}
 }
