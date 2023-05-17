@@ -1,6 +1,6 @@
 # CSS Editor
 
-This plugin allows you to edit CSS files in your vault. You can edit CSS files in your vault, as well as CSS snippet files in your `.obsidian/snippets/` directory. Work on mobile and desktop!
+This plugin allows you to edit CSS files in Obsidian. You can create and edit CSS files in your vault as well as in your `.obsidian/snippets/` directory. Works on desktop and mobile!
 
 ## Installation
 
@@ -11,3 +11,7 @@ You can manually install this using the [BRAT](https://github.com/TfTHacker/obsi
 ### Edit CSS Snippet
 
 Opens a suggestion modal to select a CSS snippet in your `.obsidian/snippets/` directory. Upon selection, show editor to edit that CSS file.
+
+### Create CSS Snippet
+
+Opens a prompt to create a CSS snippet in your `.obsidian/snippets/` directory. Upon creation, show editor to edit that CSS file.
