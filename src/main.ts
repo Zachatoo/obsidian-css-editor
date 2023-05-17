@@ -1,5 +1,5 @@
 import { Plugin } from "obsidian";
-import { CSSEditorView, VIEW_TYPE_CSS } from "./CssEditorView";
+import { CssEditorView, VIEW_TYPE_CSS } from "./CssEditorView";
 import { CssSnippetFuzzySuggestModal } from "./CssSnippetFuzzySuggestModal";
 import { CssSnippetCreateModal } from "./CssSnippetCreateModal";
 
@@ -29,7 +29,7 @@ export default class CSSEditorPlugin extends Plugin {
 			},
 		});
 
-		this.registerView(VIEW_TYPE_CSS, (leaf) => new CSSEditorView(leaf, ""));
+		this.registerView(VIEW_TYPE_CSS, (leaf) => new CssEditorView(leaf, ""));
 
 		this.registerExtensions(["css"], VIEW_TYPE_CSS);
 	}

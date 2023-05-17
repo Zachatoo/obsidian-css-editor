@@ -5,7 +5,7 @@ import { basicExtensions } from "./basic-extensions";
 
 export const VIEW_TYPE_CSS = "css-editor-view";
 
-export class CSSEditorView extends TextFileView {
+export class CssEditorView extends TextFileView {
 	editor: EditorView;
 	fileName: string;
 
