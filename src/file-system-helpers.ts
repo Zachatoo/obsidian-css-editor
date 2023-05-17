@@ -20,7 +20,7 @@ export async function writeSnippetFile(
 	data: string
 ): Promise<void> {
 	await _validateFilename(fileName);
-	await createSnippetDirectoryIfNotExists(app);
+	await _createSnippetDirectoryIfNotExists(app);
 	await app.vault.adapter.write(
 		`${getSnippetDirectory(app)}${fileName}`,
 		data
@@ -34,7 +34,7 @@ export async function checkSnippetExists(
 	return app.vault.adapter.exists(`${getSnippetDirectory(app)}${fileName}`);
 }
 
-async function createSnippetDirectoryIfNotExists(app: App) {
+async function _createSnippetDirectoryIfNotExists(app: App) {
 	if (!(await app.vault.adapter.exists(getSnippetDirectory(app)))) {
 		await app.vault.adapter.mkdir(getSnippetDirectory(app));
 	}
