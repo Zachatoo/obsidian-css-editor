@@ -1,6 +1,6 @@
 import { FuzzyMatch, FuzzySuggestModal } from "obsidian";
-import { CssEditorView } from "./CssEditorView";
-import { getSnippetDirectory } from "./file-system-helpers";
+import { CssEditorView } from "../CssEditorView";
+import { getSnippetDirectory } from "../file-system-helpers";
 
 export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<string> {
 	getItems(): string[] {

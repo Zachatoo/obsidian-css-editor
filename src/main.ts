@@ -1,7 +1,7 @@
 import { Plugin } from "obsidian";
 import { CssEditorView, VIEW_TYPE_CSS } from "./CssEditorView";
-import { CssSnippetFuzzySuggestModal } from "./CssSnippetFuzzySuggestModal";
-import { CssSnippetCreateModal } from "./CssSnippetCreateModal";
+import { CssSnippetFuzzySuggestModal } from "./modals/CssSnippetFuzzySuggestModal";
+import { CssSnippetCreateModal } from "./modals/CssSnippetCreateModal";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface CSSEditorPluginSettings {}
