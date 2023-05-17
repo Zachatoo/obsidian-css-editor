@@ -45,7 +45,7 @@ async function _validateFilename(value: string) {
 		exists: "",
 		regex: "",
 	};
-	if (await checkSnippetExists(this.app, value)) {
+	if (value.length > 0 && (await checkSnippetExists(this.app, value))) {
 		errors.exists = "File already exists.";
 	}
 	const regex = /^[0-9a-zA-Z\-_]+\.css$/;

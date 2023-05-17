@@ -1,10 +1,15 @@
-import { Modal, TextComponent } from "obsidian";
+import { App, Modal, TextComponent } from "obsidian";
 import { CSSEditorView } from "./CssEditorView";
 import { writeSnippetFile } from "./file-system-helpers";
 import { ErrorNotice } from "./Notice";
 
 export class CssSnippetCreateModal extends Modal {
 	private value: string;
+
+	constructor(app: App) {
+		super(app);
+		this.value = "";
+	}
 
 	onOpen(): void {
 		super.onOpen();
