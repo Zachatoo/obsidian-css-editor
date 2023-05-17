@@ -1,6 +1,7 @@
-import { Modal, Notice, TextComponent } from "obsidian";
+import { Modal, TextComponent } from "obsidian";
 import { CSSEditorView } from "./CssEditorView";
 import { writeSnippetFile } from "./file-system-helpers";
+import { ErrorNotice } from "./Notice";
 
 export class CssSnippetCreateModal extends Modal {
 	private value: string;
@@ -31,9 +32,9 @@ export class CssSnippetCreateModal extends Modal {
 				this.close();
 			} catch (err) {
 				if (err instanceof Error) {
-					new Notice(err.message);
+					new ErrorNotice(err.message);
 				} else {
-					new Notice("Failed to create file. Reason unknown.");
+					new ErrorNotice("Failed to create file. Reason unknown.");
 				}
 			}
 		}
