@@ -19,6 +19,7 @@ export async function writeSnippetFile(
 	fileName: string,
 	data: string
 ): Promise<void> {
+	await _validateFilename(fileName);
 	await createSnippetDirectoryIfNotExists(app);
 	await app.vault.adapter.write(
 		`${getSnippetDirectory(app)}${fileName}`,
@@ -36,5 +37,26 @@ export async function checkSnippetExists(
 async function createSnippetDirectoryIfNotExists(app: App) {
 	if (!(await app.vault.adapter.exists(getSnippetDirectory(app)))) {
 		await app.vault.adapter.mkdir(getSnippetDirectory(app));
+	}
+}
+
+async function _validateFilename(value: string) {
+	const errors = {
+		exists: "",
+		regex: "",
+	};
+	if (await checkSnippetExists(this.app, value)) {
+		errors.exists = "File already exists.";
+	}
+	const regex = /^[0-9a-zA-Z\-_]+\.css$/;
+	if (!regex.test(value)) {
+		errors.regex =
+			"Must end with .css and only contain alphanumeric, dashes, and underscore characters.";
+	}
+	if (Object.values(errors).some((x) => x !== "")) {
+		const message = Object.values(errors)
+			.filter((x) => x !== "")
+			.reduce((acc, curr) => `${acc}\n${curr}`, "Failed to create file.");
+		throw new Error(message);
 	}
 }
