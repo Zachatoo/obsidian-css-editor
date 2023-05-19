@@ -45,6 +45,10 @@ export async function checkSnippetExists(
 	return app.vault.adapter.exists(`${getSnippetDirectory(app)}${fileName}`);
 }
 
+export async function deleteSnippetFile(app: App, fileName: string) {
+	await app.vault.adapter.remove(`${getSnippetDirectory(app)}${fileName}`);
+}
+
 async function _createSnippetDirectoryIfNotExists(app: App) {
 	if (!(await app.vault.adapter.exists(getSnippetDirectory(app)))) {
 		await app.vault.adapter.mkdir(getSnippetDirectory(app));
