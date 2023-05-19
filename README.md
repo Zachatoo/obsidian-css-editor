@@ -15,3 +15,11 @@ Opens a suggestion modal to select a CSS snippet in your `.obsidian/snippets/` d
 ### Create CSS Snippet
 
 Opens a prompt to create a CSS snippet in your `.obsidian/snippets/` directory. Upon creation, show editor to edit that CSS file.
+
+---
+
+## Contributing
+
+### Running tests
+
+Tests are run within Obsidian, they cannot be run in a CLI. Running `npm run test` will output a plugin that has one command to run the tests. You can then run that command in Obsidian and the tests results will be output to the console in Obsidian.
