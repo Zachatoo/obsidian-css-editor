@@ -14,13 +14,24 @@ export async function readSnippetFile(
 	return data;
 }
 
+export async function createSnippetFile(
+	app: App,
+	fileName: string,
+	data = ""
+): Promise<void> {
+	await _validateFilename(fileName);
+	await _createSnippetDirectoryIfNotExists(app);
+	await app.vault.adapter.write(
+		`${getSnippetDirectory(app)}${fileName}`,
+		data
+	);
+}
+
 export async function writeSnippetFile(
 	app: App,
 	fileName: string,
 	data: string
 ): Promise<void> {
-	await _validateFilename(fileName);
-	await _createSnippetDirectoryIfNotExists(app);
 	await app.vault.adapter.write(
 		`${getSnippetDirectory(app)}${fileName}`,
 		data

@@ -1,6 +1,6 @@
 import { App, Modal, TextComponent } from "obsidian";
 import { CssEditorView } from "../CssEditorView";
-import { writeSnippetFile } from "../file-system-helpers";
+import { createSnippetFile } from "../file-system-helpers";
 import { ErrorNotice } from "../Notice";
 
 export class CssSnippetCreateModal extends Modal {
@@ -32,7 +32,7 @@ export class CssSnippetCreateModal extends Modal {
 			this.close();
 		} else if (evt.key === "Enter") {
 			try {
-				await writeSnippetFile(this.app, this.value, "");
+				await createSnippetFile(this.app, this.value, "");
 				const leaf = this.app.workspace.getLeaf();
 				leaf.open(new CssEditorView(leaf, this.value));
 				this.close();
