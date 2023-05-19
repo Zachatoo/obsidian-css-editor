@@ -4,12 +4,12 @@ import { CssSnippetFuzzySuggestModal } from "./modals/CssSnippetFuzzySuggestModa
 import { CssSnippetCreateModal } from "./modals/CssSnippetCreateModal";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface CSSEditorPluginSettings {}
+interface CssEditorPluginSettings {}
 
-const DEFAULT_SETTINGS: CSSEditorPluginSettings = {};
+const DEFAULT_SETTINGS: CssEditorPluginSettings = {};
 
-export default class CSSEditorPlugin extends Plugin {
-	settings: CSSEditorPluginSettings;
+export default class CssEditorPlugin extends Plugin {
+	settings: CssEditorPluginSettings;
 
 	async onload() {
 		await this.loadSettings();
