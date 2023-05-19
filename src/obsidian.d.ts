@@ -9,5 +9,8 @@ declare module "obsidian" {
 			  }
 			| null
 			| undefined;
+		plugins: {
+			getPlugin: (pluginID: string) => Plugin_2 | null;
+		};
 	}
 }
