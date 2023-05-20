@@ -35,6 +35,10 @@ export class CssSnippetCreateModal extends Modal {
 				await createSnippetFile(this.app, this.value, "");
 				const leaf = this.app.workspace.getLeaf();
 				leaf.open(new CssEditorView(leaf, this.value));
+				this.app.customCss?.setCssEnabledStatus?.(
+					this.value.replace(".css", ""),
+					true
+				);
 				this.close();
 			} catch (err) {
 				if (err instanceof Error) {

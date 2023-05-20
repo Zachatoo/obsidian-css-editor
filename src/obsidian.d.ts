@@ -5,9 +5,11 @@ declare module "obsidian" {
 	interface App {
 		customCss:
 			| {
-					snippets: string[] | null | undefined;
+					snippets: string[] | undefined;
+					setCssEnabledStatus:
+						| ((name: string, value: boolean) => void)
+						| undefined;
 			  }
-			| null
 			| undefined;
 		plugins: {
 			getPlugin: (pluginID: string) => Plugin_2 | null;
