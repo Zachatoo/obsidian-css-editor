@@ -7,9 +7,9 @@ export const VIEW_TYPE_CSS = "css-editor-view";
 
 export class CssEditorView extends TextFileView {
 	editor: EditorView;
-	fileName: string;
+	fileName?: string;
 
-	constructor(leaf: WorkspaceLeaf, fileName: string) {
+	constructor(leaf: WorkspaceLeaf, fileName?: string) {
 		super(leaf);
 		this.fileName = fileName;
 		this.editor = new EditorView({
@@ -21,9 +21,11 @@ export class CssEditorView extends TextFileView {
 				}),
 			],
 		});
-		readSnippetFile(this.app, fileName).then((data) => {
-			this.setViewData(data, false);
-		});
+		if (fileName) {
+			readSnippetFile(this.app, fileName).then((data) => {
+				this.setViewData(data, false);
+			});
+		}
 	}
 
 	onUpdate(update: ViewUpdate) {
@@ -60,7 +62,7 @@ export class CssEditorView extends TextFileView {
 	}
 
 	getDisplayText(): string {
-		return this.file?.name || this.fileName;
+		return this.file?.name || this.fileName || "";
 	}
 
 	updateData(data: string) {

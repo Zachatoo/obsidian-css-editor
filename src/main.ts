@@ -29,7 +29,7 @@ export default class CssEditorPlugin extends Plugin {
 			},
 		});
 
-		this.registerView(VIEW_TYPE_CSS, (leaf) => new CssEditorView(leaf, ""));
+		this.registerView(VIEW_TYPE_CSS, (leaf) => new CssEditorView(leaf));
 
 		this.registerExtensions(["css"], VIEW_TYPE_CSS);
 	}
