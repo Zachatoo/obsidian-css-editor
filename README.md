@@ -2,6 +2,8 @@
 
 This plugin allows you to edit CSS files in Obsidian. You can create and edit CSS files in your vault as well as in your `.obsidian/snippets/` directory. Works on desktop and mobile!
 
+![](media/create-snippet.gif)
+
 ## Installation
 
 You can manually install this using the [BRAT](https://github.com/TfTHacker/obsidian42-brat) Obsidian plugin. Generic installation instructions are available on that plugin's documentation.
