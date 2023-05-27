@@ -74,4 +74,16 @@ export function fileSystemHelpersTests(testPlugin: TestCssEditorPlugin) {
 				.false;
 		}
 	);
+
+	testPlugin.test("create snippet with spaces should succeed", async () => {
+		const { app } = testPlugin.plugin;
+		const filename = `${Date.now()} with spaces.css`;
+
+		await createSnippetFile(app, filename);
+		await expect(checkSnippetExists(app, filename)).to.eventually.be.true;
+
+		// cleanup
+		await deleteSnippetFile(app, filename);
+		await expect(checkSnippetExists(app, filename)).to.eventually.be.false;
+	});
 }

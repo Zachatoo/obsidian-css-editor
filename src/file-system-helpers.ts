@@ -63,10 +63,10 @@ async function _validateFilename(value: string) {
 	if (value.length > 0 && (await checkSnippetExists(this.app, value))) {
 		errors.exists = "File already exists.";
 	}
-	const regex = /^[0-9a-zA-Z\-_]+\.css$/;
+	const regex = /^[0-9a-zA-Z\-_ ]+\.css$/;
 	if (!regex.test(value)) {
 		errors.regex =
-			"Must end with .css and only contain alphanumeric, dashes, and underscore characters.";
+			"Must end with .css and only contain alphanumeric, spaces, dashes, or underscore characters.";
 	}
 	if (Object.values(errors).some((x) => x !== "")) {
 		const message = Object.values(errors)
