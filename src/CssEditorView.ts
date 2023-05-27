@@ -1,6 +1,6 @@
-import { ItemView, ViewStateResult, WorkspaceLeaf } from "obsidian";
-import { readSnippetFile, writeSnippetFile } from "./file-system-helpers";
+import { debounce, ItemView, ViewStateResult, WorkspaceLeaf } from "obsidian";
 import { EditorView } from "@codemirror/view";
+import { readSnippetFile, writeSnippetFile } from "./file-system-helpers";
 import { basicExtensions } from "./basic-extensions";
 
 export const VIEW_TYPE_CSS = "css-editor-view";
@@ -17,7 +17,7 @@ export class CssEditorView extends ItemView {
 				basicExtensions,
 				EditorView.updateListener.of((update) => {
 					if (update.docChanged) {
-						this.save(update.state.doc.toString());
+						this.requestSave(update.state.doc.toString());
 					}
 				}),
 			],
@@ -95,6 +95,11 @@ export class CssEditorView extends ItemView {
 		super.setState(state, result);
 	}
 
+	requestSave = debounce(this.save, 1000);
+
+	/**
+	 * You should almost always call `requestSave` instead of `save` to debounce the saving.
+	 */
 	async save(data: string): Promise<void> {
 		if (this.filename) {
 			writeSnippetFile(this.app, this.filename, data);
