@@ -3,6 +3,7 @@ import { CssEditorView, VIEW_TYPE_CSS } from "./CssEditorView";
 import { CssSnippetFuzzySuggestModal } from "./modals/CssSnippetFuzzySuggestModal";
 import { CssSnippetCreateModal } from "./modals/CssSnippetCreateModal";
 import { deleteSnippetFile } from "./file-system-helpers";
+import { detachLeavesOfTypeAndDisplay, openView } from "./workspace-helpers";
 import { InfoNotice } from "./Notice";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -39,6 +40,11 @@ export default class CssEditorPlugin extends Plugin {
 			callback: async () => {
 				new CssSnippetFuzzySuggestModal(this.app, (item) => {
 					deleteSnippetFile(this.app, item);
+					detachLeavesOfTypeAndDisplay(
+						this.app.workspace,
+						VIEW_TYPE_CSS,
+						item
+					);
 					new InfoNotice(`${item} was deleted.`);
 				}).open();
 			},
@@ -62,12 +68,6 @@ export default class CssEditorPlugin extends Plugin {
 	}
 
 	async openCssEditorView(filename: string) {
-		const { workspace } = this.app;
-		const leaf = workspace.getLeaf();
-		await leaf.setViewState({
-			type: VIEW_TYPE_CSS,
-			state: { filename },
-		});
-		workspace.setActiveLeaf(leaf);
+		openView(this.app.workspace, VIEW_TYPE_CSS, { filename });
 	}
 }
