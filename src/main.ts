@@ -68,6 +68,6 @@ export default class CssEditorPlugin extends Plugin {
 			type: VIEW_TYPE_CSS,
 			state: { filename },
 		});
-		workspace.setActiveLeaf(leaf, { focus: true });
+		workspace.setActiveLeaf(leaf);
 	}
 }
