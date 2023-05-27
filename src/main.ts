@@ -2,6 +2,8 @@ import { Plugin } from "obsidian";
 import { CssEditorView, VIEW_TYPE_CSS } from "./CssEditorView";
 import { CssSnippetFuzzySuggestModal } from "./modals/CssSnippetFuzzySuggestModal";
 import { CssSnippetCreateModal } from "./modals/CssSnippetCreateModal";
+import { deleteSnippetFile } from "./file-system-helpers";
+import { InfoNotice } from "./Notice";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface CssEditorPluginSettings {}
@@ -18,7 +20,10 @@ export default class CssEditorPlugin extends Plugin {
 			id: "edit-css-snippet",
 			name: "Edit CSS Snippet",
 			callback: async () => {
-				new CssSnippetFuzzySuggestModal(app).open();
+				new CssSnippetFuzzySuggestModal(app, (item) => {
+					const leaf = this.app.workspace.getLeaf();
+					leaf.open(new CssEditorView(leaf, item));
+				}).open();
 			},
 		});
 		this.addCommand({
@@ -26,6 +31,16 @@ export default class CssEditorPlugin extends Plugin {
 			name: "Create CSS Snippet",
 			callback: async () => {
 				new CssSnippetCreateModal(app).open();
+			},
+		});
+		this.addCommand({
+			id: "delete-css-snippet",
+			name: "Delete CSS Snippet",
+			callback: async () => {
+				new CssSnippetFuzzySuggestModal(app, (item) => {
+					deleteSnippetFile(this.app, item);
+					new InfoNotice(`${item} was deleted.`);
+				}).open();
 			},
 		});
 
