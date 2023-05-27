@@ -18,6 +18,10 @@ Opens a suggestion modal to select a CSS snippet in your `.obsidian/snippets/` d
 
 Opens a prompt to create a CSS snippet in your `.obsidian/snippets/` directory. Upon creation, show editor to edit that CSS file.
 
+### Delete CSS Snippet
+
+Opens a prompt to delete a CSS snippet in your `.obsidian/snippets/` directory.
+
 ---
 
 ## Contributing
