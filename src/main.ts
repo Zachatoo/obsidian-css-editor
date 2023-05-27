@@ -20,24 +20,24 @@ export default class CssEditorPlugin extends Plugin {
 			id: "edit-css-snippet",
 			name: "Edit CSS Snippet",
 			callback: async () => {
-				new CssSnippetFuzzySuggestModal(app, (item) => {
-					const leaf = this.app.workspace.getLeaf();
-					leaf.open(new CssEditorView(leaf, item));
-				}).open();
+				new CssSnippetFuzzySuggestModal(
+					this.app,
+					this.openCssEditorView
+				).open();
 			},
 		});
 		this.addCommand({
 			id: "create-css-snippet",
 			name: "Create CSS Snippet",
 			callback: async () => {
-				new CssSnippetCreateModal(app).open();
+				new CssSnippetCreateModal(this.app, this).open();
 			},
 		});
 		this.addCommand({
 			id: "delete-css-snippet",
 			name: "Delete CSS Snippet",
 			callback: async () => {
-				new CssSnippetFuzzySuggestModal(app, (item) => {
+				new CssSnippetFuzzySuggestModal(this.app, (item) => {
 					deleteSnippetFile(this.app, item);
 					new InfoNotice(`${item} was deleted.`);
 				}).open();
@@ -61,5 +61,15 @@ export default class CssEditorPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+
+	async openCssEditorView(filename: string) {
+		const { workspace } = this.app;
+		const leaf = workspace.getLeaf();
+		await leaf.setViewState({
+			type: VIEW_TYPE_CSS,
+			state: { filename },
+		});
+		workspace.setActiveLeaf(leaf, { focus: true });
 	}
 }

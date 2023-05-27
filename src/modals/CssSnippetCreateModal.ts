@@ -1,14 +1,16 @@
 import { App, Modal, TextComponent } from "obsidian";
-import { CssEditorView } from "../CssEditorView";
+import CssEditorPlugin from "src/main";
 import { createSnippetFile } from "../file-system-helpers";
 import { ErrorNotice } from "../Notice";
 
 export class CssSnippetCreateModal extends Modal {
 	private value: string;
+	private plugin: CssEditorPlugin;
 
-	constructor(app: App) {
+	constructor(app: App, plugin: CssEditorPlugin) {
 		super(app);
 		this.value = "";
+		this.plugin = plugin;
 	}
 
 	onOpen(): void {
@@ -33,8 +35,7 @@ export class CssSnippetCreateModal extends Modal {
 		} else if (evt.key === "Enter") {
 			try {
 				await createSnippetFile(this.app, this.value, "");
-				const leaf = this.app.workspace.getLeaf();
-				leaf.open(new CssEditorView(leaf, this.value));
+				await this.plugin.openCssEditorView(this.value);
 				this.app.customCss?.setCssEnabledStatus?.(
 					this.value.replace(".css", ""),
 					true
