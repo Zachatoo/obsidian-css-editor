@@ -53,7 +53,9 @@ export default class CssEditorPlugin extends Plugin {
 		this.registerView(VIEW_TYPE_CSS, (leaf) => new CssEditorView(leaf));
 	}
 
-	onunload() {}
+	onunload() {
+		this.app.workspace.detachLeavesOfType(VIEW_TYPE_CSS);
+	}
 
 	async loadSettings() {
 		this.settings = Object.assign(
