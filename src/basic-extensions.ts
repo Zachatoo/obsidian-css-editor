@@ -21,9 +21,11 @@ import {
 } from "@codemirror/autocomplete";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { lintKeymap } from "@codemirror/lint";
+import { vim } from "@replit/codemirror-vim";
 import { obsidian } from "./obsidian-theme";
 
 export const basicExtensions: Extension[] = [
+	vim(),
 	history(),
 	css(),
 	foldGutter(),
