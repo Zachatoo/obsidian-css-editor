@@ -18,26 +18,17 @@ import {
 	closeBrackets,
 	closeBracketsKeymap,
 	completionKeymap,
+	// insertBracket,
 } from "@codemirror/autocomplete";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { lintKeymap } from "@codemirror/lint";
-import { obsidian } from "./obsidian-theme";
+import { obsidian } from "../obsidian-theme";
+
+console.log(closeBrackets());
 
 export const basicExtensions: Extension[] = [
-	history(),
-	css(),
-	foldGutter(),
-	dropCursor(),
-	EditorState.allowMultipleSelections.of(true),
-	indentOnInput(),
-	EditorView.lineWrapping,
-	bracketMatching(),
-	closeBrackets(),
-	// autocompletion(),
-	highlightSelectionMatches(),
-	obsidian,
 	keymap.of([
-		...closeBracketsKeymap,
+		...closeBracketsKeymap, // "{|}" -> backspace -> "|"
 		...defaultKeymap,
 		...searchKeymap,
 		...historyKeymap,
@@ -46,4 +37,16 @@ export const basicExtensions: Extension[] = [
 		...completionKeymap,
 		...lintKeymap,
 	]),
+	history(),
+	css(),
+	foldGutter(),
+	dropCursor(),
+	EditorState.allowMultipleSelections.of(true),
+	indentOnInput(),
+	EditorView.lineWrapping,
+	bracketMatching(),
+	autocompletion(),
+	closeBrackets(),
+	highlightSelectionMatches(),
+	obsidian,
 ].filter((ext) => ext);
