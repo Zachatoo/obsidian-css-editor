@@ -15,4 +15,7 @@ declare module "obsidian" {
 			getPlugin: (pluginID: string) => Plugin_2 | null;
 		};
 	}
+	interface Vault {
+		getConfig?: (key: string) => unknown;
+	}
 }
