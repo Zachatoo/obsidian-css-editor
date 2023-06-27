@@ -18,13 +18,10 @@ import {
 	closeBrackets,
 	closeBracketsKeymap,
 	completionKeymap,
-	// insertBracket,
 } from "@codemirror/autocomplete";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { lintKeymap } from "@codemirror/lint";
 import { obsidian } from "../obsidian-theme";
-
-console.log(closeBrackets());
 
 export const basicExtensions: Extension[] = [
 	keymap.of([
