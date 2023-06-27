@@ -25,7 +25,7 @@ const context = await esbuild.context({
 	external: [
 		"obsidian",
 		"electron",
-		"@codemirror/autocomplete",
+		// "@codemirror/autocomplete", // Appears that Obsidian is monkey-patching this, need default functionality for closeBrackets
 		"@codemirror/collab",
 		"@codemirror/commands",
 		"@codemirror/language",

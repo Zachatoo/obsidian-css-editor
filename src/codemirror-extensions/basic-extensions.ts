@@ -22,9 +22,19 @@ import {
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { lintKeymap } from "@codemirror/lint";
 import { vim } from "@replit/codemirror-vim";
-import { obsidian } from "./obsidian-theme";
+import { obsidian } from "../obsidian-theme";
 
 export const basicExtensions: Extension[] = [
+	keymap.of([
+		...closeBracketsKeymap, // "{|}" -> backspace -> "|"
+		...defaultKeymap,
+		...searchKeymap,
+		...historyKeymap,
+		indentWithTab,
+		...foldKeymap,
+		...completionKeymap,
+		...lintKeymap,
+	]),
 	vim(),
 	history(),
 	css(),
@@ -34,18 +44,8 @@ export const basicExtensions: Extension[] = [
 	indentOnInput(),
 	EditorView.lineWrapping,
 	bracketMatching(),
+	autocompletion(),
 	closeBrackets(),
-	// autocompletion(),
 	highlightSelectionMatches(),
 	obsidian,
-	keymap.of([
-		...closeBracketsKeymap,
-		...defaultKeymap,
-		...searchKeymap,
-		...historyKeymap,
-		indentWithTab,
-		...foldKeymap,
-		...completionKeymap,
-		...lintKeymap,
-	]),
 ].filter((ext) => ext);
