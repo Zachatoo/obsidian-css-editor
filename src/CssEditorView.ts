@@ -1,5 +1,6 @@
 import { debounce, ItemView, ViewStateResult, WorkspaceLeaf } from "obsidian";
 import { EditorView } from "@codemirror/view";
+import { vim } from "@replit/codemirror-vim";
 import { readSnippetFile, writeSnippetFile } from "./file-system-helpers";
 import { basicExtensions } from "./codemirror-extensions/basic-extensions";
 
@@ -15,6 +16,7 @@ export class CssEditorView extends ItemView {
 			parent: this.contentEl,
 			extensions: [
 				basicExtensions,
+				this.app.vault.getConfig?.("vimMode") ? vim() : [],
 				EditorView.updateListener.of((update) => {
 					if (update.docChanged) {
 						this.requestSave(update.state.doc.toString());

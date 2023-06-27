@@ -21,7 +21,6 @@ import {
 } from "@codemirror/autocomplete";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { lintKeymap } from "@codemirror/lint";
-import { vim } from "@replit/codemirror-vim";
 import { obsidian } from "../obsidian-theme";
 
 export const basicExtensions: Extension[] = [
@@ -35,7 +34,6 @@ export const basicExtensions: Extension[] = [
 		...completionKeymap,
 		...lintKeymap,
 	]),
-	vim(),
 	history(),
 	css(),
 	foldGutter(),
