@@ -12,6 +12,7 @@ export class CssEditorView extends ItemView {
 
 	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
+		this.navigation = true;
 		this.editor = new EditorView({
 			parent: this.contentEl,
 			extensions: [
