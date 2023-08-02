@@ -6,7 +6,7 @@
 
 This plugin allows you to edit CSS files in the `.obsidian/snippets/` directory. Works on desktop and mobile!
 
-![](media/create-snippet.gif)
+https://github.com/Zachatoo/obsidian-css-editor/assets/6936914/d64a76ba-f5bf-410e-a2c4-6320c9ffae67
 
 ## Installation
 
