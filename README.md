@@ -2,9 +2,14 @@
 
 # CSS Editor
 
-This plugin allows you to edit CSS files in the `.obsidian/snippets/` directory. Works on desktop and mobile!
+This plugin allows you to edit CSS files in the `.obsidian/snippets/` directory.
 
-![Demo Video](https://media.githubusercontent.com/media/Zachatoo/obsidian-css-editor/main/docs/assets/css-editor-demo.gif)
+## Features
+
+-   Create, edit, and delete CSS snippets
+-   Syntax highlighting and code completion
+-   Works on desktop and mobile
+-   Basic VIM support
 
 ## Installation
 
