@@ -13,6 +13,8 @@ This plugin allows you to edit CSS files in the `.obsidian/snippets/` directory.
 
 ## Installation
 
+Recommended to install from the Obsidian community store.
+
 You can manually install this using the [BRAT](https://github.com/TfTHacker/obsidian42-brat) Obsidian plugin. Generic installation instructions are available on that plugin's documentation.
 
 ## Commands
