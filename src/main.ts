@@ -67,7 +67,7 @@ export default class CssEditorPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	async openCssEditorView(filename: string) {
-		openView(this.app.workspace, VIEW_TYPE_CSS, { filename });
+	async openCssEditorView(filename: string, evt: MouseEvent | KeyboardEvent) {
+		openView(this.app.workspace, VIEW_TYPE_CSS, evt, { filename });
 	}
 }

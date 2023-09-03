@@ -3,9 +3,11 @@ import { ViewState, Workspace } from "obsidian";
 export async function openView(
 	workspace: Workspace,
 	type: ViewState["type"],
+	evt: MouseEvent | KeyboardEvent,
 	state: unknown
 ) {
-	const leaf = workspace.getLeaf();
+	const openInNewTab = evt instanceof KeyboardEvent && evt.metaKey;
+	const leaf = workspace.getLeaf(openInNewTab);
 	await leaf.setViewState({
 		type,
 		state,

@@ -18,4 +18,10 @@ declare module "obsidian" {
 	interface Vault {
 		getConfig?: (key: string) => unknown;
 	}
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	interface FuzzySuggestModal<T> {
+		chooser?: {
+			useSelectedItem?: (evt: KeyboardEvent) => boolean;
+		};
+	}
 }

@@ -35,7 +35,7 @@ export class CssSnippetCreateModal extends Modal {
 		} else if (evt.key === "Enter") {
 			try {
 				await createSnippetFile(this.app, this.value, "");
-				await this.plugin.openCssEditorView(this.value);
+				await this.plugin.openCssEditorView(this.value, evt);
 				this.app.customCss?.setCssEnabledStatus?.(
 					this.value.replace(".css", ""),
 					true

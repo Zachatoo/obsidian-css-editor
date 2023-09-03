@@ -8,6 +8,11 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<string> {
 	) {
 		super(app);
 		this.onChooseItem = onChooseItem;
+		this.scope.register(["Meta"], "Enter", (evt: KeyboardEvent) => {
+			if (!evt.isComposing && this.chooser?.useSelectedItem?.(evt)) {
+				return false;
+			}
+		});
 	}
 
 	getItems(): string[] {
