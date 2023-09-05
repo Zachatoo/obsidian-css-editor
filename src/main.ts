@@ -1,10 +1,13 @@
 import { Plugin } from "obsidian";
-import { CssEditorView, VIEW_TYPE_CSS } from "./CssEditorView";
+import { CssEditorView, VIEW_TYPE_CSS } from "./views/CssEditorView";
 import { CssSnippetFuzzySuggestModal } from "./modals/CssSnippetFuzzySuggestModal";
 import { CssSnippetCreateModal } from "./modals/CssSnippetCreateModal";
-import { deleteSnippetFile } from "./file-system-helpers";
-import { detachLeavesOfTypeAndDisplay, openView } from "./workspace-helpers";
-import { InfoNotice } from "./Notice";
+import { deleteSnippetFile } from "./obsidian/file-system-helpers";
+import {
+	detachLeavesOfTypeAndDisplay,
+	openView,
+} from "./obsidian/workspace-helpers";
+import { InfoNotice } from "./obsidian/Notice";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface CssEditorPluginSettings {}

@@ -21,7 +21,7 @@ import {
 } from "@codemirror/autocomplete";
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { lintKeymap } from "@codemirror/lint";
-import { obsidian } from "../obsidian-theme";
+import { obsidian } from "./obsidian-theme";
 
 export const basicExtensions: Extension[] = [
 	keymap.of([

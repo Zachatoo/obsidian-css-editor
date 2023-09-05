@@ -33,7 +33,7 @@
 		"typescript": "^4.9.0"
 	},
 	"dependencies": {
-		"@replit/codemirror-vim": "^6.0.14",
-		"@codemirror/autocomplete": "^6.8.1"
+		"@codemirror/autocomplete": "^6.8.1",
+		"@replit/codemirror-vim": "^6.0.14"
 	}
 }

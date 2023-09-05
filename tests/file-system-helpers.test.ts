@@ -5,7 +5,7 @@ import {
 	deleteSnippetFile,
 	readSnippetFile,
 	writeSnippetFile,
-} from "src/file-system-helpers";
+} from "src/obsidian/file-system-helpers";
 import TestCssEditorPlugin from "./main.test";
 
 export function fileSystemHelpersTests(testPlugin: TestCssEditorPlugin) {

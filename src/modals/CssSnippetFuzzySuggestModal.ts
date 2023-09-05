@@ -1,5 +1,5 @@
 import { App, FuzzyMatch, FuzzySuggestModal } from "obsidian";
-import { getSnippetDirectory } from "../file-system-helpers";
+import { getSnippetDirectory } from "../obsidian/file-system-helpers";
 
 export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<string> {
 	constructor(
