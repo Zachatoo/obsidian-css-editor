@@ -7,6 +7,7 @@ import {
 	detachLeavesOfTypeAndDisplay,
 	openView,
 } from "./obsidian/workspace-helpers";
+import { ignoreObsidianHotkey } from "./obsidian/ignore-obsidian-hotkey";
 import { InfoNotice } from "./obsidian/Notice";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -52,6 +53,13 @@ export default class CssEditorPlugin extends Plugin {
 				}).open();
 			},
 		});
+
+		this.register(
+			ignoreObsidianHotkey(
+				{ key: "/", modifiers: "Meta" },
+				() => !!this.app.workspace.getActiveViewOfType(CssEditorView)
+			)
+		);
 
 		this.registerView(VIEW_TYPE_CSS, (leaf) => new CssEditorView(leaf));
 	}
