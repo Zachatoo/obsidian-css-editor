@@ -1,13 +1,15 @@
-import { App, FuzzyMatch, FuzzySuggestModal } from "obsidian";
+import { App, FuzzyMatch, FuzzySuggestModal, Platform, Notice } from "obsidian";
 import { getSnippetDirectory } from "../obsidian/file-system-helpers";
 
 export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<string> {
 	constructor(
 		app: App,
+		placeHolder: string, 
 		onChooseItem: (item: string, evt: MouseEvent | KeyboardEvent) => void
 	) {
 		super(app);
 		this.onChooseItem = onChooseItem;
+		this.setPlaceholder(placeHolder);
 		this.scope.register(["Meta"], "Enter", (evt: KeyboardEvent) => {
 			if (!evt.isComposing && this.chooser?.useSelectedItem?.(evt)) {
 				return false;

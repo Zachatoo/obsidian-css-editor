@@ -27,6 +27,7 @@ export default class CssEditorPlugin extends Plugin {
 			callback: async () => {
 				new CssSnippetFuzzySuggestModal(
 					this.app,
+					"EDIT the chosen CSS file (or press ESC to abort)",
 					this.openCssEditorView
 				).open();
 			},
@@ -42,14 +43,17 @@ export default class CssEditorPlugin extends Plugin {
 			id: "delete-css-snippet",
 			name: "Delete CSS Snippet",
 			callback: async () => {
-				new CssSnippetFuzzySuggestModal(this.app, (item) => {
-					deleteSnippetFile(this.app, item);
-					detachLeavesOfTypeAndDisplay(
-						this.app.workspace,
-						VIEW_TYPE_CSS,
-						item
-					);
-					new InfoNotice(`${item} was deleted.`);
+				new CssSnippetFuzzySuggestModal(
+					this.app,
+					"DELETE the chosen CSS file (or press ESC to abort)", 
+					(item) => {
+						deleteSnippetFile(this.app, item);
+						detachLeavesOfTypeAndDisplay(
+							this.app.workspace,
+							VIEW_TYPE_CSS,
+							item
+						);
+						new InfoNotice(`${item} was deleted.`);
 				}).open();
 			},
 		});
