@@ -1,7 +1,3 @@
 .suggestion-item .css-editor-suggestion-description {
 	color: var(--text-muted);
 }
-
-.css-editor-quick-switcher-modal .prompt-instruction {
-	display: inline-flex;
-}

@@ -35,7 +35,19 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 		});
 		this.containerEl.addClass("css-editor-quick-switcher-modal");
 		this.setPlaceholder("Find or create a CSS snippet...");
-		this.renderPromptInstructions();
+		this.setInstructions([
+			{ command: "↑↓", purpose: "to navigate" },
+			{
+				command: Platform.isMacOS ? "⌘ ↵" : "ctrl ↵",
+				purpose: "to open in new tab",
+			},
+			{ command: "shift ↵", purpose: "to create" },
+			{
+				command: Platform.isMacOS ? "⌘ del" : "ctrl del",
+				purpose: "to delete",
+			},
+			{ command: "esc", purpose: "to dismiss" },
+		]);
 	}
 
 	getItems(): string[] {
@@ -178,46 +190,6 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 		new InfoNotice(`${filename} was created.`);
 		openView(this.app.workspace, VIEW_TYPE_CSS, openInNewTab, {
 			filename,
-		});
-	}
-
-	renderPromptInstructions() {
-		this.modalEl.appendChild(
-			createDiv({ cls: "prompt-instructions" }, (el) => {
-				el.appendChild(
-					this.createPromptInstruction("↑↓", "to navigate")
-				);
-				el.appendChild(this.createPromptInstruction("↵", "to open"));
-				el.appendChild(
-					this.createPromptInstruction(
-						Platform.isMacOS ? "⌘ ↵" : "ctrl ↵",
-						"to open in new tab"
-					)
-				);
-				el.appendChild(
-					this.createPromptInstruction("shift ↵", "to create")
-				);
-				el.appendChild(
-					this.createPromptInstruction(
-						Platform.isMacOS ? "⌘ del" : "ctrl del",
-						"to delete"
-					)
-				);
-				el.appendChild(
-					this.createPromptInstruction("esc", "to dismiss")
-				);
-			})
-		);
-	}
-
-	createPromptInstruction(command: string, title: string) {
-		return createDiv({ cls: "prompt-instruction" }, (el) => {
-			el.appendChild(
-				createDiv({ cls: "prompt-instruction-command" }, (el) =>
-					el.appendText(command)
-				)
-			);
-			el.appendChild(createSpan({}, (el) => el.appendText(title)));
 		});
 	}
 }
