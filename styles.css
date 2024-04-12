@@ -2,6 +2,6 @@
 	color: var(--text-muted);
 }
 
-.css-editor-create-modal input {
-	width: 100%;
+.css-editor-quick-switcher-modal .prompt-instruction {
+	display: inline-flex;
 }

@@ -19,17 +19,18 @@ You can manually install this using the [BRAT](https://github.com/TfTHacker/obsi
 
 ## Commands
 
-### Edit CSS Snippet
+### Open Quick Switcher
 
-Opens a suggestion modal to select a CSS snippet in your `.obsidian/snippets/` directory. Upon selection, show editor to edit that CSS file.
+Opens a suggestion modal to create, edit, or delete a CSS snippet. Has similar functionality to the core quick switcher where holding down a secondary key will modify the action that will take place.
 
-### Create CSS Snippet
+-   Press <kbd>Enter</kbd> to open the selected CSS snippet, or if no suggestions are available, create a new CSS snippet.
+-   Press <kbd>⌘</kbd><kbd>Enter</kbd> to open the selected CSS snippet in a new tab.
+-   Press <kbd>Shift</kbd><kbd>Enter</kbd> to create a new CSS snippet.
+-   Press <kbd>⌘</kbd><kbd>Delete</kbd> to delete the selected CSS snippet.
 
-Opens a prompt to create a CSS snippet in your `.obsidian/snippets/` directory. Upon creation, show editor to edit that CSS file.
+### Delete Current CSS Snippet
 
-### Delete CSS Snippet
-
-Opens a prompt to delete a CSS snippet in your `.obsidian/snippets/` directory.
+Deletes the currently active CSS snippet file. Only available when viewing a CSS snippet file.
 
 ---
 

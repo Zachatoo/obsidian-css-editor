@@ -1,13 +1,9 @@
 import { Plugin } from "obsidian";
-import { CssEditorView, VIEW_TYPE_CSS } from "./views/CssEditorView";
-import { CssSnippetFuzzySuggestModal } from "./modals/CssSnippetFuzzySuggestModal";
-import { CssSnippetCreateModal } from "./modals/CssSnippetCreateModal";
+import { CssEditorView, VIEW_TYPE_CSS } from "src/views/CssEditorView";
+import { CssSnippetFuzzySuggestModal } from "src/modals/CssSnippetFuzzySuggestModal";
+import { ignoreObsidianHotkey } from "src/obsidian/ignore-obsidian-hotkey";
 import { deleteSnippetFile } from "./obsidian/file-system-helpers";
-import {
-	detachLeavesOfTypeAndDisplay,
-	openView,
-} from "./obsidian/workspace-helpers";
-import { ignoreObsidianHotkey } from "./obsidian/ignore-obsidian-hotkey";
+import { detachLeavesOfTypeAndDisplay } from "./obsidian/workspace-helpers";
 import { InfoNotice } from "./obsidian/Notice";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -22,35 +18,29 @@ export default class CssEditorPlugin extends Plugin {
 		await this.loadSettings();
 
 		this.addCommand({
-			id: "edit-css-snippet",
-			name: "Edit CSS Snippet",
+			id: "open-quick-switcher",
+			name: "Open quick switcher",
 			callback: async () => {
-				new CssSnippetFuzzySuggestModal(
-					this.app,
-					this.openCssEditorView
-				).open();
-			},
-		});
-		this.addCommand({
-			id: "create-css-snippet",
-			name: "Create CSS Snippet",
-			callback: async () => {
-				new CssSnippetCreateModal(this.app, this).open();
+				new CssSnippetFuzzySuggestModal(this.app).open();
 			},
 		});
 		this.addCommand({
 			id: "delete-css-snippet",
-			name: "Delete CSS Snippet",
-			callback: async () => {
-				new CssSnippetFuzzySuggestModal(this.app, (item) => {
-					deleteSnippetFile(this.app, item);
+			name: "Delete current CSS Snippet",
+			checkCallback: (checking) => {
+				const activeCssEditorView =
+					this.app.workspace.getActiveViewOfType(CssEditorView);
+				if (!activeCssEditorView) return false;
+				if (checking) return true;
+				const { filename } = activeCssEditorView.getState();
+				deleteSnippetFile(this.app, filename).then(() => {
 					detachLeavesOfTypeAndDisplay(
 						this.app.workspace,
 						VIEW_TYPE_CSS,
-						item
+						filename
 					);
-					new InfoNotice(`${item} was deleted.`);
-				}).open();
+					new InfoNotice(`${filename} was deleted.`);
+				});
 			},
 		});
 
@@ -76,9 +66,5 @@ export default class CssEditorPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-	}
-
-	async openCssEditorView(filename: string, evt: MouseEvent | KeyboardEvent) {
-		openView(this.app.workspace, VIEW_TYPE_CSS, evt, { filename });
 	}
 }
