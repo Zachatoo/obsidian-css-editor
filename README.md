@@ -36,6 +36,16 @@ Deletes the currently active CSS snippet file. Only available when viewing a CSS
 
 ## Contributing
 
+### Releasing
+
+Releasing a new version involves the following steps:
+
+1. Update the version in the `manifest.json`.
+1. Run `npm run version` to update the versions in other related files.
+1. Commit the changes.
+1. Add a tag matching the version from step 1.
+1. Push the changes and tags. This will trigger a GitHub action to create a release.
+
 ### Running tests
 
 Tests are run within Obsidian, they cannot be run in a CLI. Running `npm run test` will output a plugin that has one command to run the tests. You can then run that command in Obsidian and the tests results will be output to the console in Obsidian.
