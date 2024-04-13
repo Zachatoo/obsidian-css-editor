@@ -33,8 +33,23 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 				return false;
 			}
 		});
-		this.containerEl.addClass("css-editor-quick-switcher-modal");
-		this.setPlaceholder("Find or create a CSS snippet...");
+		this.scope.register([], "Tab", (evt: KeyboardEvent) => {
+			if (this.chooser) {
+				const selItem : number  = this.chooser.selectedItem;
+				const selSnippet : String = this.chooser.values[selItem].item;
+				const isEnabled = this.getOrToggleSnippet(selSnippet, true);
+				if (isEnabled !== undefined) {
+					const selEl = this.chooser.suggestions[selItem].querySelector(".css-editor-status");
+					selEl?.setText(isEnabled ? "enabled" : "disabled");
+					selEl?.removeClass(isEnabled ? "disabled" : "enabled");
+					selEl?.addClass(isEnabled ? "enabled" : "disabled");
+				}
+			}
+			return false;
+		});
+
+		this.containerEl.addClass("css-editor-quick-switcher-modal"); 
+		this.setPlaceholder("Find, or create a CSS snippet...");
 		this.setInstructions([
 			{ command: "↑↓", purpose: "to navigate" },
 			{
@@ -46,8 +61,22 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 				command: Platform.isMacOS ? "⌘ del" : "ctrl del",
 				purpose: "to delete",
 			},
+			{ command: "tab", purpose: "to toggle state" },
 			{ command: "esc", purpose: "to dismiss" },
 		]);
+	}
+
+    getOrToggleSnippet(item:String, toggleValue : Boolean = false) : Boolean | undefined {
+		const snippetName = item.replace(".css", "");
+		const currentState = this.app.customCss?.enabledSnippets?.has(snippetName);
+		if (currentState == undefined ) 
+			return undefined;
+		
+		if (toggleValue) {
+			this.app.customCss?.setCssEnabledStatus?.(snippetName, !currentState);
+		    return !currentState;
+		} else
+			return currentState
 	}
 
 	getItems(): string[] {
@@ -94,13 +123,20 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 					}
 				)
 			);
+			const isEnabled = this.getOrToggleSnippet(item.item)
+			if (isEnabled !== undefined) {
+				el.appendChild(createDiv(
+					{ cls: ["suggestion-aux", "css-editor-status", isEnabled ? "enabled" : "disabled"] },
+					(el) => el.appendText(isEnabled ? "enabled": "disabled")
+				))
+			}
 		}
 		if (this.inputEl.value.trim().length > 0 && item.match.score === 0) {
 			el.appendChild(
 				createDiv({ cls: "suggestion-aux" }, (el) => {
 					el.appendChild(
 						createSpan({ cls: "suggestion-hotkey" }, (el) => {
-							el.appendText("Enter to create");
+							el.appendText("Shift Enter to create");
 						})
 					);
 				})
