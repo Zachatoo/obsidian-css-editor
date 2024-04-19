@@ -3,6 +3,7 @@ import {
 	createSnippetFile,
 	deleteSnippetFile,
 	getSnippetDirectory,
+	toggleSnippetFileState,
 } from "src/obsidian/file-system-helpers";
 import {
 	detachLeavesOfTypeAndDisplay,
@@ -35,20 +36,21 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 		});
 		this.scope.register([], "Tab", (evt: KeyboardEvent) => {
 			if (this.chooser) {
-				const selItem : number  = this.chooser.selectedItem;
-				const selSnippet : String = this.chooser.values[selItem].item;
-				const isEnabled = this.toggleSnippetState(selSnippet);
-				if (isEnabled !== undefined) {
-					const selEl = this.chooser.suggestions[selItem].querySelector(".css-editor-status");
-					selEl?.setText(isEnabled ? "enabled" : "disabled");
-					selEl?.removeClass(isEnabled ? "disabled" : "enabled");
-					selEl?.addClass(isEnabled ? "enabled" : "disabled");
-				}
+				const selItem = this.chooser.selectedItem;
+				const selSnippet = this.chooser.values[selItem].item;
+				const isEnabled = toggleSnippetFileState(this.app, selSnippet);
+				const selEl =
+					this.chooser.suggestions[selItem].querySelector(
+						".css-editor-status"
+					);
+				selEl?.setText(isEnabled ? "enabled" : "disabled");
+				selEl?.removeClass(isEnabled ? "disabled" : "enabled");
+				selEl?.addClass(isEnabled ? "enabled" : "disabled");
 			}
 			return false;
 		});
 
-		this.containerEl.addClass("css-editor-quick-switcher-modal"); 
+		this.containerEl.addClass("css-editor-quick-switcher-modal");
 		this.setPlaceholder("Find or create a CSS snippet...");
 		this.setInstructions([
 			{ command: "↑↓", purpose: "to navigate" },
@@ -66,20 +68,11 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 		]);
 	}
 
-	isEnabled(item:String) : Boolean | undefined {
+	isEnabled(item: string): boolean {
 		const snippetName = item.replace(".css", "");
-		const currentState = this.app.customCss?.enabledSnippets?.has(snippetName);
-		return (currentState !== undefined) ? currentState: undefined; 
-	}
-
-    toggleSnippetState(item:String) : Boolean | undefined {
-		const currentState = this.isEnabled(item)
-
-		if (currentState == undefined ) 
-			return undefined;
-		
-		this.app.customCss?.setCssEnabledStatus?.(item.replace(".css", ""), !currentState);
-		    return !currentState;
+		const currentState =
+			this.app.customCss?.enabledSnippets?.has(snippetName);
+		return currentState || false;
 	}
 
 	getItems(): string[] {
@@ -126,13 +119,23 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 					}
 				)
 			);
-			const isEnabled = this.isEnabled(item.item)
-			const isNewElement = this.inputEl.value.trim().length > 0 && item.match.score === 0
-			if (isEnabled !== undefined && !isNewElement) {
-				el.appendChild(createDiv(
-					{ cls: ["suggestion-aux", "css-editor-status", isEnabled ? "enabled" : "disabled"] },
-					(el) => el.appendText(isEnabled ? "enabled": "disabled")
-				))
+			const isEnabled = this.isEnabled(item.item);
+			const isNewElement =
+				this.inputEl.value.trim().length > 0 && item.match.score === 0;
+			if (!isNewElement) {
+				el.appendChild(
+					createDiv(
+						{
+							cls: [
+								"suggestion-aux",
+								"css-editor-status",
+								isEnabled ? "enabled" : "disabled",
+							],
+						},
+						(el) =>
+							el.appendText(isEnabled ? "enabled" : "disabled")
+					)
+				);
 			}
 		}
 		if (this.inputEl.value.trim().length > 0 && item.match.score === 0) {

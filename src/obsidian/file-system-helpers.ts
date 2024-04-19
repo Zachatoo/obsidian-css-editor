@@ -51,13 +51,12 @@ export async function deleteSnippetFile(app: App, fileName: string) {
 
 export function toggleSnippetFileState(app: App, fileName: string) {
 	const snippetName = fileName.replace(".css", "");
-    const isEnabled = app.customCss?.enabledSnippets?.has(snippetName);
-	if (isEnabled !== undefined) {
-		app.customCss?.setCssEnabledStatus?.(snippetName, !isEnabled);
-		return !isEnabled ? "now enabled" : "now disabled"
-	} else {
-		return "not known"
+	if (!app.customCss?.enabledSnippets || !app.customCss.setCssEnabledStatus) {
+		throw new Error("Failed to enable/disable CSS snippet.");
 	}
+	const isEnabled = app.customCss.enabledSnippets.has(snippetName);
+	app.customCss.setCssEnabledStatus(snippetName, !isEnabled);
+	return !isEnabled;
 }
 
 async function _createSnippetDirectoryIfNotExists(app: App) {
