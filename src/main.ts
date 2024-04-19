@@ -2,7 +2,10 @@ import { Plugin } from "obsidian";
 import { CssEditorView, VIEW_TYPE_CSS } from "src/views/CssEditorView";
 import { CssSnippetFuzzySuggestModal } from "src/modals/CssSnippetFuzzySuggestModal";
 import { ignoreObsidianHotkey } from "src/obsidian/ignore-obsidian-hotkey";
-import { deleteSnippetFile, toggleSnippetFileState } from "./obsidian/file-system-helpers";
+import {
+	deleteSnippetFile,
+	toggleSnippetFileState,
+} from "./obsidian/file-system-helpers";
 import { detachLeavesOfTypeAndDisplay } from "./obsidian/workspace-helpers";
 import { InfoNotice } from "./obsidian/Notice";
 
@@ -45,16 +48,20 @@ export default class CssEditorPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: "toggle-css-snippet",
-			name: "Toggle state of current CSS snippet",
+			id: "toggle-css-snippet-enabled-status",
+			name: "Toggle the enabled/disabled state of current CSS snippet",
 			checkCallback: (checking) => {
 				const activeCssEditorView =
 					this.app.workspace.getActiveViewOfType(CssEditorView);
 				if (!activeCssEditorView) return false;
 				if (checking) return true;
 				const { filename } = activeCssEditorView.getState();
-				const newState = toggleSnippetFileState(this.app, filename);
-				new InfoNotice(`State of "${filename}" is ${ newState }.`);
+				const isEnabled = toggleSnippetFileState(this.app, filename);
+				new InfoNotice(
+					`"${filename}" is now ${
+						isEnabled ? "enabled" : "disabled"
+					}.`
+				);
 			},
 		});
 

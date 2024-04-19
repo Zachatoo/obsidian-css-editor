@@ -9,7 +9,7 @@ declare module "obsidian" {
 					setCssEnabledStatus:
 						| ((name: string, value: boolean) => void)
 						| undefined;
-					enabledSnippets: Set<String> | undefined;
+					enabledSnippets: Set<string> | undefined;
 			  }
 			| undefined;
 		plugins: {
@@ -25,11 +25,11 @@ declare module "obsidian" {
 			useSelectedItem?: (evt: KeyboardEvent) => boolean;
 			selectedItem: number;
 			values: {
-				item: String,
+				item: string;
 				match: {
-					score: number,
-					matches: string[]
-				}
+					score: number;
+					matches: string[];
+				};
 			}[];
 			setSuggestions?: (suggestions: FuzzyMatch<T>[]) => void;
 			suggestions: HTMLElement[];
