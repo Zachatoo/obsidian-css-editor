@@ -40,7 +40,7 @@ Deletes the currently active CSS snippet file. Only available when viewing a CSS
 
 Releasing a new version involves the following steps:
 
-1. Update the version in the `manifest.json`.
+1. Update the version in the `package.json`.
 1. Run `npm run version` to update the versions in other related files.
 1. Commit the changes.
 1. Add a tag matching the version from step 1.
