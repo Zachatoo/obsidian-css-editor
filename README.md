@@ -32,6 +32,10 @@ Opens a suggestion modal to create, edit, or delete a CSS snippet. Has similar f
 
 Deletes the currently active CSS snippet file. Only available when viewing a CSS snippet file.
 
+### Toggle the Enabled/disabled State of the Current CSS Snippet
+
+If the currently active CSS snippet file is enabled then disable it, and vice versa. Only available when viewing a CSS snippet file.
+
 ---
 
 ## Contributing
