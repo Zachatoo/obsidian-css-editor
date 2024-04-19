@@ -49,6 +49,17 @@ export async function deleteSnippetFile(app: App, fileName: string) {
 	await app.vault.adapter.remove(`${getSnippetDirectory(app)}${fileName}`);
 }
 
+export function toggleSnippetFileState(app: App, fileName: string) {
+	const snippetName = fileName.replace(".css", "");
+    const isEnabled = app.customCss?.enabledSnippets?.has(snippetName);
+	if (isEnabled !== undefined) {
+		app.customCss?.setCssEnabledStatus?.(snippetName, !isEnabled);
+		return !isEnabled ? "now enabled" : "now disabled"
+	} else {
+		return "not known"
+	}
+}
+
 async function _createSnippetDirectoryIfNotExists(app: App) {
 	if (!(await app.vault.adapter.exists(getSnippetDirectory(app)))) {
 		await app.vault.adapter.mkdir(getSnippetDirectory(app));

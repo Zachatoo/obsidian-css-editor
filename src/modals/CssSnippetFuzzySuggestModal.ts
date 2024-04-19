@@ -33,7 +33,22 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 				return false;
 			}
 		});
-		this.containerEl.addClass("css-editor-quick-switcher-modal");
+		this.scope.register([], "Tab", (evt: KeyboardEvent) => {
+			if (this.chooser) {
+				const selItem : number  = this.chooser.selectedItem;
+				const selSnippet : String = this.chooser.values[selItem].item;
+				const isEnabled = this.toggleSnippetState(selSnippet);
+				if (isEnabled !== undefined) {
+					const selEl = this.chooser.suggestions[selItem].querySelector(".css-editor-status");
+					selEl?.setText(isEnabled ? "enabled" : "disabled");
+					selEl?.removeClass(isEnabled ? "disabled" : "enabled");
+					selEl?.addClass(isEnabled ? "enabled" : "disabled");
+				}
+			}
+			return false;
+		});
+
+		this.containerEl.addClass("css-editor-quick-switcher-modal"); 
 		this.setPlaceholder("Find or create a CSS snippet...");
 		this.setInstructions([
 			{ command: "↑↓", purpose: "to navigate" },
@@ -46,8 +61,25 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 				command: Platform.isMacOS ? "⌘ del" : "ctrl del",
 				purpose: "to delete",
 			},
+			{ command: "tab", purpose: "to enable/disable" },
 			{ command: "esc", purpose: "to dismiss" },
 		]);
+	}
+
+	isEnabled(item:String) : Boolean | undefined {
+		const snippetName = item.replace(".css", "");
+		const currentState = this.app.customCss?.enabledSnippets?.has(snippetName);
+		return (currentState !== undefined) ? currentState: undefined; 
+	}
+
+    toggleSnippetState(item:String) : Boolean | undefined {
+		const currentState = this.isEnabled(item)
+
+		if (currentState == undefined ) 
+			return undefined;
+		
+		this.app.customCss?.setCssEnabledStatus?.(item.replace(".css", ""), !currentState);
+		    return !currentState;
 	}
 
 	getItems(): string[] {
@@ -94,6 +126,14 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 					}
 				)
 			);
+			const isEnabled = this.isEnabled(item.item)
+			const isNewElement = this.inputEl.value.trim().length > 0 && item.match.score === 0
+			if (isEnabled !== undefined && !isNewElement) {
+				el.appendChild(createDiv(
+					{ cls: ["suggestion-aux", "css-editor-status", isEnabled ? "enabled" : "disabled"] },
+					(el) => el.appendText(isEnabled ? "enabled": "disabled")
+				))
+			}
 		}
 		if (this.inputEl.value.trim().length > 0 && item.match.score === 0) {
 			el.appendChild(
