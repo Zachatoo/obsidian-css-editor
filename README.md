@@ -19,6 +19,10 @@ You can manually install this using the [BRAT](https://github.com/TfTHacker/obsi
 
 ## Commands
 
+### Create CSS Snippet
+
+Opens a prompt to create a CSS snippet in your `.obsidian/snippets/` directory. Upon creation, show editor to edit that CSS file.
+
 ### Open Quick Switcher
 
 Opens a suggestion modal to create, edit, or delete a CSS snippet. Has similar functionality to the core quick switcher where holding down a secondary key will modify the action that will take place.
