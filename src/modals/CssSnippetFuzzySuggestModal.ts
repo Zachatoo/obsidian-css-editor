@@ -1,6 +1,6 @@
 import { App, FuzzyMatch, FuzzySuggestModal, Platform } from "obsidian";
+import CssEditorPlugin from "src/main";
 import {
-	createSnippetFile,
 	deleteSnippetFile,
 	getSnippetDirectory,
 	toggleSnippetFileState,
@@ -15,8 +15,11 @@ import { ErrorNotice, InfoNotice } from "src/obsidian/Notice";
 export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 	string | null
 > {
-	constructor(app: App) {
+	plugin: CssEditorPlugin;
+
+	constructor(app: App, plugin: CssEditorPlugin) {
 		super(app);
+		this.plugin = plugin;
 		this.scope.register(["Meta"], "Enter", (evt: KeyboardEvent) => {
 			if (!evt.isComposing && this.chooser?.useSelectedItem?.(evt)) {
 				return false;
@@ -175,7 +178,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 			this.inputEl.value.trim().length > 0 && item.match.score === 0;
 		if (isCreateNewDueToNoSuggestion && item.item) {
 			const openInNewTab = evt.metaKey;
-			await this.createAndOpenSnippet(item.item, openInNewTab);
+			await this.plugin.createAndOpenSnippet(item.item, openInNewTab);
 		} else {
 			await this.onChooseItem(item.item, evt);
 		}
@@ -201,7 +204,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 			if (evt.key === "Enter") {
 				const openInNewTab = evt.metaKey;
 				if (evt.shiftKey) {
-					await this.createAndOpenSnippet(item, openInNewTab);
+					await this.plugin.createAndOpenSnippet(item, openInNewTab);
 				} else {
 					openView(this.app.workspace, VIEW_TYPE_CSS, openInNewTab, {
 						filename: item,
@@ -222,17 +225,5 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 				filename: item,
 			});
 		}
-	}
-
-	async createAndOpenSnippet(filename: string, openInNewTab: boolean) {
-		await createSnippetFile(this.app, filename, "");
-		this.app.customCss?.setCssEnabledStatus?.(
-			filename.replace(".css", ""),
-			true
-		);
-		new InfoNotice(`${filename} was created.`);
-		openView(this.app.workspace, VIEW_TYPE_CSS, openInNewTab, {
-			filename,
-		});
 	}
 }
