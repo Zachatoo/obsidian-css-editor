@@ -185,14 +185,20 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 	}
 
 	onNoSuggestion(): void {
-		super.onNoSuggestion();
 		const item = this.inputEl.value.trim();
-		this.chooser?.setSuggestions?.([
-			{ item, match: { score: 0, matches: [] } },
-		]);
-		this.chooser?.addMessage?.(
-			"No CSS snippets found. Enter to create a new one."
-		);
+		if (item.length > 0) {
+			this.chooser?.setSuggestions?.([
+				{ item, match: { score: 0, matches: [] } },
+			]);
+			this.chooser?.addMessage?.(
+				"No CSS snippets found. Enter to create a new one."
+			);
+		} else {
+			this.chooser?.setSuggestions?.([]);
+			this.chooser?.addMessage?.(
+				"No CSS snippets found. Type to search..."
+			);
+		}
 	}
 
 	async onChooseItem(
