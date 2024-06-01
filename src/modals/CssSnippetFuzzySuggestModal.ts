@@ -20,7 +20,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 	constructor(app: App, plugin: CssEditorPlugin) {
 		super(app);
 		this.plugin = plugin;
-		this.scope.register(["Meta"], "Enter", (evt: KeyboardEvent) => {
+		this.scope.register(["Mod"], "Enter", (evt: KeyboardEvent) => {
 			if (!evt.isComposing && this.chooser?.useSelectedItem?.(evt)) {
 				return false;
 			}
@@ -32,7 +32,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 			);
 			return false;
 		});
-		this.scope.register(["Meta"], "Delete", (evt: KeyboardEvent) => {
+		this.scope.register(["Mod"], "Delete", (evt: KeyboardEvent) => {
 			if (!evt.isComposing && this.chooser?.useSelectedItem?.(evt)) {
 				return false;
 			}
