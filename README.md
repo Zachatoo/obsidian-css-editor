@@ -30,15 +30,16 @@ Opens a suggestion modal to create, edit, or delete a CSS snippet. Has similar f
 -   Press <kbd>Enter</kbd> to open the selected CSS snippet, or if no suggestions are available, create a new CSS snippet.
 -   Press <kbd>⌘</kbd><kbd>Enter</kbd> to open the selected CSS snippet in a new tab.
 -   Press <kbd>Shift</kbd><kbd>Enter</kbd> to create a new CSS snippet.
+-   Press <kbd>Tab</kbd> to toggle the enable/disable state of the selected CSS snippet.
 -   Press <kbd>⌘</kbd><kbd>Delete</kbd> to delete the selected CSS snippet.
 
 ### Delete Current CSS Snippet
 
 Deletes the currently active CSS snippet file. Only available when viewing a CSS snippet file.
 
-### Toggle the Enabled/disabled State of the Current CSS Snippet
+### Toggle the enabled/disabled State of the Current CSS Snippet
 
-If the currently active CSS snippet file is enabled then disable it, and vice versa. Only available when viewing a CSS snippet file.
+If the currently active CSS snippet file is enabled then disable it, and vice versa. Only available when viewing a CSS snippet file. Note that you can also toggle this state directly from the quick switcher using the <kbd>Tab</kbd> key.
 
 ---
 
