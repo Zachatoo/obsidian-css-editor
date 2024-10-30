@@ -68,22 +68,47 @@ export function fileSystemHelpersTests(testPlugin: TestCssEditorPlugin) {
 		async () => {
 			const { app } = testPlugin.plugin;
 			const filename = `${Date.now()}invalid/characters.css`;
+			const filename2 = `${Date.now()}with-trailing-dots...css`;
 
 			await expect(createSnippetFile(app, filename)).to.be.rejectedWith();
 			await expect(checkSnippetExists(app, filename)).to.eventually.be
+				.false;
+
+			await expect(
+				createSnippetFile(app, filename2)
+			).to.be.rejectedWith();
+			await expect(checkSnippetExists(app, filename2)).to.eventually.be
 				.false;
 		}
 	);
 
 	testPlugin.test("create snippet with spaces should succeed", async () => {
 		const { app } = testPlugin.plugin;
-		const filename = `${Date.now()} with spaces.css`;
+		const filename1 = `${Date.now()} with spaces.css`;
 
-		await createSnippetFile(app, filename);
-		await expect(checkSnippetExists(app, filename)).to.eventually.be.true;
+		await createSnippetFile(app, filename1);
+		await expect(checkSnippetExists(app, filename1)).to.eventually.be.true;
 
 		// cleanup
-		await deleteSnippetFile(app, filename);
-		await expect(checkSnippetExists(app, filename)).to.eventually.be.false;
+		await deleteSnippetFile(app, filename1);
+		await expect(checkSnippetExists(app, filename1)).to.eventually.be.false;
 	});
+
+	testPlugin.test(
+		"create snippet without .css extension should add it",
+		async () => {
+			const { app } = testPlugin.plugin;
+			const filename = `${Date.now()}without-extension`;
+			const filenameWithExtension = `${filename}.css`;
+
+			await createSnippetFile(app, filename);
+			await expect(checkSnippetExists(app, filenameWithExtension)).to
+				.eventually.be.true;
+
+			// cleanup
+			await deleteSnippetFile(app, filenameWithExtension);
+			await expect(checkSnippetExists(app, filenameWithExtension)).to
+				.eventually.be.false;
+		}
+	);
 }

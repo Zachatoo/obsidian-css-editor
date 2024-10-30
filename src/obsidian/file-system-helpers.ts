@@ -19,10 +19,11 @@ export async function createSnippetFile(
 	fileName: string,
 	data = ""
 ): Promise<void> {
-	await _validateFilename(fileName);
+	const filenameWithExtension = _addExtensionIfNotExists(fileName);
+	await _validateFilename(filenameWithExtension);
 	await _createSnippetDirectoryIfNotExists(app);
 	await app.vault.adapter.write(
-		`${getSnippetDirectory(app)}${fileName}`,
+		`${getSnippetDirectory(app)}${filenameWithExtension}`,
 		data
 	);
 }
@@ -63,6 +64,13 @@ async function _createSnippetDirectoryIfNotExists(app: App) {
 	if (!(await app.vault.adapter.exists(getSnippetDirectory(app)))) {
 		await app.vault.adapter.mkdir(getSnippetDirectory(app));
 	}
+}
+
+function _addExtensionIfNotExists(value: string) {
+	if (!value.endsWith(".css")) {
+		return `${value}.css`;
+	}
+	return value;
 }
 
 async function _validateFilename(value: string) {
