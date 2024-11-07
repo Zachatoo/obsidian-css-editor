@@ -5,16 +5,12 @@ import {
 	getSnippetDirectory,
 	toggleSnippetFileState,
 } from "src/obsidian/file-system-helpers";
-import {
-	detachLeavesOfTypeAndDisplay,
-	openView,
-} from "src/obsidian/workspace-helpers";
+import { detachCssFileLeaves, openView } from "src/obsidian/workspace-helpers";
 import { VIEW_TYPE_CSS } from "src/views/CssEditorView";
 import { ErrorNotice, InfoNotice } from "src/obsidian/Notice";
+import { CssFile } from "src/CssFile";
 
-export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
-	string | null
-> {
+export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 	plugin: CssEditorPlugin;
 
 	constructor(app: App, plugin: CssEditorPlugin) {
@@ -27,7 +23,10 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 		});
 		this.scope.register(["Shift"], "Enter", (evt: KeyboardEvent) => {
 			this.selectSuggestion(
-				{ item: this.inputEl.value, match: { score: 0, matches: [] } },
+				{
+					item: new CssFile(this.inputEl.value),
+					match: { score: 0, matches: [] },
+				},
 				evt
 			);
 			return false;
@@ -71,25 +70,25 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 		]);
 	}
 
-	isEnabled(item: string): boolean {
-		const snippetName = item.replace(".css", "");
-		const currentState =
-			this.app.customCss?.enabledSnippets?.has(snippetName);
+	isEnabled(item: CssFile): boolean {
+		const currentState = this.app.customCss?.enabledSnippets?.has(
+			item.basename
+		);
 		return currentState || false;
 	}
 
-	getItems(): string[] {
+	getItems(): CssFile[] {
 		if (this.app.customCss?.snippets) {
-			return this.app.customCss.snippets.map((x) => `${x}.css`);
+			return this.app.customCss.snippets.map((x) => new CssFile(x));
 		}
 		return [];
 	}
 
-	getItemText(item: string): string {
-		return item;
+	getItemText(item: CssFile): string {
+		return item.name;
 	}
 
-	renderSuggestion(item: FuzzyMatch<string>, el: HTMLElement): void {
+	renderSuggestion(item: FuzzyMatch<CssFile>, el: HTMLElement): void {
 		super.renderSuggestion(item, el);
 		el.addClass("mod-complex");
 		if (el.hasChildNodes()) {
@@ -114,7 +113,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 								(el) =>
 									el.appendText(
 										`${getSnippetDirectory(this.app)}${
-											item.item
+											item.item.name
 										}`
 									)
 							)
@@ -155,7 +154,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 	}
 
 	async selectSuggestion(
-		value: FuzzyMatch<string | null>,
+		value: FuzzyMatch<CssFile>,
 		evt: KeyboardEvent | MouseEvent
 	): Promise<void> {
 		try {
@@ -171,14 +170,17 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 	}
 
 	async onChooseSuggestion(
-		item: FuzzyMatch<string | null>,
+		item: FuzzyMatch<CssFile>,
 		evt: MouseEvent | KeyboardEvent
 	): Promise<void> {
 		const isCreateNewDueToNoSuggestion =
 			this.inputEl.value.trim().length > 0 && item.match.score === 0;
 		if (isCreateNewDueToNoSuggestion && item.item) {
 			const openInNewTab = evt.metaKey;
-			await this.plugin.createAndOpenSnippet(item.item, openInNewTab);
+			await this.plugin.createAndOpenSnippet(
+				item.item.name,
+				openInNewTab
+			);
 		} else {
 			await this.onChooseItem(item.item, evt);
 		}
@@ -188,7 +190,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 		const item = this.inputEl.value.trim();
 		if (item.length > 0) {
 			this.chooser?.setSuggestions?.([
-				{ item, match: { score: 0, matches: [] } },
+				{ item: new CssFile(item), match: { score: 0, matches: [] } },
 			]);
 			this.chooser?.addMessage?.(
 				"No CSS snippets found. Enter to create a new one."
@@ -202,7 +204,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 	}
 
 	async onChooseItem(
-		item: string | null,
+		item: CssFile,
 		evt: MouseEvent | KeyboardEvent
 	): Promise<void> {
 		if (!item) return;
@@ -210,25 +212,24 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<
 			if (evt.key === "Enter") {
 				const openInNewTab = evt.metaKey;
 				if (evt.shiftKey) {
-					await this.plugin.createAndOpenSnippet(item, openInNewTab);
+					await this.plugin.createAndOpenSnippet(
+						item.name,
+						openInNewTab
+					);
 				} else {
 					openView(this.app.workspace, VIEW_TYPE_CSS, openInNewTab, {
-						filename: item,
+						file: item,
 					});
 				}
 			} else if (evt.key === "Delete") {
 				deleteSnippetFile(this.app, item);
-				detachLeavesOfTypeAndDisplay(
-					this.app.workspace,
-					VIEW_TYPE_CSS,
-					item
-				);
+				detachCssFileLeaves(this.app.workspace, item);
 				new InfoNotice(`${item} was deleted.`);
 			}
 		} else {
 			const openInNewTab = evt.metaKey;
 			openView(this.app.workspace, VIEW_TYPE_CSS, openInNewTab, {
-				filename: item,
+				file: item,
 			});
 		}
 	}

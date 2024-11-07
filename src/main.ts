@@ -7,12 +7,10 @@ import {
 	deleteSnippetFile,
 	toggleSnippetFileState,
 } from "./obsidian/file-system-helpers";
-import {
-	detachLeavesOfTypeAndDisplay,
-	openView,
-} from "./obsidian/workspace-helpers";
+import { detachCssFileLeaves, openView } from "./obsidian/workspace-helpers";
 import { InfoNotice } from "./obsidian/Notice";
 import { CssSnippetCreateModal } from "./modals/CssSnippetCreateModal";
+import { CssFile } from "./CssFile";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface CssEditorPluginSettings {}
@@ -47,14 +45,12 @@ export default class CssEditorPlugin extends Plugin {
 					this.app.workspace.getActiveViewOfType(CssEditorView);
 				if (!activeCssEditorView) return false;
 				if (checking) return true;
-				const { filename } = activeCssEditorView.getState();
-				deleteSnippetFile(this.app, filename).then(() => {
-					detachLeavesOfTypeAndDisplay(
-						this.app.workspace,
-						VIEW_TYPE_CSS,
-						filename
-					);
-					new InfoNotice(`"${filename}" was deleted.`);
+				const { file } = activeCssEditorView.getState();
+				if (!file) return;
+				const cssFile = new CssFile(file);
+				deleteSnippetFile(this.app, cssFile).then(() => {
+					detachCssFileLeaves(this.app.workspace, cssFile);
+					new InfoNotice(`"${cssFile.name}" was deleted.`);
 				});
 			},
 		});
@@ -66,10 +62,12 @@ export default class CssEditorPlugin extends Plugin {
 					this.app.workspace.getActiveViewOfType(CssEditorView);
 				if (!activeCssEditorView) return false;
 				if (checking) return true;
-				const { filename } = activeCssEditorView.getState();
-				const isEnabled = toggleSnippetFileState(this.app, filename);
+				const { file } = activeCssEditorView.getState();
+				if (!file) return;
+				const cssFile = new CssFile(file);
+				const isEnabled = toggleSnippetFileState(this.app, cssFile);
 				new InfoNotice(
-					`"${filename}" is now ${
+					`"${cssFile.name}" is now ${
 						isEnabled ? "enabled" : "disabled"
 					}.`
 				);
@@ -101,14 +99,11 @@ export default class CssEditorPlugin extends Plugin {
 	}
 
 	async createAndOpenSnippet(filename: string, openInNewTab: boolean) {
-		await createSnippetFile(this.app, filename, "");
-		this.app.customCss?.setCssEnabledStatus?.(
-			filename.replace(".css", ""),
-			true
-		);
-		new InfoNotice(`${filename} was created.`);
+		const file = await createSnippetFile(this.app, filename, "");
+		this.app.customCss?.setCssEnabledStatus?.(file.basename, true);
+		new InfoNotice(`${file.name} was created.`);
 		openView(this.app.workspace, VIEW_TYPE_CSS, openInNewTab, {
-			filename,
+			file,
 		});
 	}
 }

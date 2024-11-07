@@ -3,6 +3,7 @@ import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import CssEditorPlugin from "src/main";
 import { fileSystemHelpersTests } from "./file-system-helpers.test";
+import { cssFileTests } from "./CssFile.test";
 
 chai.use(chaiAsPromised);
 
@@ -31,6 +32,7 @@ export default class TestCssEditorPlugin extends Plugin {
 	}
 
 	runTests() {
+		cssFileTests(this);
 		fileSystemHelpersTests(this);
 	}
 

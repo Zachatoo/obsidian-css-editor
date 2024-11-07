@@ -1,4 +1,5 @@
-import { App } from "obsidian";
+import { App, normalizePath } from "obsidian";
+import { CssFile } from "src/CssFile";
 
 export function getSnippetDirectory(app: App) {
 	return `${app.vault.configDir}/snippets/`;
@@ -6,10 +7,10 @@ export function getSnippetDirectory(app: App) {
 
 export async function readSnippetFile(
 	app: App,
-	fileName: string
+	file: CssFile
 ): Promise<string> {
 	const data = await app.vault.adapter.read(
-		`${getSnippetDirectory(app)}${fileName}`
+		normalizePath(`${getSnippetDirectory(app)}${file.name}`)
 	);
 	return data;
 }
@@ -18,23 +19,24 @@ export async function createSnippetFile(
 	app: App,
 	fileName: string,
 	data = ""
-): Promise<void> {
-	const filenameWithExtension = _addExtensionIfNotExists(fileName);
-	await _validateFilename(filenameWithExtension);
+): Promise<CssFile> {
+	const file = new CssFile(fileName);
+	await _validateFile(file);
 	await _createSnippetDirectoryIfNotExists(app);
 	await app.vault.adapter.write(
-		`${getSnippetDirectory(app)}${filenameWithExtension}`,
+		normalizePath(`${getSnippetDirectory(app)}${file.name}`),
 		data
 	);
+	return file;
 }
 
 export async function writeSnippetFile(
 	app: App,
-	fileName: string,
+	file: CssFile,
 	data: string
 ): Promise<void> {
 	await app.vault.adapter.write(
-		`${getSnippetDirectory(app)}${fileName}`,
+		normalizePath(`${getSnippetDirectory(app)}${file.name}`),
 		data
 	);
 }
@@ -43,20 +45,23 @@ export async function checkSnippetExists(
 	app: App,
 	fileName: string
 ): Promise<boolean> {
-	return app.vault.adapter.exists(`${getSnippetDirectory(app)}${fileName}`);
+	return app.vault.adapter.exists(
+		normalizePath(`${getSnippetDirectory(app)}${fileName}`)
+	);
 }
 
-export async function deleteSnippetFile(app: App, fileName: string) {
-	await app.vault.adapter.remove(`${getSnippetDirectory(app)}${fileName}`);
+export async function deleteSnippetFile(app: App, file: CssFile) {
+	await app.vault.adapter.remove(
+		normalizePath(`${getSnippetDirectory(app)}${file.name}`)
+	);
 }
 
-export function toggleSnippetFileState(app: App, fileName: string) {
-	const snippetName = fileName.replace(".css", "");
+export function toggleSnippetFileState(app: App, file: CssFile) {
 	if (!app.customCss?.enabledSnippets || !app.customCss.setCssEnabledStatus) {
 		throw new Error("Failed to enable/disable CSS snippet.");
 	}
-	const isEnabled = app.customCss.enabledSnippets.has(snippetName);
-	app.customCss.setCssEnabledStatus(snippetName, !isEnabled);
+	const isEnabled = app.customCss.enabledSnippets.has(file.basename);
+	app.customCss.setCssEnabledStatus(file.basename, !isEnabled);
 	return !isEnabled;
 }
 
@@ -66,23 +71,19 @@ async function _createSnippetDirectoryIfNotExists(app: App) {
 	}
 }
 
-function _addExtensionIfNotExists(value: string) {
-	if (!value.endsWith(".css")) {
-		return `${value}.css`;
-	}
-	return value;
-}
-
-async function _validateFilename(value: string) {
+async function _validateFile(file: CssFile) {
 	const errors = {
 		exists: "",
 		regex: "",
 	};
-	if (value.length > 0 && (await checkSnippetExists(this.app, value))) {
+	if (
+		file.name.length > 0 &&
+		(await checkSnippetExists(this.app, file.name))
+	) {
 		errors.exists = "File already exists.";
 	}
 	const regex = /^[0-9a-zA-Z\-_ ]+\.css$/;
-	if (!regex.test(value)) {
+	if (!regex.test(file.name)) {
 		errors.regex =
 			"Must end with .css and only contain alphanumeric, spaces, dashes, or underscore characters.";
 	}

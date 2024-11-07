@@ -15,20 +15,20 @@ export function fileSystemHelpersTests(testPlugin: TestCssEditorPlugin) {
 		const mockContent = "this is a test";
 		const mockContent2 = "this is a test two";
 
-		await createSnippetFile(app, filename);
+		const file = await createSnippetFile(app, filename);
 		await expect(checkSnippetExists(app, filename)).to.eventually.be.true;
 
-		await writeSnippetFile(app, filename, mockContent);
-		await expect(readSnippetFile(app, filename)).to.eventually.equal(
+		await writeSnippetFile(app, file, mockContent);
+		await expect(readSnippetFile(app, file)).to.eventually.equal(
 			mockContent
 		);
 
-		await writeSnippetFile(app, filename, mockContent2);
-		await expect(readSnippetFile(app, filename)).to.eventually.equal(
+		await writeSnippetFile(app, file, mockContent2);
+		await expect(readSnippetFile(app, file)).to.eventually.equal(
 			mockContent2
 		);
 
-		await deleteSnippetFile(app, filename);
+		await deleteSnippetFile(app, file);
 		await expect(checkSnippetExists(app, filename)).to.eventually.be.false;
 	});
 
@@ -38,14 +38,14 @@ export function fileSystemHelpersTests(testPlugin: TestCssEditorPlugin) {
 			const { app } = testPlugin.plugin;
 			const filename = `${Date.now()}already-exists.css`;
 
-			await createSnippetFile(app, filename);
+			const file = await createSnippetFile(app, filename);
 			await expect(checkSnippetExists(app, filename)).to.eventually.be
 				.true;
 
 			await expect(createSnippetFile(app, filename)).to.be.rejectedWith();
 
 			// cleanup
-			await deleteSnippetFile(app, filename);
+			await deleteSnippetFile(app, file);
 			await expect(checkSnippetExists(app, filename)).to.eventually.be
 				.false;
 		}
@@ -84,14 +84,14 @@ export function fileSystemHelpersTests(testPlugin: TestCssEditorPlugin) {
 
 	testPlugin.test("create snippet with spaces should succeed", async () => {
 		const { app } = testPlugin.plugin;
-		const filename1 = `${Date.now()} with spaces.css`;
+		const filename = `${Date.now()} with spaces.css`;
 
-		await createSnippetFile(app, filename1);
-		await expect(checkSnippetExists(app, filename1)).to.eventually.be.true;
+		const file = await createSnippetFile(app, filename);
+		await expect(checkSnippetExists(app, filename)).to.eventually.be.true;
 
 		// cleanup
-		await deleteSnippetFile(app, filename1);
-		await expect(checkSnippetExists(app, filename1)).to.eventually.be.false;
+		await deleteSnippetFile(app, file);
+		await expect(checkSnippetExists(app, filename)).to.eventually.be.false;
 	});
 
 	testPlugin.test(
@@ -101,12 +101,12 @@ export function fileSystemHelpersTests(testPlugin: TestCssEditorPlugin) {
 			const filename = `${Date.now()}without-extension`;
 			const filenameWithExtension = `${filename}.css`;
 
-			await createSnippetFile(app, filename);
+			const file = await createSnippetFile(app, filename);
 			await expect(checkSnippetExists(app, filenameWithExtension)).to
 				.eventually.be.true;
 
 			// cleanup
-			await deleteSnippetFile(app, filenameWithExtension);
+			await deleteSnippetFile(app, file);
 			await expect(checkSnippetExists(app, filenameWithExtension)).to
 				.eventually.be.false;
 		}

@@ -1,6 +1,7 @@
 import { debounce, ItemView, ViewStateResult, WorkspaceLeaf } from "obsidian";
 import { EditorView } from "@codemirror/view";
 import { vim } from "@replit/codemirror-vim";
+import { CssFile } from "src/CssFile";
 import {
 	readSnippetFile,
 	writeSnippetFile,
@@ -11,7 +12,7 @@ export const VIEW_TYPE_CSS = "css-editor-view";
 
 export class CssEditorView extends ItemView {
 	private editor: EditorView;
-	private filename: string;
+	private file: CssFile | null = null;
 
 	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
@@ -28,7 +29,6 @@ export class CssEditorView extends ItemView {
 				}),
 			],
 		});
-		this.filename = "";
 	}
 
 	getViewType() {
@@ -40,17 +40,10 @@ export class CssEditorView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return this.filename;
+		return this.file?.basename ?? "";
 	}
 
 	async onOpen(): Promise<void> {
-		const filename = this.getState()?.filename;
-		if (filename) {
-			this.filename = filename;
-			const data = await readSnippetFile(this.app, filename);
-			this.dispatchEditorData(data);
-			this.app.workspace.requestSaveLayout();
-		}
 		const timer = window.setInterval(() => {
 			this.editor.focus();
 			if (this.editor.hasFocus) clearInterval(timer);
@@ -74,31 +67,34 @@ export class CssEditorView extends ItemView {
 
 	getState() {
 		return {
-			filename: this.filename,
+			file: this.file?.name,
 		};
 	}
 
-	async setState(
-		state: { filename: string },
-		result: ViewStateResult
-	): Promise<void> {
+	async setState(state: unknown, result: ViewStateResult): Promise<void> {
+		let file: CssFile | null = null;
 		if (state && typeof state === "object") {
-			if (
-				"filename" in state &&
-				state.filename &&
-				typeof state.filename === "string"
-			) {
-				if (state.filename !== this.filename) {
-					const data = await readSnippetFile(
-						this.app,
-						state.filename
-					);
-					this.dispatchEditorData(data);
-				}
-				this.filename = state.filename;
+			if ("filename" in state && typeof state.filename === "string") {
+				file = new CssFile(state.filename);
 			}
+			if ("file" in state) {
+				if (state.file instanceof CssFile) {
+					file = state.file;
+				} else if (typeof state.file === "string") {
+					file = new CssFile(state.file);
+				}
+			}
+			if (file && file.name !== this.file?.name) {
+				const data = await readSnippetFile(this.app, file);
+				this.dispatchEditorData(data);
+				this.file = file;
+				this.app.workspace.requestSaveLayout();
+				result.history = true;
+			}
+		} else {
+			result.history = true;
 		}
-		super.setState(state, result);
+		super.setState({ file: file?.name }, result);
 	}
 
 	requestSave = debounce(this.save, 1000);
@@ -107,8 +103,8 @@ export class CssEditorView extends ItemView {
 	 * You should almost always call `requestSave` instead of `save` to debounce the saving.
 	 */
 	private async save(data: string): Promise<void> {
-		if (this.filename) {
-			writeSnippetFile(this.app, this.filename, data);
+		if (this.file) {
+			writeSnippetFile(this.app, this.file, data);
 		}
 	}
 

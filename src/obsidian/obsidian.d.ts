@@ -13,7 +13,7 @@ declare module "obsidian" {
 			  }
 			| undefined;
 		plugins: {
-			getPlugin: (pluginID: string) => Plugin_2 | null;
+			getPlugin: (pluginID: string) => Plugin | null;
 		};
 	}
 	interface Vault {
@@ -25,7 +25,7 @@ declare module "obsidian" {
 			useSelectedItem?: (evt: KeyboardEvent) => boolean;
 			selectedItem: number;
 			values: {
-				item: string;
+				item: T;
 				match: {
 					score: number;
 					matches: string[];
