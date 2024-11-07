@@ -222,8 +222,8 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 					});
 				}
 			} else if (evt.key === "Delete") {
-				deleteSnippetFile(this.app, item);
-				detachCssFileLeaves(this.app.workspace, item);
+				await detachCssFileLeaves(this.app.workspace, item);
+				await deleteSnippetFile(this.app, item);
 				new InfoNotice(`${item} was deleted.`);
 			}
 		} else {

@@ -48,10 +48,12 @@ export default class CssEditorPlugin extends Plugin {
 				const { file } = activeCssEditorView.getState();
 				if (!file) return;
 				const cssFile = new CssFile(file);
-				deleteSnippetFile(this.app, cssFile).then(() => {
-					detachCssFileLeaves(this.app.workspace, cssFile);
-					new InfoNotice(`"${cssFile.name}" was deleted.`);
-				});
+				detachCssFileLeaves(this.app.workspace, cssFile).then(
+					async () => {
+						await deleteSnippetFile(this.app, cssFile);
+						new InfoNotice(`"${cssFile.name}" was deleted.`);
+					}
+				);
 			},
 		});
 		this.addCommand({
