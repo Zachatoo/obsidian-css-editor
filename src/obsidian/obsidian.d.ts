@@ -1,5 +1,6 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import "obsidian";
+import { CssFile } from "src/CssFile";
 
 declare module "obsidian" {
 	interface App {
@@ -35,5 +36,12 @@ declare module "obsidian" {
 			suggestions: HTMLElement[];
 			addMessage?: (text: string) => HTMLDivElement;
 		};
+	}
+
+	interface Workspace {
+		on(
+			name: "css-editor-change",
+			callback: (file: CssFile, data: string) => void
+		): EventRef;
 	}
 }

@@ -25,6 +25,13 @@ export class CssEditorView extends ItemView {
 				EditorView.updateListener.of((update) => {
 					if (update.docChanged) {
 						this.requestSave(update.state.doc.toString());
+						if (this.file) {
+							this.app.workspace.trigger(
+								"css-editor-change",
+								this.file,
+								update.state.doc.toString()
+							);
+						}
 					}
 				}),
 			],
@@ -49,6 +56,16 @@ export class CssEditorView extends ItemView {
 			if (this.editor.hasFocus) clearInterval(timer);
 		}, 200);
 		this.registerInterval(timer);
+		this.registerEvent(
+			this.app.workspace.on("css-editor-change", async (file, data) => {
+				if (
+					this.file?.name === file.name &&
+					this.getEditorData() !== data
+				) {
+					this.dispatchEditorData(data);
+				}
+			})
+		);
 	}
 
 	getEditorData() {
@@ -62,6 +79,7 @@ export class CssEditorView extends ItemView {
 				to: this.editor.state.doc.length,
 				insert: data,
 			},
+			selection: this.editor.state.selection,
 		});
 	}
 
