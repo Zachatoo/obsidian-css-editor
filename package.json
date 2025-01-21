@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-css-editor",
-	"version": "1.2.2",
+	"version": "1.2.3",
 	"description": "Edit CSS files within Obsidian.",
 	"main": "main.js",
 	"scripts": {
