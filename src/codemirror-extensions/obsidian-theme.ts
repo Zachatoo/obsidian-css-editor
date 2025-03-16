@@ -42,7 +42,7 @@ export const obsidianTheme = EditorView.theme(
 		".cm-content": { caretColor: config.cursor },
 
 		"&.cm-focused .cm-cursor": { borderLeftColor: config.cursor },
-		"&.cm-focused .cm-selectionBackground, .cm-selectionBackground, & ::selection":
+		".cm-selectionBackground, &.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, & ::selection":
 			{ backgroundColor: config.selection },
 
 		".cm-panels": {

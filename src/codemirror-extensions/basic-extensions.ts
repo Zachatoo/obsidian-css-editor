@@ -11,8 +11,13 @@ import {
 	indentOnInput,
 } from "@codemirror/language";
 import { EditorState, Extension } from "@codemirror/state";
+import {
+	dropCursor,
+	keymap,
 	lineNumbers,
 	highlightActiveLineGutter,
+	drawSelection,
+} from "@codemirror/view";
 import {
 	autocompletion,
 	closeBrackets,
@@ -41,6 +46,7 @@ export const basicExtensions: Extension[] = [
 	foldGutter(),
 	highlightActiveLineGutter(),
 	dropCursor(),
+	drawSelection({ drawRangeCursor: true }),
 	EditorState.allowMultipleSelections.of(true),
 	indentOnInput(),
 	bracketMatching(),
