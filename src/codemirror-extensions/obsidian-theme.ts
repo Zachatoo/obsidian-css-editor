@@ -27,6 +27,7 @@ export const config = {
 	comment: "var(--text-faint)",
 	invalid: "var(--text-error)",
 	regexp: "#032f62",
+	monospace: "var(--font-monospace)",
 };
 
 export const obsidianTheme = EditorView.theme(
@@ -35,6 +36,8 @@ export const obsidianTheme = EditorView.theme(
 			color: config.foreground,
 			backgroundColor: config.background,
 		},
+
+		".cm-scroller": { fontFamily: config.monospace },
 
 		".cm-content": { caretColor: config.cursor },
 
@@ -89,10 +92,13 @@ export const obsidianTheme = EditorView.theme(
 			color: config.foreground,
 		},
 		".cm-tooltip.cm-tooltip-autocomplete": {
-			"& > ul > li[aria-selected]": {
-				background: config.selection,
-				color: config.foreground,
-			},
+			"& > ul": {
+				fontFamily: config.monospace,
+				"& > li[aria-selected]": {
+					background: config.selection,
+					color: config.foreground
+				}
+			}
 		},
 	},
 	{ dark: config.dark }
