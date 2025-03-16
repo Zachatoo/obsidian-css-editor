@@ -28,6 +28,7 @@ import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { lintKeymap } from "@codemirror/lint";
 import { obsidian } from "./obsidian-theme";
 import { css } from "./reconfigured-css";
+import { highlightActiveLine } from "./highlight-active-line";
 
 export const basicExtensions: Extension[] = [
 	keymap.of([
@@ -48,6 +49,7 @@ export const basicExtensions: Extension[] = [
 	dropCursor(),
 	drawSelection({ drawRangeCursor: true }),
 	EditorState.allowMultipleSelections.of(true),
+	highlightActiveLine(),
 	indentOnInput(),
 	bracketMatching(),
 	autocompletion(),

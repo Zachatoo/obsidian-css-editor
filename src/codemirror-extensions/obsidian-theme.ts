@@ -12,6 +12,7 @@ export const config = {
 	cursor: "var(--text-normal)",
 	dropdownBackground: "var(--background-primary)",
 	dropdownBorder: "var(--background-modifier-border)",
+	activeLine: "var(--background-secondary)",
 	activeLineNumber: "var(--text-normal)",
 	matchingBracket: "var(--background-modifier-accent)",
 	keyword: "#d73a49",
