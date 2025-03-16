@@ -12,7 +12,7 @@ export const config = {
 	cursor: "var(--text-normal)",
 	dropdownBackground: "var(--background-primary)",
 	dropdownBorder: "var(--background-modifier-border)",
-	activeLine: "var(--background-primary)",
+	activeLineNumber: "var(--text-normal)",
 	matchingBracket: "var(--background-modifier-accent)",
 	keyword: "#d73a49",
 	storage: "#d73a49",
@@ -58,7 +58,12 @@ export const obsidianTheme = EditorView.theme(
 		},
 
 		".cm-activeLine": { backgroundColor: config.activeLine },
-		".cm-activeLineGutter": { backgroundColor: config.background },
+		".cm-activeLineGutter": {
+			backgroundColor: config.activeLine,
+			".cm-lineNumbers &": {
+				color: config.activeLineNumber,
+			},
+		},
 		".cm-selectionMatch": { backgroundColor: config.selection },
 
 		".cm-matchingBracket, .cm-nonmatchingBracket": {
