@@ -3,8 +3,7 @@ import {
 	history,
 	historyKeymap,
 	indentWithTab,
-} from "@codemirror/commands";
-import { css } from "@codemirror/lang-css";
+} from "@codemirror/commands";;
 import {
 	bracketMatching,
 	foldGutter,
@@ -22,6 +21,7 @@ import {
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { lintKeymap } from "@codemirror/lint";
 import { obsidian } from "./obsidian-theme";
+import { css } from "./reconfigured-css";
 
 export const basicExtensions: Extension[] = [
 	keymap.of([
