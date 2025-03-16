@@ -40,7 +40,6 @@ export const basicExtensions: Extension[] = [
 	dropCursor(),
 	EditorState.allowMultipleSelections.of(true),
 	indentOnInput(),
-	EditorView.lineWrapping,
 	bracketMatching(),
 	autocompletion(),
 	closeBrackets(),

@@ -7,6 +7,10 @@ import {
 	writeSnippetFile,
 } from "../obsidian/file-system-helpers";
 import { basicExtensions } from "../codemirror-extensions/basic-extensions";
+import { TransactionSpec } from "@codemirror/state";
+import CssEditorPlugin, { DEFAULT_SETTINGS } from "src/main";
+import { indentSize, lineWrap } from "src/codemirror-extensions/compartments";
+import { indentUnit } from "@codemirror/language";
 
 export const VIEW_TYPE_CSS = "css-editor-view";
 
@@ -16,11 +20,21 @@ export class CssEditorView extends ItemView {
 
 	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
+
+		let plugin = this.app.plugins.getPlugin("css-editor"),
+			settings = Object.assign({}, DEFAULT_SETTINGS);
+		
+		if (plugin instanceof CssEditorPlugin) {
+			settings = plugin.settings;
+		}
+
 		this.navigation = true;
 		this.editor = new EditorView({
 			parent: this.contentEl,
 			extensions: [
 				basicExtensions,
+				lineWrap.of(settings.lineWrap ? EditorView.lineWrapping : []),
+				indentSize.of(indentUnit.of("".padEnd(settings.indentSize))),
 				this.app.vault.getConfig?.("vimMode") ? vim() : [],
 				EditorView.updateListener.of((update) => {
 					if (update.docChanged) {
@@ -70,6 +84,10 @@ export class CssEditorView extends ItemView {
 
 	getEditorData() {
 		return this.editor.state.doc.toString();
+	}
+
+	dispatchEditorTransaction(...specs: TransactionSpec[]) {
+		this.editor.dispatch(...specs);
 	}
 
 	private dispatchEditorData(data: string) {
