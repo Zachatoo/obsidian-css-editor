@@ -23,7 +23,6 @@ const activeLineLayer = layer({
             let { top, height } = view.lineBlockAt(r.head),
                 layer = new RectangleMarker("cm-activeLine", contentLeft - scrollerLeft, top + paddingTop, width, height);
             markers.push(layer);
-            layer.draw();
         }
         return markers;
     },
