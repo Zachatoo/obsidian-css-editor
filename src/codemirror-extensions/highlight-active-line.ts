@@ -3,7 +3,7 @@ import { layer, LayerMarker, RectangleMarker } from "@codemirror/view";
 // We don't use builtin active line highlighter from CodeMirror,
 // because it sets the background of active line DOM, which can cause
 // blocking appearance of selection that's drawn via DOM (not native selection),
-// e.g. the second selection (or all of them when builtin "highlightActiveLine()"
+// e.g. the second selection (or all of selections when "drawSelection()"
 // is registered).
 export function highlightActiveLine() {
     return activeLineLayer;
