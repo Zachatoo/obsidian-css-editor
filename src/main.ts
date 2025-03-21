@@ -20,7 +20,7 @@ export interface CssEditorPluginSettings {
 }
 
 export const DEFAULT_SETTINGS: CssEditorPluginSettings = {
-	lineWrap: false,
+	lineWrap: true,
 	indentSize: 2,
 };
 
@@ -91,7 +91,7 @@ export default class CssEditorPlugin extends Plugin {
 			)
 		);
 
-		this.registerView(VIEW_TYPE_CSS, (leaf) => new CssEditorView(leaf));
+		this.registerView(VIEW_TYPE_CSS, (leaf) => new CssEditorView(leaf, this));
 		
 		this.settingTab = new CSSEditorSettingTab(this.app, this);
 		this.addSettingTab(this.settingTab);

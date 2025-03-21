@@ -8,7 +8,7 @@ import {
 } from "../obsidian/file-system-helpers";
 import { basicExtensions } from "../codemirror-extensions/basic-extensions";
 import { TransactionSpec } from "@codemirror/state";
-import CssEditorPlugin, { DEFAULT_SETTINGS } from "src/main";
+import CssEditorPlugin from "src/main";
 import { indentSize, lineWrap } from "src/codemirror-extensions/compartments";
 import { indentUnit } from "@codemirror/language";
 
@@ -18,15 +18,10 @@ export class CssEditorView extends ItemView {
 	private editor: EditorView;
 	private file: CssFile | null = null;
 
-	constructor(leaf: WorkspaceLeaf) {
+	constructor(leaf: WorkspaceLeaf, plugin: CssEditorPlugin) {
 		super(leaf);
 
-		let plugin = this.app.plugins.getPlugin("css-editor"),
-			settings = Object.assign({}, DEFAULT_SETTINGS);
-		
-		if (plugin instanceof CssEditorPlugin) {
-			settings = plugin.settings;
-		}
+		const { settings } = plugin;
 
 		this.navigation = true;
 		this.editor = new EditorView({

@@ -1,6 +1,6 @@
 import { indentUnit } from "@codemirror/language";
 import { TransactionSpec } from "@codemirror/state";
-import { EditorView } from "codemirror";
+import { EditorView } from "@codemirror/view";
 import { App, PluginSettingTab, Setting } from "obsidian";
 import { indentSize, lineWrap } from "src/codemirror-extensions/compartments";
 import CssEditorPlugin from "src/main";
