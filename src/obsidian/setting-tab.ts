@@ -48,7 +48,7 @@ export class CSSEditorSettingTab extends PluginSettingTab {
 				field.onChange(val => {
 					val = val.replace(/\D/g, "");
 					field.setValue(val);
-					let size = parseInt(val);
+					const size = parseInt(val);
 					this.plugin.settings.indentSize = size;
 					this.plugin.saveSettings();
 					updateCSSEditorView(this.app, {

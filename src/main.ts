@@ -13,7 +13,6 @@ import { CssSnippetCreateModal } from "./modals/CssSnippetCreateModal";
 import { CssFile } from "./CssFile";
 import { CSSEditorSettingTab } from "./obsidian/setting-tab";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface CssEditorPluginSettings {
 	lineWrap: boolean;
 	indentSize: number;

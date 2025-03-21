@@ -53,16 +53,16 @@ function getSelectorNames(state: EditorState, node: SyntaxNode, type: SelectorTy
     // As a single Tree may consist of several pieces, especially when its length exceeds 4 kB of
     // chars, caching the class/id names and mapping them to the correspond node could be an efficient way
     if (node.to - node.from > 4096) {
-        let known = SelectorsByNode[type].get(node);
+        const known = SelectorsByNode[type].get(node);
         if (known)
             return known;
 
-        let result: Completion[] = [],
+        const result: Completion[] = [],
             seen = new Set<string>(),
             cursor = node.cursor(IterMode.IncludeAnonymous);
         if (cursor.firstChild())
             do {
-                for (let option of getSelectorNames(state, cursor.node, type))
+                for (const option of getSelectorNames(state, cursor.node, type))
                     if (!seen.has(option.label)) {
                         seen.add(option.label);
                         result.push(option);
@@ -73,12 +73,12 @@ function getSelectorNames(state: EditorState, node: SyntaxNode, type: SelectorTy
     }
 
     else {
-        let result: Completion[] = [],
+        const result: Completion[] = [],
             seen = new Set<string>(),
             { doc, selection } = state;
         node.cursor().iterate(node => {
             if (type == isSelectorIdentifier(node) && !touchSelection(selection, node)) {
-                let name = doc.sliceString(node.from, node.to);
+                const name = doc.sliceString(node.from, node.to);
                 if (!seen.has(name)) {
                     seen.add(name);
                     result.push({ label: name, type: "variable" });
@@ -94,12 +94,12 @@ const cssCompletionSource: CompletionSource = context => {
     let result = defineCSSCompletionSource(node => node.name == "VariableName")(context);
 
     if (!result) {
-        let { state, pos } = context,
+        const { state, pos } = context,
             node = syntaxTree(state).resolveInner(pos, -1);
         
         // Class selector
         if (node.matchContext(ClassSelectorCtx)) {
-            let isDot = node.name == ".";
+            const isDot = node.name == ".";
             result = {
                 from: isDot ? node.to : node.from,
                 options: getSelectorNames(state, getASTTop(node), SelectorType.CLASS),
@@ -109,7 +109,7 @@ const cssCompletionSource: CompletionSource = context => {
         
         // Id selector
         else if (node.matchContext(IdSelectorCtx)) {
-            let isHash = node.name == "#";
+            const isHash = node.name == "#";
             result = {
                 from: isHash ? node.to : node.from,
                 options: getSelectorNames(state, getASTTop(node), SelectorType.ID),

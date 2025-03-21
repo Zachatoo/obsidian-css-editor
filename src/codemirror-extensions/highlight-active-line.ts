@@ -14,13 +14,14 @@ const activeLineLayer = layer({
     above: false,
     class: "cm-activeLineLayer",
     markers(view) {
-        let selection = view.state.selection,
+        const selection = view.state.selection,
             markers: LayerMarker[] = [],
             paddingTop = view.documentPadding.top,
             { width, left: contentLeft } = view.contentDOM.getBoundingClientRect(),
             { left: scrollerLeft } = view.scrollDOM.getBoundingClientRect();
-        for (let r of selection.ranges) {
-            let { top, height } = view.lineBlockAt(r.head),
+
+        for (const range of selection.ranges) {
+            const { top, height } = view.lineBlockAt(range.head),
                 layer = new RectangleMarker("cm-activeLine", contentLeft - scrollerLeft, top + paddingTop, width, height);
             markers.push(layer);
         }
