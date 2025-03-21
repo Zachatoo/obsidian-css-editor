@@ -3,7 +3,7 @@ import {
 	history,
 	historyKeymap,
 	indentWithTab,
-} from "@codemirror/commands";;
+} from "@codemirror/commands";
 import {
 	bracketMatching,
 	foldGutter,
