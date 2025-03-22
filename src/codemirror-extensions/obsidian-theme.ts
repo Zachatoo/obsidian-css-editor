@@ -12,7 +12,8 @@ export const config = {
 	cursor: "var(--text-normal)",
 	dropdownBackground: "var(--background-primary)",
 	dropdownBorder: "var(--background-modifier-border)",
-	activeLine: "var(--background-primary)",
+	activeLine: "var(--background-secondary)",
+	activeLineNumber: "var(--text-normal)",
 	matchingBracket: "var(--background-modifier-accent)",
 	keyword: "#d73a49",
 	storage: "#d73a49",
@@ -27,6 +28,7 @@ export const config = {
 	comment: "var(--text-faint)",
 	invalid: "var(--text-error)",
 	regexp: "#032f62",
+	monospace: "var(--font-monospace)",
 };
 
 export const obsidianTheme = EditorView.theme(
@@ -36,10 +38,12 @@ export const obsidianTheme = EditorView.theme(
 			backgroundColor: config.background,
 		},
 
+		".cm-scroller": { fontFamily: config.monospace },
+
 		".cm-content": { caretColor: config.cursor },
 
 		"&.cm-focused .cm-cursor": { borderLeftColor: config.cursor },
-		"&.cm-focused .cm-selectionBackground, .cm-selectionBackground, & ::selection":
+		".cm-selectionBackground, &.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, & ::selection":
 			{ backgroundColor: config.selection },
 
 		".cm-panels": {
@@ -58,7 +62,12 @@ export const obsidianTheme = EditorView.theme(
 		},
 
 		".cm-activeLine": { backgroundColor: config.activeLine },
-		".cm-activeLineGutter": { backgroundColor: config.background },
+		".cm-activeLineGutter": {
+			backgroundColor: config.activeLine,
+			".cm-lineNumbers &": {
+				color: config.activeLineNumber,
+			},
+		},
 		".cm-selectionMatch": { backgroundColor: config.selection },
 
 		".cm-matchingBracket, .cm-nonmatchingBracket": {
@@ -84,10 +93,13 @@ export const obsidianTheme = EditorView.theme(
 			color: config.foreground,
 		},
 		".cm-tooltip.cm-tooltip-autocomplete": {
-			"& > ul > li[aria-selected]": {
-				background: config.selection,
-				color: config.foreground,
-			},
+			"& > ul": {
+				fontFamily: config.monospace,
+				"& > li[aria-selected]": {
+					background: config.selection,
+					color: config.foreground
+				}
+			}
 		},
 	},
 	{ dark: config.dark }

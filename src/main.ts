@@ -11,14 +11,21 @@ import { detachCssFileLeaves, openView } from "./obsidian/workspace-helpers";
 import { InfoNotice } from "./obsidian/Notice";
 import { CssSnippetCreateModal } from "./modals/CssSnippetCreateModal";
 import { CssFile } from "./CssFile";
+import { CSSEditorSettingTab } from "./obsidian/setting-tab";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface CssEditorPluginSettings {}
+export interface CssEditorPluginSettings {
+	lineWrap: boolean;
+	indentSize: number;
+}
 
-const DEFAULT_SETTINGS: CssEditorPluginSettings = {};
+export const DEFAULT_SETTINGS: CssEditorPluginSettings = {
+	lineWrap: true,
+	indentSize: 2,
+};
 
 export default class CssEditorPlugin extends Plugin {
 	settings: CssEditorPluginSettings;
+	settingTab: CSSEditorSettingTab;
 
 	async onload() {
 		await this.loadSettings();
@@ -83,7 +90,10 @@ export default class CssEditorPlugin extends Plugin {
 			)
 		);
 
-		this.registerView(VIEW_TYPE_CSS, (leaf) => new CssEditorView(leaf));
+		this.registerView(VIEW_TYPE_CSS, (leaf) => new CssEditorView(leaf, this));
+		
+		this.settingTab = new CSSEditorSettingTab(this.app, this);
+		this.addSettingTab(this.settingTab);
 	}
 
 	onunload() {}

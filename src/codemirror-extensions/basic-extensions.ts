@@ -4,7 +4,6 @@ import {
 	historyKeymap,
 	indentWithTab,
 } from "@codemirror/commands";
-import { css } from "@codemirror/lang-css";
 import {
 	bracketMatching,
 	foldGutter,
@@ -12,7 +11,13 @@ import {
 	indentOnInput,
 } from "@codemirror/language";
 import { EditorState, Extension } from "@codemirror/state";
-import { dropCursor, EditorView, keymap } from "@codemirror/view";
+import {
+	dropCursor,
+	keymap,
+	lineNumbers,
+	highlightActiveLineGutter,
+	drawSelection,
+} from "@codemirror/view";
 import {
 	autocompletion,
 	closeBrackets,
@@ -22,6 +27,8 @@ import {
 import { highlightSelectionMatches, searchKeymap } from "@codemirror/search";
 import { lintKeymap } from "@codemirror/lint";
 import { obsidian } from "./obsidian-theme";
+import { css } from "./reconfigured-css";
+import { highlightActiveLine } from "./highlight-active-line";
 
 export const basicExtensions: Extension[] = [
 	keymap.of([
@@ -36,11 +43,14 @@ export const basicExtensions: Extension[] = [
 	]),
 	history(),
 	css(),
+	lineNumbers(),
 	foldGutter(),
+	highlightActiveLineGutter(),
 	dropCursor(),
+	drawSelection({ drawRangeCursor: true }),
 	EditorState.allowMultipleSelections.of(true),
+	highlightActiveLine(),
 	indentOnInput(),
-	EditorView.lineWrapping,
 	bracketMatching(),
 	autocompletion(),
 	closeBrackets(),
