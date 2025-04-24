@@ -32,7 +32,7 @@ export default class CssEditorPlugin extends Plugin {
 
 		this.addCommand({
 			id: "create-css-snippet",
-			name: "Create CSS Snippet",
+			name: "Create CSS snippet",
 			callback: async () => {
 				new CssSnippetCreateModal(this.app, this).open();
 			},
@@ -46,7 +46,7 @@ export default class CssEditorPlugin extends Plugin {
 		});
 		this.addCommand({
 			id: "delete-css-snippet",
-			name: "Delete current CSS Snippet",
+			name: "Delete CSS snippet",
 			checkCallback: (checking) => {
 				const activeCssEditorView =
 					this.app.workspace.getActiveViewOfType(CssEditorView);
@@ -65,7 +65,7 @@ export default class CssEditorPlugin extends Plugin {
 		});
 		this.addCommand({
 			id: "toggle-css-snippet-enabled-status",
-			name: "Toggle the enabled/disabled state of current CSS snippet",
+			name: "Toggle the enabled/disabled state of CSS snippet",
 			checkCallback: (checking) => {
 				const activeCssEditorView =
 					this.app.workspace.getActiveViewOfType(CssEditorView);
@@ -90,8 +90,11 @@ export default class CssEditorPlugin extends Plugin {
 			)
 		);
 
-		this.registerView(VIEW_TYPE_CSS, (leaf) => new CssEditorView(leaf, this));
-		
+		this.registerView(
+			VIEW_TYPE_CSS,
+			(leaf) => new CssEditorView(leaf, this)
+		);
+
 		this.settingTab = new CSSEditorSettingTab(this.app, this);
 		this.addSettingTab(this.settingTab);
 	}
