@@ -107,7 +107,7 @@ export class CssEditorView extends ItemView {
 				async (file, oldFileName) => {
 					if (this.file?.name === oldFileName) {
 						this.file = file;
-						this.titleEl.setText(file.basename);
+						this.titleEl.setText(this.getDisplayText());
 						this.leaf.updateHeader();
 						this.app.workspace.requestSaveLayout();
 					}
@@ -134,7 +134,7 @@ export class CssEditorView extends ItemView {
 		if (!this.file) return;
 		if (event.isComposing) return;
 		if (event.key === "Escape") {
-			this.titleEl.setText(this.file.basename);
+			this.titleEl.setText(this.getDisplayText());
 			this.titleEl.blur();
 		}
 		if (event.key === "Enter" || event.key === "Tab") {
