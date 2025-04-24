@@ -30,6 +30,23 @@ export async function createSnippetFile(
 	return file;
 }
 
+export async function renameSnippetFile(
+	app: App,
+	oldFile: CssFile,
+	newFileName: string
+): Promise<CssFile> {
+	const newFile = new CssFile(newFileName);
+	if (oldFile.name === newFile.name) return oldFile;
+	await _validateFile(newFile);
+	await app.vault.adapter.rename(
+		normalizePath(`${getSnippetDirectory(app)}${oldFile.name}`),
+		normalizePath(`${getSnippetDirectory(app)}${newFile.name}`)
+	);
+	toggleSnippetFileState(app, oldFile);
+	toggleSnippetFileState(app, newFile);
+	return newFile;
+}
+
 export async function writeSnippetFile(
 	app: App,
 	file: CssFile,

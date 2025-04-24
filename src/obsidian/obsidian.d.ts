@@ -44,4 +44,18 @@ declare module "obsidian" {
 			callback: (file: CssFile, data: string) => void
 		): EventRef;
 	}
+
+	interface ItemView {
+		/**
+		 * The HTML element representing the title in the tab title bar.
+		 */
+		titleEl: HTMLElement;
+	}
+
+	interface WorkspaceLeaf {
+		/**
+		 * Update the header of the leaf with a new title, based on the results of `getDisplayText`.
+		 */
+		updateHeader(): void;
+	}
 }
