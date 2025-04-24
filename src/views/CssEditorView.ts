@@ -101,6 +101,19 @@ export class CssEditorView extends ItemView {
 				}
 			})
 		);
+		this.registerEvent(
+			this.app.workspace.on(
+				"css-snippet-rename",
+				async (file, oldFileName) => {
+					if (this.file?.name === oldFileName) {
+						this.file = file;
+						this.titleEl.setText(file.basename);
+						this.leaf.updateHeader();
+						this.app.workspace.requestSaveLayout();
+					}
+				}
+			)
+		);
 	}
 
 	onTitleFocus() {
@@ -138,9 +151,11 @@ export class CssEditorView extends ItemView {
 		if (this.isSavingTitle) return;
 		this.isSavingTitle = true;
 		const newFile = await renameSnippetFile(this.app, this.file, newTitle);
-		this.file = newFile;
-		this.leaf.updateHeader();
-		this.app.workspace.requestSaveLayout();
+		this.app.workspace.trigger(
+			"css-snippet-rename",
+			newFile,
+			this.file.name
+		);
 		this.isSavingTitle = false;
 	}
 
@@ -201,6 +216,7 @@ export class CssEditorView extends ItemView {
 	async loadFile(file: CssFile | null): Promise<void> {
 		this.file = file;
 		this.titleEl.setText(this.getDisplayText());
+		this.leaf.updateHeader();
 		const data = file ? await readSnippetFile(this.app, file) : "";
 		this.dispatchEditorData(data);
 		this.app.workspace.requestSaveLayout();

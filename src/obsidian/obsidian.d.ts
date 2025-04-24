@@ -43,6 +43,10 @@ declare module "obsidian" {
 			name: "css-editor-change",
 			callback: (file: CssFile, data: string) => void
 		): EventRef;
+		on(
+			name: "css-snippet-rename",
+			callback: (file: CssFile, oldFileName: string) => void
+		): EventRef;
 	}
 
 	interface ItemView {
