@@ -19,6 +19,7 @@ import { TransactionSpec } from "@codemirror/state";
 import CssEditorPlugin from "src/main";
 import { indentSize, lineWrap } from "src/codemirror-extensions/compartments";
 import { indentUnit } from "@codemirror/language";
+import { CssSnippetRenameModal } from "src/modals/CssSnippetRenameModal";
 
 export const VIEW_TYPE_CSS = "css-editor-view";
 
@@ -56,7 +57,12 @@ export class CssEditorView extends ItemView {
 		});
 		this.scope = new Scope(this.app.scope);
 		this.scope.register(null, "F2", () => {
-			this.titleEl.focus();
+			if (!this.file) return;
+			if (this.titleEl.isShown()) {
+				this.titleEl.focus();
+			} else {
+				new CssSnippetRenameModal(this.app, this.file).open();
+			}
 		});
 	}
 
@@ -147,15 +153,10 @@ export class CssEditorView extends ItemView {
 	async saveTitle(el: HTMLElement): Promise<void> {
 		if (!this.file) return;
 		const newTitle = el.getText().trim();
-		if (newTitle === this.file?.basename) return;
+		if (newTitle === this.file.basename) return;
 		if (this.isSavingTitle) return;
 		this.isSavingTitle = true;
-		const newFile = await renameSnippetFile(this.app, this.file, newTitle);
-		this.app.workspace.trigger(
-			"css-snippet-rename",
-			newFile,
-			this.file.name
-		);
+		await renameSnippetFile(this.app, this.file, newTitle);
 		this.isSavingTitle = false;
 	}
 

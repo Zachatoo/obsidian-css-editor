@@ -44,6 +44,7 @@ export async function renameSnippetFile(
 	);
 	toggleSnippetFileState(app, oldFile);
 	toggleSnippetFileState(app, newFile);
+	app.workspace.trigger("css-snippet-rename", newFile, oldFile.name);
 	return newFile;
 }
 

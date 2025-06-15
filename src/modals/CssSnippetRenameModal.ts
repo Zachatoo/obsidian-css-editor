@@ -1,27 +1,29 @@
 import { App, Modal, TextComponent } from "obsidian";
-import CssEditorPlugin from "src/main";
-import { ErrorNotice } from "../obsidian/Notice";
+import { ErrorNotice } from "src/obsidian/Notice";
+import { renameSnippetFile } from "src/obsidian/file-system-helpers";
+import { CssFile } from "src/CssFile";
 
-export class CssSnippetCreateModal extends Modal {
+export class CssSnippetRenameModal extends Modal {
 	private value: string;
-	private plugin: CssEditorPlugin;
+	private file: CssFile;
 
-	constructor(app: App, plugin: CssEditorPlugin) {
+	constructor(app: App, file: CssFile) {
 		super(app);
 		this.value = "";
-		this.plugin = plugin;
+		this.file = file;
 	}
 
 	onOpen(): void {
 		super.onOpen();
-		this.titleEl.setText("Create CSS snippet");
-		this.containerEl.addClass("css-editor-create-modal");
+		this.titleEl.setText("Rename CSS snippet");
+		this.containerEl.addClass("css-editor-rename-modal");
 		this.buildForm();
 	}
 
 	private buildForm() {
 		const textInput = new TextComponent(this.contentEl);
 		textInput.setPlaceholder("CSS snippet file name (ex: snippet.css)");
+		textInput.setValue(this.file.basename);
 		textInput.onChange((val) => (this.value = val));
 		textInput.inputEl.addEventListener("keydown", (evt) => {
 			this.handleKeydown(evt);
@@ -33,17 +35,13 @@ export class CssSnippetCreateModal extends Modal {
 			this.close();
 		} else if (evt.key === "Enter") {
 			try {
-				const openInNewTab = evt.metaKey;
-				await this.plugin.createAndOpenSnippet(
-					this.value,
-					openInNewTab
-				);
+				await renameSnippetFile(this.app, this.file, this.value);
 				this.close();
 			} catch (err) {
 				if (err instanceof Error) {
 					new ErrorNotice(err.message);
 				} else {
-					new ErrorNotice("Failed to create file. Reason unknown.");
+					new ErrorNotice("Failed to rename file. Reason unknown.");
 				}
 			}
 		}

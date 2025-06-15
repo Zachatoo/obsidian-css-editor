@@ -16,6 +16,7 @@
 	}
 }
 
-.css-editor-create-modal input {
+.css-editor-create-modal input,
+.css-editor-rename-modal input {
 	width: 100%;
 }
