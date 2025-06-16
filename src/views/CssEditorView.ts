@@ -20,6 +20,7 @@ import CssEditorPlugin from "src/main";
 import { indentSize, lineWrap } from "src/codemirror-extensions/compartments";
 import { indentUnit } from "@codemirror/language";
 import { CssSnippetRenameModal } from "src/modals/CssSnippetRenameModal";
+import { focusAndSelectElement } from "src/obsidian/view-helpers";
 
 export const VIEW_TYPE_CSS = "css-editor-view";
 
@@ -59,7 +60,7 @@ export class CssEditorView extends ItemView {
 		this.scope.register(null, "F2", () => {
 			if (!this.file) return;
 			if (this.titleEl.isShown()) {
-				this.titleEl.focus();
+				focusAndSelectElement(this.titleEl);
 			} else {
 				new CssSnippetRenameModal(this.app, this.file).open();
 			}
