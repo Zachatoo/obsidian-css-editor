@@ -178,7 +178,6 @@ export class CssEditorView extends ItemView {
 				to: this.editor.state.doc.length,
 				insert: data,
 			},
-			selection: this.editor.state.selection,
 		});
 	}
 
