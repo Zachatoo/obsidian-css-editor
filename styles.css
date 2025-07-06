@@ -20,3 +20,14 @@
 .css-editor-rename-modal input {
 	width: 100%;
 }
+
+.css-editor-color-picker-wrapper {
+	display: inline-block;
+	margin-left: var(--size-2-1);
+	--swatch-height: 15px;
+	--swatch-width: 15px;
+
+	& > input[type="color" i] {
+		block-size: var(--swatch-height);
+	}
+}

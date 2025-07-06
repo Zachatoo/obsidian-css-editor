@@ -21,6 +21,7 @@ import { indentSize, lineWrap } from "src/codemirror-extensions/compartments";
 import { indentUnit } from "@codemirror/language";
 import { CssSnippetRenameModal } from "src/modals/CssSnippetRenameModal";
 import { focusAndSelectElement } from "src/obsidian/view-helpers";
+import { colorPickerPlugin } from "src/codemirror-extensions/color-picker";
 
 export const VIEW_TYPE_CSS = "css-editor-view";
 
@@ -41,6 +42,7 @@ export class CssEditorView extends ItemView {
 				basicExtensions,
 				lineWrap.of(settings.lineWrap ? EditorView.lineWrapping : []),
 				indentSize.of(indentUnit.of("".padEnd(settings.indentSize))),
+				colorPickerPlugin,
 				this.app.vault.getConfig?.("vimMode") ? vim() : [],
 				EditorView.updateListener.of((update) => {
 					if (update.docChanged) {
