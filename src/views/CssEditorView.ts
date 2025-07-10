@@ -16,8 +16,13 @@ import {
 } from "../obsidian/file-system-helpers";
 import { basicExtensions } from "../codemirror-extensions/basic-extensions";
 import { TransactionSpec } from "@codemirror/state";
+import { history } from "@codemirror/commands";
 import CssEditorPlugin from "src/main";
-import { indentSize, lineWrap } from "src/codemirror-extensions/compartments";
+import {
+	historyCompartment,
+	indentSize,
+	lineWrap,
+} from "src/codemirror-extensions/compartments";
 import { indentUnit } from "@codemirror/language";
 import { CssSnippetRenameModal } from "src/modals/CssSnippetRenameModal";
 import { focusAndSelectElement } from "src/obsidian/view-helpers";
@@ -42,6 +47,7 @@ export class CssEditorView extends ItemView {
 				basicExtensions,
 				lineWrap.of(settings.lineWrap ? EditorView.lineWrapping : []),
 				indentSize.of(indentUnit.of("".padEnd(settings.indentSize))),
+				historyCompartment.of(history()),
 				colorPickerPlugin,
 				this.app.vault.getConfig?.("vimMode") ? vim() : [],
 				EditorView.updateListener.of((update) => {
@@ -222,7 +228,17 @@ export class CssEditorView extends ItemView {
 		this.leaf.updateHeader();
 		const data = file ? await readSnippetFile(this.app, file) : "";
 		this.dispatchEditorData(data);
+		this.resetHistory();
 		this.app.workspace.requestSaveLayout();
+	}
+
+	resetHistory() {
+		this.editor.dispatch({
+			effects: [historyCompartment.reconfigure([])],
+		});
+		this.editor.dispatch({
+			effects: [historyCompartment.reconfigure(history())],
+		});
 	}
 
 	requestSave = debounce(this.save, 1000);

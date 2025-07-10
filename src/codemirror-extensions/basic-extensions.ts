@@ -1,6 +1,5 @@
 import {
 	defaultKeymap,
-	history,
 	historyKeymap,
 	indentWithTab,
 } from "@codemirror/commands";
@@ -41,7 +40,6 @@ export const basicExtensions: Extension[] = [
 		...completionKeymap,
 		...lintKeymap,
 	]),
-	history(),
 	css(),
 	lineNumbers(),
 	foldGutter(),
