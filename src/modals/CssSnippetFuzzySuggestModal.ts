@@ -1,4 +1,10 @@
-import { App, FuzzyMatch, FuzzySuggestModal, Platform } from "obsidian";
+import {
+	App,
+	ButtonComponent,
+	FuzzyMatch,
+	FuzzySuggestModal,
+	Platform,
+} from "obsidian";
 import CssEditorPlugin from "src/main";
 import {
 	deleteSnippetFile,
@@ -38,16 +44,15 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 		});
 		this.scope.register([], "Tab", (evt: KeyboardEvent) => {
 			if (this.chooser) {
-				const selItem = this.chooser.selectedItem;
-				const selSnippet = this.chooser.values[selItem].item;
-				const isEnabled = toggleSnippetFileState(this.app, selSnippet);
-				const selEl =
-					this.chooser.suggestions[selItem].querySelector(
+				const selectedItem = this.chooser.selectedItem;
+				const file = this.chooser.values[selectedItem].item;
+				const isEnabled = toggleSnippetFileState(this.app, file);
+				const buttonEl =
+					this.chooser.suggestions[selectedItem].querySelector(
 						".css-editor-status"
 					);
-				selEl?.setText(isEnabled ? "enabled" : "disabled");
-				selEl?.removeClass(isEnabled ? "disabled" : "enabled");
-				selEl?.addClass(isEnabled ? "enabled" : "disabled");
+				buttonEl?.setText(isEnabled ? "enabled" : "disabled");
+				buttonEl?.toggleClass("mod-cta", isEnabled);
 			}
 			return false;
 		});
@@ -125,19 +130,25 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 			const isNewElement =
 				this.inputEl.value.trim().length > 0 && item.match.score === 0;
 			if (!isNewElement) {
-				el.appendChild(
-					createDiv(
-						{
-							cls: [
-								"suggestion-aux",
-								"css-editor-status",
-								isEnabled ? "enabled" : "disabled",
-							],
-						},
-						(el) =>
-							el.appendText(isEnabled ? "enabled" : "disabled")
-					)
-				);
+				const button = new ButtonComponent(el)
+					.setButtonText(isEnabled ? "enabled" : "disabled")
+					.setClass("css-editor-status")
+					.onClick(async (e) => {
+						e.stopPropagation();
+						const newState = toggleSnippetFileState(
+							this.app,
+							item.item
+						);
+						button.setButtonText(newState ? "enabled" : "disabled");
+						if (newState) {
+							button.setCta();
+						} else {
+							button.removeCta();
+						}
+					});
+				if (isEnabled) {
+					button.setCta();
+				}
 			}
 		}
 		if (this.inputEl.value.trim().length > 0 && item.match.score === 0) {
