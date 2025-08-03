@@ -1,7 +1,7 @@
 {
 	"id": "css-editor",
 	"name": "CSS Editor",
-	"version": "1.6.2",
+	"version": "1.7.0",
 	"minAppVersion": "0.15.0",
 	"description": "Edit CSS files within Obsidian.",
 	"author": "Zachatoo",
