@@ -241,6 +241,18 @@ export class CssEditorView extends ItemView {
 		});
 	}
 
+	setEphemeralState(state: unknown): void {
+		if (typeof state === "object" && state !== null) {
+			if (
+				"focus" in state &&
+				typeof state.focus === "boolean" &&
+				state.focus
+			) {
+				this.editor.focus();
+			}
+		}
+	}
+
 	requestSave = debounce(this.save, 1000);
 
 	/**
