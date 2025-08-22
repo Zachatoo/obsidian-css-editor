@@ -8,12 +8,12 @@ import {
 } from "@codemirror/view";
 import { Range } from "@codemirror/state";
 import { ColorComponent } from "obsidian";
-
-interface ColorMatch {
-	from: number;
-	to: number;
-	color: string;
-}
+import {
+	convertToHex,
+	findColorValues,
+	convertToColorModel,
+	getColorModel,
+} from "src/utils/colors";
 
 class ColorPickerWidget extends WidgetType {
 	constructor(
@@ -37,37 +37,21 @@ class ColorPickerWidget extends WidgetType {
 		const wrapper = document.createElement("span");
 		wrapper.className = "css-editor-color-picker-wrapper";
 
-		const colorComponent = new ColorComponent(wrapper);
-		colorComponent.setValue(this.color);
-
-		colorComponent.onChange((newColor) => {
-			this.view.dispatch({
-				changes: {
-					from: this.from,
-					to: this.to,
-					insert: newColor,
-				},
+		new ColorComponent(wrapper)
+			.setValue(convertToHex(this.color))
+			.onChange((newColor) => {
+				const model = getColorModel(this.color);
+				this.view.dispatch({
+					changes: {
+						from: this.from,
+						to: this.to,
+						insert: convertToColorModel(newColor, model),
+					},
+				});
 			});
-		});
 
 		return wrapper;
 	}
-}
-
-function findColorValues(text: string): ColorMatch[] {
-	const matches: ColorMatch[] = [];
-	const hexColorRegex = /#([a-fA-F0-9]{3}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})\b/g;
-
-	let match;
-	while ((match = hexColorRegex.exec(text)) !== null) {
-		matches.push({
-			from: match.index,
-			to: match.index + match[0].length,
-			color: match[0],
-		});
-	}
-
-	return matches.sort((a, b) => a.from - b.from);
 }
 
 const colorPickerPlugin = ViewPlugin.fromClass(

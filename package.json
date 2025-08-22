@@ -35,6 +35,7 @@
 	"dependencies": {
 		"@codemirror/autocomplete": "^6.8.1",
 		"@replit/codemirror-vim": "^6.0.14",
+		"color": "^5.0.0",
 		"monkey-around": "^2.3.0"
 	}
 }
