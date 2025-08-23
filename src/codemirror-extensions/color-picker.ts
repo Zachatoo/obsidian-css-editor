@@ -71,13 +71,12 @@ const colorPickerPlugin = ViewPlugin.fromClass(
 		buildDecorations(view: EditorView): DecorationSet {
 			const builder = new Array<Range<Decoration>>();
 			const doc = view.state.doc;
-			const text = doc.toString();
 
 			if (!doc || doc.length === 0) {
 				return Decoration.set([]);
 			}
 
-			const colorMatches = findColorValues(text);
+			const colorMatches = findColorValues(view.state);
 
 			for (const match of colorMatches) {
 				if (
