@@ -129,6 +129,16 @@ export class CssEditorView extends ItemView {
 				}
 			)
 		);
+		this.registerEvent(
+			this.app.workspace.on("css-change", async () => {
+				if (this.file) {
+					const data = await readSnippetFile(this.app, this.file);
+					if (data !== this.getEditorData()) {
+						this.dispatchEditorData(data);
+					}
+				}
+			})
+		);
 	}
 
 	onTitleFocus() {
