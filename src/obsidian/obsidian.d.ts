@@ -47,6 +47,10 @@ declare module "obsidian" {
 			name: "css-snippet-rename",
 			callback: (file: CssFile, oldFileName: string) => void
 		): EventRef;
+		on(
+			name: "leaf-menu",
+			callback: (menu: Menu, leaf: WorkspaceLeaf) => void
+		): EventRef;
 	}
 
 	interface ItemView {
@@ -61,5 +65,9 @@ declare module "obsidian" {
 		 * Update the header of the leaf with a new title, based on the results of `getDisplayText`.
 		 */
 		updateHeader(): void;
+	}
+
+	interface MenuItem {
+		setWarning: (value: boolean) => this;
 	}
 }

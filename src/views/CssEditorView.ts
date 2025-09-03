@@ -10,8 +10,10 @@ import { EditorView } from "@codemirror/view";
 import { vim } from "@replit/codemirror-vim";
 import { CssFile } from "src/CssFile";
 import {
+	deleteSnippetFile,
 	readSnippetFile,
 	renameSnippetFile,
+	toggleSnippetFileState,
 	writeSnippetFile,
 } from "../obsidian/file-system-helpers";
 import { basicExtensions } from "../codemirror-extensions/basic-extensions";
@@ -27,6 +29,7 @@ import { indentUnit } from "@codemirror/language";
 import { CssSnippetRenameModal } from "src/modals/CssSnippetRenameModal";
 import { focusAndSelectElement } from "src/obsidian/view-helpers";
 import { colorPickerPlugin } from "src/codemirror-extensions/color-picker";
+import { detachCssFileLeaves } from "src/obsidian/workspace-helpers";
 
 export const VIEW_TYPE_CSS = "css-editor-view";
 
@@ -136,6 +139,57 @@ export class CssEditorView extends ItemView {
 					if (data !== this.getEditorData()) {
 						this.dispatchEditorData(data);
 					}
+				}
+			})
+		);
+		this.registerEvent(
+			this.app.workspace.on("leaf-menu", (menu, leaf) => {
+				if (leaf === this.leaf && !!this.file) {
+					menu.addItem((item) => {
+						item.setIcon("lucide-edit-3")
+							.setSection("action")
+							.setTitle("Rename...")
+							.onClick(() => {
+								if (this.file) {
+									new CssSnippetRenameModal(
+										this.app,
+										this.file
+									).open();
+								}
+							});
+					});
+					menu.addItem((item) => {
+						const isEnabled = this.isEnabled();
+						item.setIcon(
+							isEnabled
+								? "lucide-toggle-left"
+								: "lucide-toggle-right"
+						)
+							.setSection("action")
+							.setTitle(
+								isEnabled ? "Disable snippet" : "Enable snippet"
+							)
+							.onClick(() => {
+								if (this.file) {
+									toggleSnippetFileState(this.app, this.file);
+								}
+							});
+					});
+					menu.addItem((item) => {
+						item.setIcon("lucide-trash-2")
+							.setSection("danger")
+							.setTitle("Delete snippet")
+							.setWarning(true)
+							.onClick(() => {
+								if (this.file) {
+									detachCssFileLeaves(
+										this.app.workspace,
+										this.file
+									);
+									deleteSnippetFile(this.app, this.file);
+								}
+							});
+					});
 				}
 			})
 		);
@@ -249,6 +303,14 @@ export class CssEditorView extends ItemView {
 		this.editor.dispatch({
 			effects: [historyCompartment.reconfigure(history())],
 		});
+	}
+
+	isEnabled(): boolean {
+		if (!this.file) return false;
+		const currentState = this.app.customCss?.enabledSnippets?.has(
+			this.file.basename
+		);
+		return currentState || false;
 	}
 
 	requestSave = debounce(this.save, 1000);
