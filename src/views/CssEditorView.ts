@@ -37,6 +37,8 @@ export class CssEditorView extends ItemView {
 	private editor: EditorView;
 	private file: CssFile | null = null;
 	private isSavingTitle = false;
+	/** If the editor contents differ from the file contents on disk */
+	private isEditorDirty = false;
 
 	constructor(leaf: WorkspaceLeaf, plugin: CssEditorPlugin) {
 		super(leaf);
@@ -55,6 +57,7 @@ export class CssEditorView extends ItemView {
 				this.app.vault.getConfig?.("vimMode") ? vim() : [],
 				EditorView.updateListener.of((update) => {
 					if (update.docChanged) {
+						this.isEditorDirty = true;
 						this.requestSave(update.state.doc.toString());
 						if (this.file) {
 							this.app.workspace.trigger(
@@ -135,6 +138,11 @@ export class CssEditorView extends ItemView {
 		this.registerEvent(
 			this.app.workspace.on("css-change", async () => {
 				if (this.file) {
+					if (this.isEditorDirty) {
+						this.isEditorDirty = false;
+						return;
+					}
+
 					const data = await readSnippetFile(this.app, this.file);
 					if (data !== this.getEditorData()) {
 						this.dispatchEditorData(data);
