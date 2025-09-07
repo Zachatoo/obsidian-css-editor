@@ -30,10 +30,13 @@ import { CssSnippetRenameModal } from "src/modals/CssSnippetRenameModal";
 import { focusAndSelectElement } from "src/obsidian/view-helpers";
 import { colorPickerPlugin } from "src/codemirror-extensions/color-picker";
 import { detachCssFileLeaves } from "src/obsidian/workspace-helpers";
+import { CssSnippetDeleteConfirmModal } from "src/modals/CssSnippetDeleteConfirmModal";
+import { ErrorNotice } from "src/obsidian/Notice";
 
 export const VIEW_TYPE_CSS = "css-editor-view";
 
 export class CssEditorView extends ItemView {
+	private plugin: CssEditorPlugin;
 	private editor: EditorView;
 	private file: CssFile | null = null;
 	private isSavingTitle = false;
@@ -42,16 +45,19 @@ export class CssEditorView extends ItemView {
 
 	constructor(leaf: WorkspaceLeaf, plugin: CssEditorPlugin) {
 		super(leaf);
-
-		const { settings } = plugin;
+		this.plugin = plugin;
 
 		this.navigation = true;
 		this.editor = new EditorView({
 			parent: this.contentEl,
 			extensions: [
 				basicExtensions,
-				lineWrap.of(settings.lineWrap ? EditorView.lineWrapping : []),
-				indentSize.of(indentUnit.of("".padEnd(settings.indentSize))),
+				lineWrap.of(
+					this.plugin.settings.lineWrap ? EditorView.lineWrapping : []
+				),
+				indentSize.of(
+					indentUnit.of("".padEnd(this.plugin.settings.indentSize))
+				),
 				historyCompartment.of(history()),
 				colorPickerPlugin,
 				this.app.vault.getConfig?.("vimMode") ? vim() : [],
@@ -188,13 +194,34 @@ export class CssEditorView extends ItemView {
 							.setSection("danger")
 							.setTitle("Delete snippet")
 							.setWarning(true)
-							.onClick(() => {
+							.onClick(async () => {
 								if (this.file) {
-									detachCssFileLeaves(
-										this.app.workspace,
-										this.file
-									);
-									deleteSnippetFile(this.app, this.file);
+									if (this.plugin.settings.promptDelete) {
+										new CssSnippetDeleteConfirmModal(
+											this.app,
+											this.plugin,
+											this.file
+										).open();
+									} else {
+										try {
+											await detachCssFileLeaves(
+												this.app.workspace,
+												this.file
+											);
+											await deleteSnippetFile(
+												this.app,
+												this.file
+											);
+										} catch (err) {
+											if (err instanceof Error) {
+												new ErrorNotice(err.message);
+											} else {
+												new ErrorNotice(
+													"Failed to delete file. Reason unknown."
+												);
+											}
+										}
+									}
 								}
 							});
 					});

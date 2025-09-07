@@ -14,11 +14,13 @@ import { CssFile } from "./CssFile";
 import { CSSEditorSettingTab } from "./obsidian/setting-tab";
 
 export interface CssEditorPluginSettings {
+	promptDelete: boolean;
 	lineWrap: boolean;
 	indentSize: number;
 }
 
 export const DEFAULT_SETTINGS: CssEditorPluginSettings = {
+	promptDelete: true,
 	lineWrap: true,
 	indentSize: 2,
 };
