@@ -48,13 +48,13 @@ export default class CssEditorPlugin extends Plugin {
 		});
 		this.addCommand({
 			id: "delete-css-snippet",
-			name: "Delete CSS snippet command",
+			name: "Delete CSS snippet",
 			checkCallback: (checking) => {
 				const activeCssEditorView =
 					this.app.workspace.getActiveViewOfType(CssEditorView);
 				if (!activeCssEditorView) return false;
 				const { file } = activeCssEditorView.getState();
-				if (!file) return false;
+				// if (!file) return false;
 				if (checking) return true;
 				const cssFile = new CssFile(file);
 				detachCssFileLeaves(this.app.workspace, cssFile).then(
