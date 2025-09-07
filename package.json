@@ -7,6 +7,7 @@
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"test": "node esbuild.config.mjs test",
+		"lint": "eslint .",
 		"version": "npx ts-node --esm external/obsidian-plugin-scripts/version-bump.mts && git add package.json package-lock.json manifest.json versions.json"
 	},
 	"keywords": [
