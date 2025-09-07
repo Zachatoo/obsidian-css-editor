@@ -54,7 +54,8 @@ export default class CssEditorPlugin extends Plugin {
 					this.app.workspace.getActiveViewOfType(CssEditorView);
 				if (!activeCssEditorView) return false;
 				const { file } = activeCssEditorView.getState();
-				// if (!file) return false;
+				if (!file) return false;
+				console.debug("test");
 				if (checking) return true;
 				const cssFile = new CssFile(file);
 				detachCssFileLeaves(this.app.workspace, cssFile).then(
