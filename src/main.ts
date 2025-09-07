@@ -53,9 +53,9 @@ export default class CssEditorPlugin extends Plugin {
 				const activeCssEditorView =
 					this.app.workspace.getActiveViewOfType(CssEditorView);
 				if (!activeCssEditorView) return false;
-				if (checking) return true;
 				const { file } = activeCssEditorView.getState();
-				if (!file) return;
+				if (!file) return false;
+				if (checking) return true;
 				const cssFile = new CssFile(file);
 				detachCssFileLeaves(this.app.workspace, cssFile).then(
 					async () => {
@@ -63,6 +63,7 @@ export default class CssEditorPlugin extends Plugin {
 						new InfoNotice(`"${cssFile.name}" was deleted.`);
 					}
 				);
+				return true;
 			},
 		});
 		this.addCommand({
@@ -72,9 +73,9 @@ export default class CssEditorPlugin extends Plugin {
 				const activeCssEditorView =
 					this.app.workspace.getActiveViewOfType(CssEditorView);
 				if (!activeCssEditorView) return false;
-				if (checking) return true;
 				const { file } = activeCssEditorView.getState();
-				if (!file) return;
+				if (!file) return false;
+				if (checking) return true;
 				const cssFile = new CssFile(file);
 				const isEnabled = toggleSnippetFileState(this.app, cssFile);
 				new InfoNotice(
@@ -82,6 +83,7 @@ export default class CssEditorPlugin extends Plugin {
 						isEnabled ? "enabled" : "disabled"
 					}.`
 				);
+				return true;
 			},
 		});
 

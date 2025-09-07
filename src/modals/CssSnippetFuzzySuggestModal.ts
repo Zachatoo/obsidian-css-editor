@@ -26,6 +26,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 			if (!evt.isComposing && this.chooser?.useSelectedItem?.(evt)) {
 				return false;
 			}
+			return true;
 		});
 		this.scope.register(["Shift"], "Enter", (evt: KeyboardEvent) => {
 			this.selectSuggestion(
@@ -41,14 +42,16 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 			if (!evt.isComposing && this.chooser?.useSelectedItem?.(evt)) {
 				return false;
 			}
+			return true;
 		});
 		this.scope.register([], "Tab", (evt: KeyboardEvent) => {
 			if (this.chooser) {
 				const selectedItem = this.chooser.selectedItem;
-				const file = this.chooser.values[selectedItem].item;
+				const file = this.chooser.values[selectedItem]?.item;
+				if (!file) return false;
 				const isEnabled = toggleSnippetFileState(this.app, file);
 				const buttonEl =
-					this.chooser.suggestions[selectedItem].querySelector(
+					this.chooser.suggestions[selectedItem]?.querySelector(
 						".css-editor-status"
 					);
 				buttonEl?.setText(isEnabled ? "enabled" : "disabled");
@@ -153,14 +156,11 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 		}
 		if (this.inputEl.value.trim().length > 0 && item.match.score === 0) {
 			el.appendChild(
-				document.createDiv({ cls: "suggestion-aux" }, (el) => {
+				createDiv({ cls: "suggestion-aux" }, (el) => {
 					el.appendChild(
-						document.createSpan(
-							{ cls: "suggestion-hotkey" },
-							(el) => {
-								el.appendText("Enter to create");
-							}
-						)
+						createSpan({ cls: "suggestion-hotkey" }, (el) => {
+							el.appendText("Enter to create");
+						})
 					);
 				})
 			);

@@ -271,7 +271,7 @@ function findColorsInComment(
 	// Calculate the offset caused by removing /* and any leading whitespace
 	const leadingWhitespaceMatch = withoutDelimiters.match(/^(\s*)/);
 	const leadingWhitespaceLength = leadingWhitespaceMatch
-		? leadingWhitespaceMatch[1].length
+		? leadingWhitespaceMatch[1]?.length ?? 0
 		: 0;
 	const totalOffset = 2 + leadingWhitespaceLength; // 2 for "/*" + leading whitespace
 
