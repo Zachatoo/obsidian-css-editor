@@ -51,6 +51,7 @@ declare module "obsidian" {
 			name: "leaf-menu",
 			callback: (menu: Menu, leaf: WorkspaceLeaf) => void
 		): EventRef;
+		on(name: "css-change", callback: (data?: unknown) => void): EventRef;
 	}
 
 	interface ItemView {

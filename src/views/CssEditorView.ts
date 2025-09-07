@@ -142,17 +142,26 @@ export class CssEditorView extends ItemView {
 			)
 		);
 		this.registerEvent(
-			this.app.workspace.on("css-change", async () => {
-				if (this.file) {
-					if (this.isEditorDirty) {
-						this.isEditorDirty = false;
-						return;
-					}
+			this.app.workspace.on("css-change", async (data: unknown) => {
+				if (!this.file) return;
+				// Ignore changes from style settings plugin
+				if (
+					typeof data === "object" &&
+					data !== null &&
+					"source" in data &&
+					data?.source === "style-settings"
+				) {
+					return;
+				}
+				// Ignore changes from this plugin
+				if (this.isEditorDirty) {
+					this.isEditorDirty = false;
+					return;
+				}
 
-					const data = await readSnippetFile(this.app, this.file);
-					if (data !== this.getEditorData()) {
-						this.dispatchEditorData(data);
-					}
+				const contents = await readSnippetFile(this.app, this.file);
+				if (contents !== this.getEditorData()) {
+					this.dispatchEditorData(contents);
 				}
 			})
 		);
