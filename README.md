@@ -49,8 +49,8 @@ If the currently active CSS snippet file is enabled then disable it, and vice ve
 
 Releasing a new version involves the following steps:
 
-1. Update the version in the `package.json`.
-1. Run `npm run version` to update the versions in other related files.
+1. Update the version in the `package.json`, `package-lock.json`, and `manifest.json` files.
+1. Add a new entry to the end of the `versions.json` file.
 1. Commit the changes.
 1. Add a tag matching the version from step 1.
 1. Push the changes and tags. This will trigger a GitHub action to create a release.
