@@ -14,8 +14,8 @@ export default class TestCssEditorPlugin extends Plugin {
 
 	async onload() {
 		this.addCommand({
-			id: "test-css-editor-plugin",
-			name: "Run CSS Editor Tests",
+			id: "test",
+			name: "Run tests",
 			callback: async () => {
 				await this.loadPlugin();
 				this.runTests();
@@ -39,7 +39,7 @@ export default class TestCssEditorPlugin extends Plugin {
 	async test(name: string, cb: () => Promise<void>) {
 		try {
 			await cb();
-			console.log(`PASS: ${name}`);
+			console.debug(`PASS: ${name}`);
 		} catch (err) {
 			console.error(`FAIL: ${name}\n${err}`);
 		}

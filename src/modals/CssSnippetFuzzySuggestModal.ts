@@ -102,18 +102,18 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 				el.removeChild(child);
 			});
 			el.appendChild(
-				createDiv(
+				document.createDiv(
 					{ cls: "suggestion-content" },
 					(suggestionContentEl) => {
 						suggestionContentEl.appendChild(
-							createDiv({}, (nestedEl) => {
+							document.createDiv({}, (nestedEl) => {
 								existingChildren.forEach((child) => {
 									nestedEl.appendChild(child);
 								});
 							})
 						);
 						suggestionContentEl.appendChild(
-							createDiv(
+							document.createDiv(
 								{ cls: "css-editor-suggestion-description" },
 								(el) =>
 									el.appendText(
@@ -153,11 +153,14 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 		}
 		if (this.inputEl.value.trim().length > 0 && item.match.score === 0) {
 			el.appendChild(
-				createDiv({ cls: "suggestion-aux" }, (el) => {
+				document.createDiv({ cls: "suggestion-aux" }, (el) => {
 					el.appendChild(
-						createSpan({ cls: "suggestion-hotkey" }, (el) => {
-							el.appendText("Enter to create");
-						})
+						document.createSpan(
+							{ cls: "suggestion-hotkey" },
+							(el) => {
+								el.appendText("Enter to create");
+							}
+						)
 					);
 				})
 			);

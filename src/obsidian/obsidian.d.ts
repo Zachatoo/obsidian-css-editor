@@ -1,4 +1,4 @@
-/* eslint-disable no-mixed-spaces-and-tabs */
+/* eslint-disable no-undef */
 import "obsidian";
 import { CssFile } from "src/CssFile";
 

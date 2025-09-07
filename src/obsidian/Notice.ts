@@ -8,7 +8,6 @@ export class InfoNotice extends Notice {
 		timeout = DEFAULT_NOTICE_TIMEOUT_SECONDS
 	) {
 		super(message, timeout * 1000);
-		console.info(`css-editor: ${message}`);
 	}
 }
 
