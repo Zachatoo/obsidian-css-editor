@@ -1,4 +1,4 @@
-import { App, Modal, TextComponent } from "obsidian";
+import { App, ButtonComponent, Modal, TextComponent } from "obsidian";
 import CssEditorPlugin from "src/main";
 import { ErrorNotice } from "../obsidian/Notice";
 
@@ -26,25 +26,35 @@ export class CssSnippetCreateModal extends Modal {
 		textInput.inputEl.addEventListener("keydown", (evt) => {
 			this.handleKeydown(evt);
 		});
+		const buttonContainer = this.contentEl.createDiv(
+			"modal-button-container"
+		);
+		new ButtonComponent(buttonContainer)
+			.setButtonText("Save")
+			.setCta()
+			.onClick(() => this.save());
+		new ButtonComponent(buttonContainer)
+			.setButtonText("Cancel")
+			.onClick(() => this.close());
 	}
 
 	private async handleKeydown(evt: KeyboardEvent) {
 		if (evt.key === "Escape") {
 			this.close();
 		} else if (evt.key === "Enter") {
-			try {
-				const openInNewTab = evt.metaKey;
-				await this.plugin.createAndOpenSnippet(
-					this.value,
-					openInNewTab
-				);
-				this.close();
-			} catch (err) {
-				if (err instanceof Error) {
-					new ErrorNotice(err.message);
-				} else {
-					new ErrorNotice("Failed to create file. Reason unknown.");
-				}
+			this.save(evt.metaKey);
+		}
+	}
+
+	private async save(openInNewTab = false) {
+		try {
+			await this.plugin.createAndOpenSnippet(this.value, openInNewTab);
+			this.close();
+		} catch (err) {
+			if (err instanceof Error) {
+				new ErrorNotice(err.message);
+			} else {
+				new ErrorNotice("Failed to create file. Reason unknown.");
 			}
 		}
 	}
