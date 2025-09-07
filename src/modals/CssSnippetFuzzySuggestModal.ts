@@ -102,18 +102,18 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 				el.removeChild(child);
 			});
 			el.appendChild(
-				document.createDiv(
+				createDiv(
 					{ cls: "suggestion-content" },
 					(suggestionContentEl) => {
 						suggestionContentEl.appendChild(
-							document.createDiv({}, (nestedEl) => {
+							createDiv({}, (nestedEl) => {
 								existingChildren.forEach((child) => {
 									nestedEl.appendChild(child);
 								});
 							})
 						);
 						suggestionContentEl.appendChild(
-							document.createDiv(
+							createDiv(
 								{ cls: "css-editor-suggestion-description" },
 								(el) =>
 									el.appendText(

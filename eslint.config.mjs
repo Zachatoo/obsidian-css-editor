@@ -4,6 +4,14 @@ import tseslint from "typescript-eslint";
 import globals from "globals";
 import obsidianmd from "eslint-plugin-obsidianmd";
 
+const obsidianGlobals = {
+	createEl: "readonly",
+	createDiv: "readonly",
+	createSpan: "readonly",
+	createSvg: "readonly",
+	createFragment: "readonly",
+};
+
 export default defineConfig([
 	eslint.configs.recommended,
 	...tseslint.configs.recommended,
@@ -11,6 +19,7 @@ export default defineConfig([
 		languageOptions: {
 			globals: {
 				...globals.browser,
+				...obsidianGlobals,
 			},
 			parserOptions: {
 				projectService: {
