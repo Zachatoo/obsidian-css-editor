@@ -1,7 +1,7 @@
 import Color from "color";
 import { EditorState } from "@codemirror/state";
 import { syntaxTree } from "@codemirror/language";
-import { SyntaxNodeRef } from "@lezer/common";
+import { inlineCssLanguage } from "src/codemirror-extensions/inline-css";
 
 interface ColorMatch {
 	from: number;
@@ -14,7 +14,7 @@ export function findColorValues(state: EditorState): ColorMatch[] {
 	const tree = syntaxTree(state);
 	const doc = state.doc;
 
-	tree.cursor().iterate((nodeRef: SyntaxNodeRef) => {
+	tree.cursor().iterate((nodeRef) => {
 		const { node } = nodeRef;
 		const nodeText = doc.sliceString(node.from, node.to);
 
@@ -24,6 +24,9 @@ export function findColorValues(state: EditorState): ColorMatch[] {
 				to: node.to,
 				color: nodeText,
 			});
+		} else if (node.name === "Comment") {
+			const commentMatches = findColorsInComment(nodeText, node.from);
+			matches.push(...commentMatches);
 		}
 	});
 
@@ -249,4 +252,60 @@ const validColorNames = new Set([
 
 function isValidColorName(name: string): boolean {
 	return validColorNames.has(name.toLowerCase());
+}
+
+function findColorsInComment(
+	commentText: string,
+	commentStart: number
+): ColorMatch[] {
+	const matches: ColorMatch[] = [];
+
+	// Find the actual content by removing comment delimiters
+	const withoutDelimiters = commentText.replace(/^\/\*|\*\/$/g, "");
+	const content = withoutDelimiters.trim();
+
+	if (!content) {
+		return matches;
+	}
+
+	// Calculate the offset caused by removing /* and any leading whitespace
+	const leadingWhitespaceMatch = withoutDelimiters.match(/^(\s*)/);
+	const leadingWhitespaceLength = leadingWhitespaceMatch
+		? leadingWhitespaceMatch[1].length
+		: 0;
+	const totalOffset = 2 + leadingWhitespaceLength; // 2 for "/*" + leading whitespace
+
+	try {
+		const commentState = EditorState.create({
+			doc: content,
+			extensions: [inlineCssLanguage],
+		});
+
+		const commentTree = syntaxTree(commentState);
+		const commentDoc = commentState.doc;
+
+		commentTree.cursor().iterate((nodeRef) => {
+			const { node } = nodeRef;
+			const nodeText = commentDoc.sliceString(node.from, node.to);
+
+			if (isColorValue(node.name, nodeText)) {
+				// Calculate the absolute position within the original document
+				const absoluteStart = commentStart + node.from + totalOffset;
+				const absoluteEnd = commentStart + node.to + totalOffset;
+
+				matches.push({
+					from: absoluteStart,
+					to: absoluteEnd,
+					color: nodeText,
+				});
+			}
+		});
+	} catch (error) {
+		console.warn(
+			"Failed to parse comment as CSS, skipping color detection:",
+			error
+		);
+	}
+
+	return matches;
 }
