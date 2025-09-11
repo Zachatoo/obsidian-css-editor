@@ -8,10 +8,11 @@ import {
 	toggleSnippetFileState,
 } from "./obsidian/file-system-helpers";
 import { detachCssFileLeaves, openView } from "./obsidian/workspace-helpers";
-import { InfoNotice } from "./obsidian/Notice";
+import { ErrorNotice, InfoNotice } from "./obsidian/Notice";
 import { CssSnippetCreateModal } from "./modals/CssSnippetCreateModal";
 import { CssFile } from "./CssFile";
 import { CSSEditorSettingTab } from "./obsidian/setting-tab";
+import { CssSnippetDeleteConfirmModal } from "./modals/CssSnippetDeleteConfirmModal";
 
 export interface CssEditorPluginSettings {
 	promptDelete: boolean;
@@ -57,12 +58,32 @@ export default class CssEditorPlugin extends Plugin {
 				if (!file) return false;
 				if (checking) return true;
 				const cssFile = new CssFile(file);
-				detachCssFileLeaves(this.app.workspace, cssFile).then(
-					async () => {
-						await deleteSnippetFile(this.app, cssFile);
-						new InfoNotice(`"${cssFile.name}" was deleted.`);
+				if (this.settings.promptDelete) {
+					new CssSnippetDeleteConfirmModal(
+						this.app,
+						this,
+						cssFile
+					).open();
+				} else {
+					try {
+						detachCssFileLeaves(this.app.workspace, cssFile).then(
+							async () => {
+								await deleteSnippetFile(this.app, cssFile);
+								new InfoNotice(
+									`"${cssFile.name}" was deleted.`
+								);
+							}
+						);
+					} catch (err) {
+						if (err instanceof Error) {
+							new ErrorNotice(err.message);
+						} else {
+							new ErrorNotice(
+								"Failed to delete file. Reason unknown."
+							);
+						}
 					}
-				);
+				}
 				return true;
 			},
 		});
