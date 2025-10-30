@@ -12,18 +12,18 @@ const PLUGIN_ID = "css-editor";
 export default class TestCssEditorPlugin extends Plugin {
 	plugin: CssEditorPlugin;
 
-	async onload() {
+	onload() {
 		this.addCommand({
 			id: "test",
 			name: "Run tests",
 			callback: async () => {
-				await this.loadPlugin();
-				this.runTests();
+				this.loadPlugin();
+				await this.runTests();
 			},
 		});
 	}
 
-	async loadPlugin() {
+	loadPlugin() {
 		const plugin = this.app.plugins.getPlugin(PLUGIN_ID);
 		if (!plugin) {
 			throw new Error(`${PLUGIN_ID} plugin not found`);
@@ -31,17 +31,17 @@ export default class TestCssEditorPlugin extends Plugin {
 		this.plugin = plugin as CssEditorPlugin;
 	}
 
-	runTests() {
-		cssFileTests(this);
-		fileSystemHelpersTests(this);
+	async runTests() {
+		await cssFileTests(this);
+		await fileSystemHelpersTests(this);
 	}
 
-	async test(name: string, cb: () => Promise<void>) {
+	async test(name: string, cb: () => Promise<void> | void) {
 		try {
 			await cb();
 			console.debug(`PASS: ${name}`);
 		} catch (err) {
-			console.error(`FAIL: ${name}\n${err}`);
+			console.error(`FAIL: ${name}\n${String(err)}`);
 		}
 	}
 }

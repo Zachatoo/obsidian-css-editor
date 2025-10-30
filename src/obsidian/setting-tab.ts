@@ -30,9 +30,9 @@ export class CSSEditorSettingTab extends PluginSettingTab {
 			.setDesc("Prompt before CSS snippet deletion.")
 			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.settings.promptDelete);
-				toggle.onChange((val) => {
+				toggle.onChange(async (val) => {
 					this.plugin.settings.promptDelete = val;
-					this.plugin.saveSettings();
+					await this.plugin.saveSettings();
 				});
 			});
 
@@ -41,9 +41,9 @@ export class CSSEditorSettingTab extends PluginSettingTab {
 			.setDesc("Toggle line wrap in the editor.")
 			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.settings.lineWrap);
-				toggle.onChange((val) => {
+				toggle.onChange(async (val) => {
 					this.plugin.settings.lineWrap = val;
-					this.plugin.saveSettings();
+					await this.plugin.saveSettings();
 					updateCSSEditorView(this.app, {
 						effects: lineWrap.reconfigure(
 							val ? EditorView.lineWrapping : []
@@ -58,12 +58,12 @@ export class CSSEditorSettingTab extends PluginSettingTab {
 			.addText((field) => {
 				field.setPlaceholder("2");
 				field.setValue(this.plugin.settings.indentSize.toString());
-				field.onChange((val) => {
+				field.onChange(async (val) => {
 					val = val.replace(/\D/g, "");
 					field.setValue(val);
 					const size = parseInt(val);
 					this.plugin.settings.indentSize = size;
-					this.plugin.saveSettings();
+					await this.plugin.saveSettings();
 					updateCSSEditorView(this.app, {
 						effects: indentSize.reconfigure(
 							indentUnit.of("".padEnd(size))

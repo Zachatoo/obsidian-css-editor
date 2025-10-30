@@ -1,9 +1,9 @@
 import { App, Modal, ButtonComponent } from "obsidian";
-import { ErrorNotice } from "src/obsidian/Notice";
 import { deleteSnippetFile } from "src/obsidian/file-system-helpers";
 import { CssFile } from "src/CssFile";
 import { detachCssFileLeaves } from "src/obsidian/workspace-helpers";
 import CssEditorPlugin from "src/main";
+import { handleError } from "src/utils/handle-error";
 
 export class CssSnippetDeleteConfirmModal extends Modal {
 	private plugin: CssEditorPlugin;
@@ -15,8 +15,8 @@ export class CssSnippetDeleteConfirmModal extends Modal {
 		this.file = file;
 	}
 
-	onOpen(): void {
-		super.onOpen();
+	async onOpen() {
+		await super.onOpen();
 		this.titleEl.setText("Delete CSS snippet");
 		this.containerEl.addClass("css-editor-delete-confirm-modal");
 		this.buildForm();
@@ -61,11 +61,7 @@ export class CssSnippetDeleteConfirmModal extends Modal {
 			await deleteSnippetFile(this.app, this.file);
 			this.close();
 		} catch (err) {
-			if (err instanceof Error) {
-				new ErrorNotice(err.message);
-			} else {
-				new ErrorNotice("Failed to delete file. Reason unknown.");
-			}
+			handleError(err, "Failed to delete CSS file.");
 		}
 	}
 }

@@ -31,7 +31,7 @@ import { focusAndSelectElement } from "src/obsidian/view-helpers";
 import { colorPickerPlugin } from "src/codemirror-extensions/color-picker";
 import { detachCssFileLeaves } from "src/obsidian/workspace-helpers";
 import { CssSnippetDeleteConfirmModal } from "src/modals/CssSnippetDeleteConfirmModal";
-import { ErrorNotice } from "src/obsidian/Notice";
+import { handleError } from "src/utils/handle-error";
 
 export const VIEW_TYPE_CSS = "css-editor-view";
 
@@ -99,6 +99,7 @@ export class CssEditorView extends ItemView {
 		return this.file?.basename ?? "No file open";
 	}
 
+	// eslint-disable-next-line @typescript-eslint/require-await
 	async onOpen(): Promise<void> {
 		const timer = window.setInterval(() => {
 			this.editor.focus();
@@ -119,7 +120,7 @@ export class CssEditorView extends ItemView {
 			this.onTitleKeydown.bind(this)
 		);
 		this.registerEvent(
-			this.app.workspace.on("css-editor-change", async (file, data) => {
+			this.app.workspace.on("css-editor-change", (file, data) => {
 				if (
 					this.file?.name === file.name &&
 					this.getEditorData() !== data
@@ -129,17 +130,14 @@ export class CssEditorView extends ItemView {
 			})
 		);
 		this.registerEvent(
-			this.app.workspace.on(
-				"css-snippet-rename",
-				async (file, oldFileName) => {
-					if (this.file?.name === oldFileName) {
-						this.file = file;
-						this.titleEl.setText(this.getDisplayText());
-						this.leaf.updateHeader();
-						this.app.workspace.requestSaveLayout();
-					}
+			this.app.workspace.on("css-snippet-rename", (file, oldFileName) => {
+				if (this.file?.name === oldFileName) {
+					this.file = file;
+					this.titleEl.setText(this.getDisplayText());
+					this.leaf.updateHeader();
+					this.app.workspace.requestSaveLayout();
 				}
-			)
+			})
 		);
 		this.registerEvent(
 			this.app.workspace.on("css-change", async (data: unknown) => {
@@ -222,13 +220,10 @@ export class CssEditorView extends ItemView {
 												this.file
 											);
 										} catch (err) {
-											if (err instanceof Error) {
-												new ErrorNotice(err.message);
-											} else {
-												new ErrorNotice(
-													"Failed to delete file. Reason unknown."
-												);
-											}
+											handleError(
+												err,
+												"Failed to delete CSS file."
+											);
 										}
 									}
 								}
@@ -245,7 +240,7 @@ export class CssEditorView extends ItemView {
 	}
 
 	onTitleBlur() {
-		this.saveTitle(this.titleEl);
+		this.saveTitle(this.titleEl).catch(handleError);
 		this.titleEl.spellcheck = false;
 		if (Platform.isMobileApp) {
 			this.titleEl.contentEditable = "false";
@@ -262,7 +257,7 @@ export class CssEditorView extends ItemView {
 		}
 		if (event.key === "Enter" || event.key === "Tab") {
 			event.preventDefault();
-			this.saveTitle(this.titleEl);
+			this.saveTitle(this.titleEl).catch(handleError);
 			this.titleEl.blur();
 		}
 	}
@@ -327,7 +322,7 @@ export class CssEditorView extends ItemView {
 			await this.loadFile(null);
 		}
 		result.history = true;
-		super.setState({ file: file?.name }, result);
+		return super.setState({ file: file?.name }, result);
 	}
 
 	async loadFile(file: CssFile | null): Promise<void> {
@@ -357,17 +352,18 @@ export class CssEditorView extends ItemView {
 		return currentState || false;
 	}
 
-	requestSave = debounce(this.save, 1000);
+	requestSave = debounce(this.save.bind(this), 1000);
 
 	/**
 	 * You should almost always call `requestSave` instead of `save` to debounce the saving.
 	 */
 	private async save(data: string): Promise<void> {
 		if (this.file) {
-			writeSnippetFile(this.app, this.file, data);
+			await writeSnippetFile(this.app, this.file, data);
 		}
 	}
 
+	// eslint-disable-next-line @typescript-eslint/require-await
 	async onClose() {
 		this.editor.destroy();
 	}

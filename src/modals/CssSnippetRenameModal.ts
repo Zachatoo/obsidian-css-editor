@@ -1,7 +1,7 @@
 import { App, ButtonComponent, Modal, TextComponent } from "obsidian";
-import { ErrorNotice } from "src/obsidian/Notice";
 import { renameSnippetFile } from "src/obsidian/file-system-helpers";
 import { CssFile } from "src/CssFile";
+import { handleError } from "src/utils/handle-error";
 
 export class CssSnippetRenameModal extends Modal {
 	private value: string;
@@ -13,8 +13,8 @@ export class CssSnippetRenameModal extends Modal {
 		this.file = file;
 	}
 
-	onOpen(): void {
-		super.onOpen();
+	async onOpen() {
+		await super.onOpen();
 		this.titleEl.setText("Rename CSS snippet");
 		this.containerEl.addClass("css-editor-rename-modal");
 		this.buildForm();
@@ -40,11 +40,13 @@ export class CssSnippetRenameModal extends Modal {
 			.onClick(() => this.close());
 	}
 
-	private async handleKeydown(evt: KeyboardEvent) {
+	private handleKeydown(evt: KeyboardEvent) {
 		if (evt.key === "Escape") {
 			this.close();
 		} else if (evt.key === "Enter") {
-			this.save();
+			this.save().catch((err) => {
+				handleError(err, "Failed to rename CSS file.");
+			});
 		}
 	}
 
@@ -53,11 +55,7 @@ export class CssSnippetRenameModal extends Modal {
 			await renameSnippetFile(this.app, this.file, this.value);
 			this.close();
 		} catch (err) {
-			if (err instanceof Error) {
-				new ErrorNotice(err.message);
-			} else {
-				new ErrorNotice("Failed to rename file. Reason unknown.");
-			}
+			handleError(err, "Failed to rename CSS file.");
 		}
 	}
 }

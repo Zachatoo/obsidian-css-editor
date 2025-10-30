@@ -41,11 +41,14 @@ declare module "obsidian" {
 	interface Workspace {
 		on(
 			name: "css-editor-change",
-			callback: (file: CssFile, data: string) => void
+			callback: (file: CssFile, data: string) => Promise<void> | void
 		): EventRef;
 		on(
 			name: "css-snippet-rename",
-			callback: (file: CssFile, oldFileName: string) => void
+			callback: (
+				file: CssFile,
+				oldFileName: string
+			) => Promise<void> | void
 		): EventRef;
 		on(
 			name: "leaf-menu",
@@ -70,5 +73,9 @@ declare module "obsidian" {
 
 	interface MenuItem {
 		setWarning: (value: boolean) => this;
+	}
+
+	interface Scope {
+		handleKey: (command: Command) => void;
 	}
 }

@@ -3,6 +3,7 @@ import {
 	ButtonComponent,
 	FuzzyMatch,
 	FuzzySuggestModal,
+	Notice,
 	Platform,
 } from "obsidian";
 import CssEditorPlugin from "src/main";
@@ -13,8 +14,8 @@ import {
 } from "src/obsidian/file-system-helpers";
 import { detachCssFileLeaves, openView } from "src/obsidian/workspace-helpers";
 import { VIEW_TYPE_CSS } from "src/views/CssEditorView";
-import { ErrorNotice, InfoNotice } from "src/obsidian/Notice";
 import { CssFile } from "src/CssFile";
+import { handleError } from "src/utils/handle-error";
 
 export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 	plugin: CssEditorPlugin;
@@ -136,7 +137,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 				const button = new ButtonComponent(el)
 					.setButtonText(isEnabled ? "enabled" : "disabled")
 					.setClass("css-editor-status")
-					.onClick(async (e) => {
+					.onClick((e) => {
 						e.stopPropagation();
 						const newState = toggleSnippetFileState(
 							this.app,
@@ -167,36 +168,33 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 		}
 	}
 
-	async selectSuggestion(
+	selectSuggestion(
 		value: FuzzyMatch<CssFile>,
 		evt: KeyboardEvent | MouseEvent
-	): Promise<void> {
+	): void {
 		try {
-			await this.onChooseSuggestion(value, evt);
+			this.onChooseSuggestion(value, evt);
 			this.close();
 		} catch (err) {
-			if (err instanceof Error) {
-				new ErrorNotice(err.message);
-			} else {
-				new ErrorNotice("Failed to complete action. Reason unknown.");
-			}
+			handleError(err, "Failed to open CSS file.");
 		}
 	}
 
-	async onChooseSuggestion(
+	onChooseSuggestion(
 		item: FuzzyMatch<CssFile>,
 		evt: MouseEvent | KeyboardEvent
-	): Promise<void> {
+	): void {
 		const isCreateNewDueToNoSuggestion =
 			this.inputEl.value.trim().length > 0 && item.match.score === 0;
 		if (isCreateNewDueToNoSuggestion && item.item) {
 			const openInNewTab = evt.metaKey;
-			await this.plugin.createAndOpenSnippet(
-				item.item.name,
-				openInNewTab
-			);
+			this.plugin
+				.createAndOpenSnippet(item.item.name, openInNewTab)
+				.catch((err) => {
+					handleError(err, "Failed to create and open CSS file.");
+				});
 		} else {
-			await this.onChooseItem(item.item, evt);
+			this.onChooseItem(item.item, evt);
 		}
 	}
 
@@ -217,34 +215,42 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 		}
 	}
 
-	async onChooseItem(
-		item: CssFile,
-		evt: MouseEvent | KeyboardEvent
-	): Promise<void> {
+	onChooseItem(item: CssFile, evt: MouseEvent | KeyboardEvent): void {
 		if (!item) return;
 		if (evt instanceof KeyboardEvent) {
 			if (evt.key === "Enter") {
 				const openInNewTab = evt.metaKey;
 				if (evt.shiftKey) {
-					await this.plugin.createAndOpenSnippet(
-						item.name,
-						openInNewTab
-					);
+					this.plugin
+						.createAndOpenSnippet(item.name, openInNewTab)
+						.catch((err) => {
+							handleError(
+								err,
+								"Failed to create and open CSS file."
+							);
+						});
 				} else {
 					openView(this.app.workspace, VIEW_TYPE_CSS, openInNewTab, {
 						file: item,
-					});
+					}).catch(handleError);
 				}
 			} else if (evt.key === "Delete") {
-				await detachCssFileLeaves(this.app.workspace, item);
-				await deleteSnippetFile(this.app, item);
-				new InfoNotice(`${item} was deleted.`);
+				Promise.all([
+					detachCssFileLeaves(this.app.workspace, item),
+					deleteSnippetFile(this.app, item),
+				])
+					.then(() => {
+						new Notice(`${item.name} was deleted.`);
+					})
+					.catch((err) => {
+						handleError(err, "Failed to delete CSS file.");
+					});
 			}
 		} else {
 			const openInNewTab = evt.metaKey;
 			openView(this.app.workspace, VIEW_TYPE_CSS, openInNewTab, {
 				file: item,
-			});
+			}).catch(handleError);
 		}
 	}
 }

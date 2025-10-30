@@ -1,4 +1,4 @@
-import { Plugin } from "obsidian";
+import { Notice, Plugin } from "obsidian";
 import { CssEditorView, VIEW_TYPE_CSS } from "src/views/CssEditorView";
 import { CssSnippetFuzzySuggestModal } from "src/modals/CssSnippetFuzzySuggestModal";
 import { ignoreObsidianHotkey } from "src/obsidian/ignore-obsidian-hotkey";
@@ -8,11 +8,11 @@ import {
 	toggleSnippetFileState,
 } from "./obsidian/file-system-helpers";
 import { detachCssFileLeaves, openView } from "./obsidian/workspace-helpers";
-import { ErrorNotice, InfoNotice } from "./obsidian/Notice";
 import { CssSnippetCreateModal } from "./modals/CssSnippetCreateModal";
 import { CssFile } from "./CssFile";
 import { CSSEditorSettingTab } from "./obsidian/setting-tab";
 import { CssSnippetDeleteConfirmModal } from "./modals/CssSnippetDeleteConfirmModal";
+import { handleError } from "./utils/handle-error";
 
 export interface CssEditorPluginSettings {
 	promptDelete: boolean;
@@ -36,14 +36,14 @@ export default class CssEditorPlugin extends Plugin {
 		this.addCommand({
 			id: "create-css-snippet",
 			name: "Create CSS snippet",
-			callback: async () => {
+			callback: () => {
 				new CssSnippetCreateModal(this.app, this).open();
 			},
 		});
 		this.addCommand({
 			id: "open-quick-switcher",
 			name: "Open quick switcher",
-			callback: async () => {
+			callback: () => {
 				new CssSnippetFuzzySuggestModal(this.app, this).open();
 			},
 		});
@@ -65,24 +65,14 @@ export default class CssEditorPlugin extends Plugin {
 						cssFile
 					).open();
 				} else {
-					try {
-						detachCssFileLeaves(this.app.workspace, cssFile).then(
-							async () => {
-								await deleteSnippetFile(this.app, cssFile);
-								new InfoNotice(
-									`"${cssFile.name}" was deleted.`
-								);
-							}
-						);
-					} catch (err) {
-						if (err instanceof Error) {
-							new ErrorNotice(err.message);
-						} else {
-							new ErrorNotice(
-								"Failed to delete file. Reason unknown."
-							);
-						}
-					}
+					detachCssFileLeaves(this.app.workspace, cssFile)
+						.then(async () => {
+							await deleteSnippetFile(this.app, cssFile);
+							new Notice(`"${cssFile.name}" was deleted.`);
+						})
+						.catch((err) => {
+							handleError(err, "Failed to delete CSS file.");
+						});
 				}
 				return true;
 			},
@@ -99,7 +89,7 @@ export default class CssEditorPlugin extends Plugin {
 				if (checking) return true;
 				const cssFile = new CssFile(file);
 				const isEnabled = toggleSnippetFileState(this.app, cssFile);
-				new InfoNotice(
+				new Notice(
 					`"${cssFile.name}" is now ${
 						isEnabled ? "enabled" : "disabled"
 					}.`
@@ -110,6 +100,7 @@ export default class CssEditorPlugin extends Plugin {
 
 		this.register(
 			ignoreObsidianHotkey(
+				this.app.scope,
 				{ key: "/", modifiers: "Meta" },
 				() => !!this.app.workspace.getActiveViewOfType(CssEditorView)
 			)
@@ -130,7 +121,7 @@ export default class CssEditorPlugin extends Plugin {
 		this.settings = Object.assign(
 			{},
 			DEFAULT_SETTINGS,
-			await this.loadData()
+			(await this.loadData()) as Record<string, unknown>
 		);
 	}
 
@@ -141,8 +132,8 @@ export default class CssEditorPlugin extends Plugin {
 	async createAndOpenSnippet(filename: string, openInNewTab: boolean) {
 		const file = await createSnippetFile(this.app, filename, "");
 		this.app.customCss?.setCssEnabledStatus?.(file.basename, true);
-		new InfoNotice(`${file.name} was created.`);
-		openView(this.app.workspace, VIEW_TYPE_CSS, openInNewTab, {
+		new Notice(`${file.name} was created.`);
+		await openView(this.app.workspace, VIEW_TYPE_CSS, openInNewTab, {
 			file,
 		});
 	}

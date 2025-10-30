@@ -21,7 +21,7 @@ export async function createSnippetFile(
 	data = ""
 ): Promise<CssFile> {
 	const file = new CssFile(fileName);
-	await _validateFile(file);
+	await _validateFile(app, file);
 	await _createSnippetDirectoryIfNotExists(app);
 	await app.vault.adapter.write(
 		normalizePath(`${getSnippetDirectory(app)}${file.name}`),
@@ -37,7 +37,7 @@ export async function renameSnippetFile(
 ): Promise<CssFile> {
 	const newFile = new CssFile(newFileName);
 	if (oldFile.name === newFile.name) return oldFile;
-	await _validateFile(newFile);
+	await _validateFile(app, newFile);
 	await app.vault.adapter.rename(
 		normalizePath(`${getSnippetDirectory(app)}${oldFile.name}`),
 		normalizePath(`${getSnippetDirectory(app)}${newFile.name}`)
@@ -89,15 +89,12 @@ async function _createSnippetDirectoryIfNotExists(app: App) {
 	}
 }
 
-async function _validateFile(file: CssFile) {
+async function _validateFile(app: App, file: CssFile) {
 	const errors = {
 		exists: "",
 		regex: "",
 	};
-	if (
-		file.name.length > 0 &&
-		(await checkSnippetExists(this.app, file.name))
-	) {
+	if (file.name.length > 0 && (await checkSnippetExists(app, file.name))) {
 		errors.exists = "File already exists.";
 	}
 	const regex = /^[0-9a-zA-Z\-_ ]+\.css$/;

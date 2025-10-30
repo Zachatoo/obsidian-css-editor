@@ -1,4 +1,4 @@
-import type { Command, KeymapInfo } from "obsidian";
+import type { Command, KeymapInfo, Scope } from "obsidian";
 import { around } from "monkey-around";
 
 /**
@@ -6,10 +6,11 @@ import { around } from "monkey-around";
  * @param checkCallback Callback function that determines whether this hotkey should be executed at the moment.
  */
 export function ignoreObsidianHotkey(
+	scope: Scope,
 	keymapInfo: KeymapInfo,
 	checkCallback: () => boolean
 ) {
-	const uninstallCommand = around(this.app.scope, {
+	const uninstallCommand = around(scope, {
 		handleKey(originalMethod) {
 			return function (...args: Command[]) {
 				const invokedHotkey = args[1];

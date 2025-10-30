@@ -1,6 +1,6 @@
 import { App, ButtonComponent, Modal, TextComponent } from "obsidian";
 import CssEditorPlugin from "src/main";
-import { ErrorNotice } from "../obsidian/Notice";
+import { handleError } from "src/utils/handle-error";
 
 export class CssSnippetCreateModal extends Modal {
 	private value: string;
@@ -12,8 +12,8 @@ export class CssSnippetCreateModal extends Modal {
 		this.plugin = plugin;
 	}
 
-	onOpen(): void {
-		super.onOpen();
+	async onOpen() {
+		await super.onOpen();
 		this.titleEl.setText("Create CSS snippet");
 		this.containerEl.addClass("css-editor-create-modal");
 		this.buildForm();
@@ -24,7 +24,7 @@ export class CssSnippetCreateModal extends Modal {
 		textInput.setPlaceholder("CSS snippet file name (ex: snippet.css)");
 		textInput.onChange((val) => (this.value = val));
 		textInput.inputEl.addEventListener("keydown", (evt) => {
-			this.handleKeydown(evt);
+			this.handleKeydown(evt).catch(handleError);
 		});
 		const buttonContainer = this.contentEl.createDiv(
 			"modal-button-container"
@@ -42,7 +42,7 @@ export class CssSnippetCreateModal extends Modal {
 		if (evt.key === "Escape") {
 			this.close();
 		} else if (evt.key === "Enter") {
-			this.save(evt.metaKey);
+			await this.save(evt.metaKey);
 		}
 	}
 
@@ -51,11 +51,7 @@ export class CssSnippetCreateModal extends Modal {
 			await this.plugin.createAndOpenSnippet(this.value, openInNewTab);
 			this.close();
 		} catch (err) {
-			if (err instanceof Error) {
-				new ErrorNotice(err.message);
-			} else {
-				new ErrorNotice("Failed to create file. Reason unknown.");
-			}
+			handleError(err, "Failed to create and open CSS file.");
 		}
 	}
 }
