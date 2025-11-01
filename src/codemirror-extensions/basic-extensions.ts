@@ -28,8 +28,10 @@ import { lintKeymap } from "@codemirror/lint";
 import { obsidian } from "./obsidian-theme";
 import { css } from "./reconfigured-css";
 import { highlightActiveLine } from "./highlight-active-line";
+import { vim } from "@replit/codemirror-vim";
 
 export const basicExtensions: Extension[] = [
+	vim(),
 	keymap.of([
 		...closeBracketsKeymap, // "{|}" -> backspace -> "|"
 		...defaultKeymap,
