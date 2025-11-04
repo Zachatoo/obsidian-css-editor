@@ -1,0 +1,115 @@
+name: Auto fix formatting
+
+on:
+    pull_request_target:
+        types:
+            - opened
+            - reopened
+            - synchronize
+
+permissions:
+    contents: write
+    pull-requests: write
+
+jobs:
+    autofix:
+        if: ${{ secrets.BOT_PAT != '' && secrets.BOT_USERNAME != '' && secrets.BOT_EMAIL != '' }}
+        runs-on: ubuntu-latest
+        env:
+            BOT_USERNAME: ${{ secrets.BOT_USERNAME }}
+            BOT_EMAIL: ${{ secrets.BOT_EMAIL }}
+        steps:
+            - name: Check last commit author
+              id: check-bot
+              uses: actions/github-script@v7
+              env:
+                  BOT_EMAIL: ${{ secrets.BOT_EMAIL }}
+              with:
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  script: |
+                      const botEmail = (process.env.BOT_EMAIL || '').toLowerCase();
+                      if (!botEmail) {
+                          core.info('Bot email not available; will not skip.');
+                          core.setOutput('skip', 'false');
+                          return;
+                      }
+
+                      const pr = context.payload.pull_request;
+                      const { data: commit } = await github.rest.repos.getCommit({
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          ref: pr.head.sha,
+                      });
+
+                      const authorLogin = commit.author?.login?.toLowerCase();
+                      const committerLogin = commit.committer?.login?.toLowerCase();
+                      const authorEmail = commit.commit?.author?.email?.toLowerCase();
+                      const committerEmail = commit.commit?.committer?.email?.toLowerCase();
+
+                      const emails = [authorEmail, committerEmail].filter(Boolean);
+
+                      const shouldSkip = botEmail && emails.includes(botEmail);
+
+                      core.info(`Latest commit author login: ${authorLogin ?? 'n/a'}, committer login: ${committerLogin ?? 'n/a'}`);
+                      core.info(`Latest commit author email: ${authorEmail ?? 'n/a'}, committer email: ${committerEmail ?? 'n/a'}`);
+
+                      core.setOutput('skip', shouldSkip ? 'true' : 'false');
+
+            - name: Stop if latest commit is already from bot
+              if: steps.check-bot.outputs.skip == 'true'
+              run: echo "Latest commit already authored by bot; skipping."
+
+            - name: Checkout PR branch
+              if: steps.check-bot.outputs.skip != 'true'
+              uses: actions/checkout@v4
+              with:
+                  token: ${{ secrets.BOT_PAT }}
+                  ref: ${{ github.event.pull_request.head.ref }}
+                  repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+            - name: Use Node.js
+              if: steps.check-bot.outputs.skip != 'true'
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "18"
+                  cache: npm
+                  cache-dependency-path: package-lock.json
+
+            - name: Install dependencies
+              if: steps.check-bot.outputs.skip != 'true'
+              run: |
+                  if [ -f package-lock.json ]; then
+                      npm ci
+                  else
+                      npm install
+                  fi
+
+            - name: Run ESLint with fixes
+              if: steps.check-bot.outputs.skip != 'true'
+              run: npx eslint . --fix
+
+            - name: Run Prettier
+              if: steps.check-bot.outputs.skip != 'true'
+              run: npm run format
+
+            - name: Commit changes
+              if: steps.check-bot.outputs.skip != 'true'
+              id: commit
+              run: |
+                  git config user.name "$BOT_USERNAME"
+                  git config user.email "$BOT_EMAIL"
+                  git add -A
+
+                  if git diff --cached --quiet; then
+                      echo "changed=false" >> "$GITHUB_OUTPUT"
+                      exit 0
+                  fi
+
+                  git commit -m "chore: apply lint and format fixes"
+                  echo "changed=true" >> "$GITHUB_OUTPUT"
+
+            - name: Push changes
+              if: steps.check-bot.outputs.skip != 'true' && steps.commit.outputs.changed == 'true'
+              run: git push origin HEAD
+              env:
+                  GIT_ASKPASS: /bin/echo
