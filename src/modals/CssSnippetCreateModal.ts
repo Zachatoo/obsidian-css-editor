@@ -27,7 +27,7 @@ export class CssSnippetCreateModal extends Modal {
 			this.handleKeydown(evt).catch(handleError);
 		});
 		const buttonContainer = this.contentEl.createDiv(
-			"modal-button-container"
+			"modal-button-container",
 		);
 		new ButtonComponent(buttonContainer)
 			.setButtonText("Save")

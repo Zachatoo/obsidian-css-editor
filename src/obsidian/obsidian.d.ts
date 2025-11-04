@@ -41,18 +41,18 @@ declare module "obsidian" {
 	interface Workspace {
 		on(
 			name: "css-editor-change",
-			callback: (file: CssFile, data: string) => Promise<void> | void
+			callback: (file: CssFile, data: string) => Promise<void> | void,
 		): EventRef;
 		on(
 			name: "css-snippet-rename",
 			callback: (
 				file: CssFile,
-				oldFileName: string
-			) => Promise<void> | void
+				oldFileName: string,
+			) => Promise<void> | void,
 		): EventRef;
 		on(
 			name: "leaf-menu",
-			callback: (menu: Menu, leaf: WorkspaceLeaf) => void
+			callback: (menu: Menu, leaf: WorkspaceLeaf) => void,
 		): EventRef;
 		on(name: "css-change", callback: (data?: unknown) => void): EventRef;
 	}

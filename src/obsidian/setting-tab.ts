@@ -47,7 +47,7 @@ export class CSSEditorSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 					updateCSSEditorView(this.app, {
 						effects: lineWrap.reconfigure(
-							val ? EditorView.lineWrapping : []
+							val ? EditorView.lineWrapping : [],
 						),
 					});
 				});
@@ -73,10 +73,8 @@ export class CSSEditorSettingTab extends PluginSettingTab {
 					});
 
 			new Setting(this.containerEl)
-		// eslint-disable-next-line obsidianmd/ui/sentence-case
-			.setName("relative line numbers")
-		// eslint-disable-next-line obsidianmd/ui/sentence-case
-			.setDesc("show line numbers relative to cursor position")
+			.setName("Relative line numbers")
+			.setDesc("Show line numbers relative to cursor position")
 			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.settings.relativeLineNumbers);
 				toggle.onChange(async (val) => {
@@ -89,6 +87,7 @@ export class CSSEditorSettingTab extends PluginSettingTab {
 						? relativeLineNumbersFormatter
 						: absoluteLineNumbers,
 							})
+							indentUnit.of("".padEnd(size)),
 						),
 					});
 				});

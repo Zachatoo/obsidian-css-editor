@@ -7,10 +7,10 @@ export function getSnippetDirectory(app: App) {
 
 export async function readSnippetFile(
 	app: App,
-	file: CssFile
+	file: CssFile,
 ): Promise<string> {
 	const data = await app.vault.adapter.read(
-		normalizePath(`${getSnippetDirectory(app)}${file.name}`)
+		normalizePath(`${getSnippetDirectory(app)}${file.name}`),
 	);
 	return data;
 }
@@ -18,14 +18,14 @@ export async function readSnippetFile(
 export async function createSnippetFile(
 	app: App,
 	fileName: string,
-	data = ""
+	data = "",
 ): Promise<CssFile> {
 	const file = new CssFile(fileName);
 	await _validateFile(app, file);
 	await _createSnippetDirectoryIfNotExists(app);
 	await app.vault.adapter.write(
 		normalizePath(`${getSnippetDirectory(app)}${file.name}`),
-		data
+		data,
 	);
 	return file;
 }
@@ -33,14 +33,14 @@ export async function createSnippetFile(
 export async function renameSnippetFile(
 	app: App,
 	oldFile: CssFile,
-	newFileName: string
+	newFileName: string,
 ): Promise<CssFile> {
 	const newFile = new CssFile(newFileName);
 	if (oldFile.name === newFile.name) return oldFile;
 	await _validateFile(app, newFile);
 	await app.vault.adapter.rename(
 		normalizePath(`${getSnippetDirectory(app)}${oldFile.name}`),
-		normalizePath(`${getSnippetDirectory(app)}${newFile.name}`)
+		normalizePath(`${getSnippetDirectory(app)}${newFile.name}`),
 	);
 	toggleSnippetFileState(app, oldFile);
 	toggleSnippetFileState(app, newFile);
@@ -51,26 +51,26 @@ export async function renameSnippetFile(
 export async function writeSnippetFile(
 	app: App,
 	file: CssFile,
-	data: string
+	data: string,
 ): Promise<void> {
 	await app.vault.adapter.write(
 		normalizePath(`${getSnippetDirectory(app)}${file.name}`),
-		data
+		data,
 	);
 }
 
 export async function checkSnippetExists(
 	app: App,
-	fileName: string
+	fileName: string,
 ): Promise<boolean> {
 	return app.vault.adapter.exists(
-		normalizePath(`${getSnippetDirectory(app)}${fileName}`)
+		normalizePath(`${getSnippetDirectory(app)}${fileName}`),
 	);
 }
 
 export async function deleteSnippetFile(app: App, file: CssFile) {
 	await app.vault.adapter.remove(
-		normalizePath(`${getSnippetDirectory(app)}${file.name}`)
+		normalizePath(`${getSnippetDirectory(app)}${file.name}`),
 	);
 }
 

@@ -7,7 +7,8 @@
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"test": "node esbuild.config.mjs test",
-		"lint": "eslint ."
+		"lint": "eslint .",
+		"format": "prettier . --write"
 	},
 	"keywords": [
 		"obsidian-plugin"
@@ -37,6 +38,7 @@
 		"eslint-plugin-obsidianmd": "^0.1.6",
 		"globals": "^16.3.0",
 		"obsidian": "^1.10.2-1",
+		"prettier": "^3.6.2",
 		"tslib": "2.4.0",
 		"typescript": "^4.9.5",
 		"typescript-eslint": "^8.42.0"

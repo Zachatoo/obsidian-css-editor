@@ -8,7 +8,7 @@ import { around } from "monkey-around";
 export function ignoreObsidianHotkey(
 	scope: Scope,
 	keymapInfo: KeymapInfo,
-	checkCallback: () => boolean
+	checkCallback: () => boolean,
 ) {
 	const uninstallCommand = around(scope, {
 		handleKey(originalMethod) {
