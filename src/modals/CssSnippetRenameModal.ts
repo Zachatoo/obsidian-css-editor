@@ -29,7 +29,7 @@ export class CssSnippetRenameModal extends Modal {
 			this.handleKeydown(evt);
 		});
 		const buttonContainer = this.contentEl.createDiv(
-			"modal-button-container"
+			"modal-button-container",
 		);
 		new ButtonComponent(buttonContainer)
 			.setButtonText("Save")

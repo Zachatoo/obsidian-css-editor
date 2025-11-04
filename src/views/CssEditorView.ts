@@ -53,10 +53,12 @@ export class CssEditorView extends ItemView {
 			extensions: [
 				basicExtensions,
 				lineWrap.of(
-					this.plugin.settings.lineWrap ? EditorView.lineWrapping : []
+					this.plugin.settings.lineWrap
+						? EditorView.lineWrapping
+						: [],
 				),
 				indentSize.of(
-					indentUnit.of("".padEnd(this.plugin.settings.indentSize))
+					indentUnit.of("".padEnd(this.plugin.settings.indentSize)),
 				),
 				historyCompartment.of(history()),
 				colorPickerPlugin,
@@ -69,7 +71,7 @@ export class CssEditorView extends ItemView {
 							this.app.workspace.trigger(
 								"css-editor-change",
 								this.file,
-								update.state.doc.toString()
+								update.state.doc.toString(),
 							);
 						}
 					}
@@ -117,7 +119,7 @@ export class CssEditorView extends ItemView {
 		this.titleEl.addEventListener("blur", this.onTitleBlur.bind(this));
 		this.titleEl.addEventListener(
 			"keydown",
-			this.onTitleKeydown.bind(this)
+			this.onTitleKeydown.bind(this),
 		);
 		this.registerEvent(
 			this.app.workspace.on("css-editor-change", (file, data) => {
@@ -127,7 +129,7 @@ export class CssEditorView extends ItemView {
 				) {
 					this.dispatchEditorData(data);
 				}
-			})
+			}),
 		);
 		this.registerEvent(
 			this.app.workspace.on("css-snippet-rename", (file, oldFileName) => {
@@ -137,7 +139,7 @@ export class CssEditorView extends ItemView {
 					this.leaf.updateHeader();
 					this.app.workspace.requestSaveLayout();
 				}
-			})
+			}),
 		);
 		this.registerEvent(
 			this.app.workspace.on("css-change", async (data: unknown) => {
@@ -161,7 +163,7 @@ export class CssEditorView extends ItemView {
 				if (contents !== this.getEditorData()) {
 					this.dispatchEditorData(contents);
 				}
-			})
+			}),
 		);
 		this.registerEvent(
 			this.app.workspace.on("leaf-menu", (menu, leaf) => {
@@ -174,7 +176,7 @@ export class CssEditorView extends ItemView {
 								if (this.file) {
 									new CssSnippetRenameModal(
 										this.app,
-										this.file
+										this.file,
 									).open();
 								}
 							});
@@ -184,11 +186,13 @@ export class CssEditorView extends ItemView {
 						item.setIcon(
 							isEnabled
 								? "lucide-toggle-left"
-								: "lucide-toggle-right"
+								: "lucide-toggle-right",
 						)
 							.setSection("action")
 							.setTitle(
-								isEnabled ? "Disable snippet" : "Enable snippet"
+								isEnabled
+									? "Disable snippet"
+									: "Enable snippet",
 							)
 							.onClick(() => {
 								if (this.file) {
@@ -207,22 +211,22 @@ export class CssEditorView extends ItemView {
 										new CssSnippetDeleteConfirmModal(
 											this.app,
 											this.plugin,
-											this.file
+											this.file,
 										).open();
 									} else {
 										try {
 											await detachCssFileLeaves(
 												this.app.workspace,
-												this.file
+												this.file,
 											);
 											await deleteSnippetFile(
 												this.app,
-												this.file
+												this.file,
 											);
 										} catch (err) {
 											handleError(
 												err,
-												"Failed to delete CSS file."
+												"Failed to delete CSS file.",
 											);
 										}
 									}
@@ -230,7 +234,7 @@ export class CssEditorView extends ItemView {
 							});
 					});
 				}
-			})
+			}),
 		);
 	}
 
@@ -347,7 +351,7 @@ export class CssEditorView extends ItemView {
 	isEnabled(): boolean {
 		if (!this.file) return false;
 		const currentState = this.app.customCss?.enabledSnippets?.has(
-			this.file.basename
+			this.file.basename,
 		);
 		return currentState || false;
 	}

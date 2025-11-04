@@ -11,7 +11,7 @@ export async function cssFileTests(testPlugin: TestCssEditorPlugin) {
 			expect(cssFile.name).to.equal(`${now}test.css`);
 			expect(cssFile.basename).to.equal(`${now}test`);
 			expect(cssFile.extension).to.equal("css");
-		}
+		},
 	);
 
 	await testPlugin.test("should add .css extension if not provided", () => {
@@ -27,7 +27,7 @@ export async function cssFileTests(testPlugin: TestCssEditorPlugin) {
 		expect(() => new CssFile(123 as never)).to.throw("Invalid file name.");
 		expect(() => new CssFile(null as never)).to.throw("Invalid file name.");
 		expect(() => new CssFile(undefined as never)).to.throw(
-			"Invalid file name."
+			"Invalid file name.",
 		);
 	});
 
@@ -38,7 +38,7 @@ export async function cssFileTests(testPlugin: TestCssEditorPlugin) {
 			const cssFile = new CssFile(`${now}my.file.name.css`);
 			expect(cssFile.name).to.equal(`${now}my.file.name.css`);
 			expect(cssFile.basename).to.equal(`${now}my.file.name`);
-		}
+		},
 	);
 
 	await testPlugin.test("should handle names with spaces correctly", () => {
@@ -54,12 +54,12 @@ export async function cssFileTests(testPlugin: TestCssEditorPlugin) {
 			const now = Date.now();
 			const cssFile = new CssFile(`${now}file with trailing dots....css`);
 			expect(cssFile.name).to.equal(
-				`${now}file with trailing dots....css`
+				`${now}file with trailing dots....css`,
 			);
 			expect(cssFile.basename).to.equal(
-				`${now}file with trailing dots...`
+				`${now}file with trailing dots...`,
 			);
-		}
+		},
 	);
 
 	await testPlugin.test(
@@ -69,6 +69,6 @@ export async function cssFileTests(testPlugin: TestCssEditorPlugin) {
 			const cssFile = new CssFile(`${now}file with trailing dot.`);
 			expect(cssFile.name).to.equal(`${now}file with trailing dot..css`);
 			expect(cssFile.basename).to.equal(`${now}file with trailing dot.`);
-		}
+		},
 	);
 }

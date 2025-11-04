@@ -2,7 +2,7 @@ import { Notice } from "obsidian";
 
 export function handleError(
 	err: unknown,
-	fallbackMessage: string = "Action failed. Reason unknown."
+	fallbackMessage: string = "Action failed. Reason unknown.",
 ) {
 	let message = fallbackMessage;
 	if (err instanceof Error) {

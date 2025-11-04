@@ -30,7 +30,7 @@ export class CssSnippetDeleteConfirmModal extends Modal {
 			text: "This action cannot be undone.",
 		});
 		const buttonContainer = this.contentEl.createDiv(
-			"modal-button-container"
+			"modal-button-container",
 		);
 		const dontAskAgainLabel = buttonContainer.createEl("label", {
 			cls: "mod-checkbox",
@@ -51,7 +51,7 @@ export class CssSnippetDeleteConfirmModal extends Modal {
 	private async delete() {
 		try {
 			const dontAskAgain = this.contentEl.querySelector(
-				'input[type="checkbox"]'
+				'input[type="checkbox"]',
 			) as HTMLInputElement;
 			if (dontAskAgain?.checked) {
 				this.plugin.settings.promptDelete = false;

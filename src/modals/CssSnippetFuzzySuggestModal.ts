@@ -35,7 +35,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 					item: new CssFile(this.inputEl.value),
 					match: { score: 0, matches: [] },
 				},
-				evt
+				evt,
 			);
 			return false;
 		});
@@ -53,7 +53,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 				const isEnabled = toggleSnippetFileState(this.app, file);
 				const buttonEl =
 					this.chooser.suggestions[selectedItem]?.querySelector(
-						".css-editor-status"
+						".css-editor-status",
 					);
 				buttonEl?.setText(isEnabled ? "enabled" : "disabled");
 				buttonEl?.toggleClass("mod-cta", isEnabled);
@@ -81,7 +81,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 
 	isEnabled(item: CssFile): boolean {
 		const currentState = this.app.customCss?.enabledSnippets?.has(
-			item.basename
+			item.basename,
 		);
 		return currentState || false;
 	}
@@ -114,7 +114,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 								existingChildren.forEach((child) => {
 									nestedEl.appendChild(child);
 								});
-							})
+							}),
 						);
 						suggestionContentEl.appendChild(
 							createDiv(
@@ -123,12 +123,12 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 									el.appendText(
 										`${getSnippetDirectory(this.app)}${
 											item.item.name
-										}`
-									)
-							)
+										}`,
+									),
+							),
 						);
-					}
-				)
+					},
+				),
 			);
 			const isEnabled = this.isEnabled(item.item);
 			const isNewElement =
@@ -141,7 +141,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 						e.stopPropagation();
 						const newState = toggleSnippetFileState(
 							this.app,
-							item.item
+							item.item,
 						);
 						button.setButtonText(newState ? "enabled" : "disabled");
 						if (newState) {
@@ -161,16 +161,16 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 					el.appendChild(
 						createSpan({ cls: "suggestion-hotkey" }, (el) => {
 							el.appendText("Enter to create");
-						})
+						}),
 					);
-				})
+				}),
 			);
 		}
 	}
 
 	selectSuggestion(
 		value: FuzzyMatch<CssFile>,
-		evt: KeyboardEvent | MouseEvent
+		evt: KeyboardEvent | MouseEvent,
 	): void {
 		try {
 			this.onChooseSuggestion(value, evt);
@@ -182,7 +182,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 
 	onChooseSuggestion(
 		item: FuzzyMatch<CssFile>,
-		evt: MouseEvent | KeyboardEvent
+		evt: MouseEvent | KeyboardEvent,
 	): void {
 		const isCreateNewDueToNoSuggestion =
 			this.inputEl.value.trim().length > 0 && item.match.score === 0;
@@ -205,12 +205,12 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 				{ item: new CssFile(item), match: { score: 0, matches: [] } },
 			]);
 			this.chooser?.addMessage?.(
-				"No CSS snippets found. Enter to create a new one."
+				"No CSS snippets found. Enter to create a new one.",
 			);
 		} else {
 			this.chooser?.setSuggestions?.([]);
 			this.chooser?.addMessage?.(
-				"No CSS snippets found. Type to search..."
+				"No CSS snippets found. Type to search...",
 			);
 		}
 	}
@@ -226,7 +226,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 						.catch((err) => {
 							handleError(
 								err,
-								"Failed to create and open CSS file."
+								"Failed to create and open CSS file.",
 							);
 						});
 				} else {
