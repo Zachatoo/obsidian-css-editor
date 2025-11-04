@@ -13,13 +13,27 @@ permissions:
 
 jobs:
     autofix:
-        if: ${{ secrets.BOT_PAT != '' && secrets.BOT_USERNAME != '' && secrets.BOT_EMAIL != '' }}
         runs-on: ubuntu-latest
         env:
             BOT_USERNAME: ${{ secrets.BOT_USERNAME }}
             BOT_EMAIL: ${{ secrets.BOT_EMAIL }}
         steps:
+            - name: Ensure bot credentials provided
+              id: ensure-bot
+              env:
+                  BOT_PAT: ${{ secrets.BOT_PAT }}
+                  BOT_USERNAME: ${{ secrets.BOT_USERNAME }}
+                  BOT_EMAIL: ${{ secrets.BOT_EMAIL }}
+              run: |
+                  if [ -z "$BOT_PAT" ] || [ -z "$BOT_USERNAME" ] || [ -z "$BOT_EMAIL" ]; then
+                      echo "Bot credentials missing; skipping job."
+                      echo "skip=true" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "skip=false" >> "$GITHUB_OUTPUT"
+                  fi
+
             - name: Check last commit author
+              if: steps.ensure-bot.outputs.skip != 'true'
               id: check-bot
               uses: actions/github-script@v7
               env:
@@ -56,11 +70,11 @@ jobs:
                       core.setOutput('skip', shouldSkip ? 'true' : 'false');
 
             - name: Stop if latest commit is already from bot
-              if: steps.check-bot.outputs.skip == 'true'
+              if: steps.ensure-bot.outputs.skip != 'true' && steps.check-bot.outputs.skip == 'true'
               run: echo "Latest commit already authored by bot; skipping."
 
             - name: Checkout PR branch
-              if: steps.check-bot.outputs.skip != 'true'
+              if: steps.ensure-bot.outputs.skip != 'true' && steps.check-bot.outputs.skip != 'true'
               uses: actions/checkout@v4
               with:
                   token: ${{ secrets.BOT_PAT }}
@@ -68,7 +82,7 @@ jobs:
                   repository: ${{ github.event.pull_request.head.repo.full_name }}
 
             - name: Use Node.js
-              if: steps.check-bot.outputs.skip != 'true'
+              if: steps.ensure-bot.outputs.skip != 'true' && steps.check-bot.outputs.skip != 'true'
               uses: actions/setup-node@v4
               with:
                   node-version: "18"
@@ -76,7 +90,7 @@ jobs:
                   cache-dependency-path: package-lock.json
 
             - name: Install dependencies
-              if: steps.check-bot.outputs.skip != 'true'
+              if: steps.ensure-bot.outputs.skip != 'true' && steps.check-bot.outputs.skip != 'true'
               run: |
                   if [ -f package-lock.json ]; then
                       npm ci
@@ -85,15 +99,15 @@ jobs:
                   fi
 
             - name: Run ESLint with fixes
-              if: steps.check-bot.outputs.skip != 'true'
+              if: steps.ensure-bot.outputs.skip != 'true' && steps.check-bot.outputs.skip != 'true'
               run: npx eslint . --fix
 
             - name: Run Prettier
-              if: steps.check-bot.outputs.skip != 'true'
+              if: steps.ensure-bot.outputs.skip != 'true' && steps.check-bot.outputs.skip != 'true'
               run: npm run format
 
             - name: Commit changes
-              if: steps.check-bot.outputs.skip != 'true'
+              if: steps.ensure-bot.outputs.skip != 'true' && steps.check-bot.outputs.skip != 'true'
               id: commit
               run: |
                   git config user.name "$BOT_USERNAME"
@@ -109,7 +123,7 @@ jobs:
                   echo "changed=true" >> "$GITHUB_OUTPUT"
 
             - name: Push changes
-              if: steps.check-bot.outputs.skip != 'true' && steps.commit.outputs.changed == 'true'
+              if: steps.ensure-bot.outputs.skip != 'true' && steps.check-bot.outputs.skip != 'true' && steps.commit.outputs.changed == 'true'
               run: git push origin HEAD
               env:
                   GIT_ASKPASS: /bin/echo
