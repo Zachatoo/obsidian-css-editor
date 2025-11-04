@@ -46,7 +46,7 @@ export class CSSEditorSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 					updateCSSEditorView(this.app, {
 						effects: lineWrap.reconfigure(
-							val ? EditorView.lineWrapping : []
+							val ? EditorView.lineWrapping : [],
 						),
 					});
 				});
@@ -66,7 +66,7 @@ export class CSSEditorSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 					updateCSSEditorView(this.app, {
 						effects: indentSize.reconfigure(
-							indentUnit.of("".padEnd(size))
+							indentUnit.of("".padEnd(size)),
 						),
 					});
 				});

@@ -97,12 +97,12 @@ export const obsidianTheme = EditorView.theme(
 				fontFamily: config.monospace,
 				"& > li[aria-selected]": {
 					background: config.selection,
-					color: config.foreground
-				}
-			}
+					color: config.foreground,
+				},
+			},
 		},
 	},
-	{ dark: config.dark }
+	{ dark: config.dark },
 );
 
 export const obsidianHighlightStyle = HighlightStyle.define([

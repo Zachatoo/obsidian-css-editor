@@ -20,12 +20,12 @@ export async function fileSystemHelpersTests(testPlugin: TestCssEditorPlugin) {
 
 		await writeSnippetFile(app, file, mockContent);
 		await expect(readSnippetFile(app, file)).to.eventually.equal(
-			mockContent
+			mockContent,
 		);
 
 		await writeSnippetFile(app, file, mockContent2);
 		await expect(readSnippetFile(app, file)).to.eventually.equal(
-			mockContent2
+			mockContent2,
 		);
 
 		await deleteSnippetFile(app, file);
@@ -48,7 +48,7 @@ export async function fileSystemHelpersTests(testPlugin: TestCssEditorPlugin) {
 			await deleteSnippetFile(app, file);
 			await expect(checkSnippetExists(app, filename)).to.eventually.be
 				.false;
-		}
+		},
 	);
 
 	await testPlugin.test(
@@ -60,7 +60,7 @@ export async function fileSystemHelpersTests(testPlugin: TestCssEditorPlugin) {
 			await expect(createSnippetFile(app, filename)).to.be.rejectedWith();
 			await expect(checkSnippetExists(app, filename)).to.eventually.be
 				.false;
-		}
+		},
 	);
 
 	await testPlugin.test(
@@ -75,11 +75,11 @@ export async function fileSystemHelpersTests(testPlugin: TestCssEditorPlugin) {
 				.false;
 
 			await expect(
-				createSnippetFile(app, filename2)
+				createSnippetFile(app, filename2),
 			).to.be.rejectedWith();
 			await expect(checkSnippetExists(app, filename2)).to.eventually.be
 				.false;
-		}
+		},
 	);
 
 	await testPlugin.test(
@@ -96,7 +96,7 @@ export async function fileSystemHelpersTests(testPlugin: TestCssEditorPlugin) {
 			await deleteSnippetFile(app, file);
 			await expect(checkSnippetExists(app, filename)).to.eventually.be
 				.false;
-		}
+		},
 	);
 
 	await testPlugin.test(
@@ -114,6 +114,6 @@ export async function fileSystemHelpersTests(testPlugin: TestCssEditorPlugin) {
 			await deleteSnippetFile(app, file);
 			await expect(checkSnippetExists(app, filenameWithExtension)).to
 				.eventually.be.false;
-		}
+		},
 	);
 }

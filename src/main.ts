@@ -62,7 +62,7 @@ export default class CssEditorPlugin extends Plugin {
 					new CssSnippetDeleteConfirmModal(
 						this.app,
 						this,
-						cssFile
+						cssFile,
 					).open();
 				} else {
 					detachCssFileLeaves(this.app.workspace, cssFile)
@@ -92,7 +92,7 @@ export default class CssEditorPlugin extends Plugin {
 				new Notice(
 					`"${cssFile.name}" is now ${
 						isEnabled ? "enabled" : "disabled"
-					}.`
+					}.`,
 				);
 				return true;
 			},
@@ -102,13 +102,13 @@ export default class CssEditorPlugin extends Plugin {
 			ignoreObsidianHotkey(
 				this.app.scope,
 				{ key: "/", modifiers: "Meta" },
-				() => !!this.app.workspace.getActiveViewOfType(CssEditorView)
-			)
+				() => !!this.app.workspace.getActiveViewOfType(CssEditorView),
+			),
 		);
 
 		this.registerView(
 			VIEW_TYPE_CSS,
-			(leaf) => new CssEditorView(leaf, this)
+			(leaf) => new CssEditorView(leaf, this),
 		);
 
 		this.settingTab = new CSSEditorSettingTab(this.app, this);
@@ -121,7 +121,7 @@ export default class CssEditorPlugin extends Plugin {
 		this.settings = Object.assign(
 			{},
 			DEFAULT_SETTINGS,
-			(await this.loadData()) as Record<string, unknown>
+			(await this.loadData()) as Record<string, unknown>,
 		);
 	}
 

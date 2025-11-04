@@ -20,7 +20,7 @@ class ColorPickerWidget extends WidgetType {
 		private color: string,
 		private from: number,
 		private to: number,
-		private view: EditorView
+		private view: EditorView,
 	) {
 		super();
 	}
@@ -97,7 +97,7 @@ const colorPickerPlugin = ViewPlugin.fromClass(
 							match.color,
 							match.from,
 							match.to,
-							view
+							view,
 						),
 						side: 1,
 					});
@@ -114,7 +114,7 @@ const colorPickerPlugin = ViewPlugin.fromClass(
 	},
 	{
 		decorations: (v) => v.decorations,
-	}
+	},
 );
 
 export { colorPickerPlugin };

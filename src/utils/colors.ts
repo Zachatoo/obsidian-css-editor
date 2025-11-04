@@ -256,7 +256,7 @@ function isValidColorName(name: string): boolean {
 
 function findColorsInComment(
 	commentText: string,
-	commentStart: number
+	commentStart: number,
 ): ColorMatch[] {
 	const matches: ColorMatch[] = [];
 
@@ -271,7 +271,7 @@ function findColorsInComment(
 	// Calculate the offset caused by removing /* and any leading whitespace
 	const leadingWhitespaceMatch = withoutDelimiters.match(/^(\s*)/);
 	const leadingWhitespaceLength = leadingWhitespaceMatch
-		? leadingWhitespaceMatch[1]?.length ?? 0
+		? (leadingWhitespaceMatch[1]?.length ?? 0)
 		: 0;
 	const totalOffset = 2 + leadingWhitespaceLength; // 2 for "/*" + leading whitespace
 
@@ -303,7 +303,7 @@ function findColorsInComment(
 	} catch (error) {
 		console.warn(
 			"Failed to parse comment as CSS, skipping color detection:",
-			error
+			error,
 		);
 	}
 

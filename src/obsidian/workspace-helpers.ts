@@ -6,7 +6,7 @@ export async function openView(
 	workspace: Workspace,
 	type: ViewState["type"],
 	openInNewTab: boolean,
-	state: { file: CssFile }
+	state: { file: CssFile },
 ) {
 	const leaf = workspace.getLeaf(openInNewTab);
 	await leaf.setViewState({

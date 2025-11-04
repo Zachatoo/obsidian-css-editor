@@ -6,10 +6,10 @@ This plugin allows you to edit CSS files in the `.obsidian/snippets/` directory.
 
 ## Features
 
--   Create, edit, rename, and delete CSS snippets
--   Syntax highlighting and code completion
--   Works on desktop and mobile
--   Basic VIM support
+- Create, edit, rename, and delete CSS snippets
+- Syntax highlighting and code completion
+- Works on desktop and mobile
+- Basic VIM support
 
 ## Installation
 
@@ -27,11 +27,11 @@ Opens a prompt to create a CSS snippet in your `.obsidian/snippets/` directory. 
 
 Opens a suggestion modal to create, edit, or delete a CSS snippet. Has similar functionality to the core quick switcher where holding down a secondary key will modify the action that will take place.
 
--   Press <kbd>Enter</kbd> to open the selected CSS snippet, or if no suggestions are available, create a new CSS snippet.
--   Press <kbd>⌘</kbd><kbd>Enter</kbd> to open the selected CSS snippet in a new tab.
--   Press <kbd>Shift</kbd><kbd>Enter</kbd> to create a new CSS snippet.
--   Press <kbd>Tab</kbd> to toggle the enable/disable state of the selected CSS snippet.
--   Press <kbd>⌘</kbd><kbd>Delete</kbd> to delete the selected CSS snippet.
+- Press <kbd>Enter</kbd> to open the selected CSS snippet, or if no suggestions are available, create a new CSS snippet.
+- Press <kbd>⌘</kbd><kbd>Enter</kbd> to open the selected CSS snippet in a new tab.
+- Press <kbd>Shift</kbd><kbd>Enter</kbd> to create a new CSS snippet.
+- Press <kbd>Tab</kbd> to toggle the enable/disable state of the selected CSS snippet.
+- Press <kbd>⌘</kbd><kbd>Delete</kbd> to delete the selected CSS snippet.
 
 ### Delete CSS snippet
 
