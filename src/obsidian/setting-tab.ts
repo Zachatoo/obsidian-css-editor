@@ -3,7 +3,11 @@ import { TransactionSpec } from "@codemirror/state";
 import { EditorView, lineNumbers } from "@codemirror/view";
 import { App, PluginSettingTab, Setting } from "obsidian";
 import { indentSize, lineWrap } from "src/codemirror-extensions/compartments";
-import { relativeLineNumberGutter, relativeLineNumbersFormatter, absoluteLineNumbers } from "src/codemirror-extensions/relative-line-numbers";
+import {
+	relativeLineNumberGutter,
+	relativeLineNumbersFormatter,
+	absoluteLineNumbers,
+} from "src/codemirror-extensions/relative-line-numbers";
 import CssEditorPlugin from "src/main";
 import { CssEditorView, VIEW_TYPE_CSS } from "src/views/CssEditorView";
 
@@ -67,14 +71,15 @@ export class CSSEditorSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 					updateCSSEditorView(this.app, {
 						effects: indentSize.reconfigure(
-						indentUnit.of("".padEnd(size))),
-							});
-						});
+							indentUnit.of("".padEnd(size)),
+						),
 					});
+				});
+			});
 
-			new Setting(this.containerEl)
+		new Setting(this.containerEl)
 			.setName("Relative line numbers")
-			.setDesc("Show line numbers relative to cursor position")
+			.setDesc("Show line numbers relative to cursor position.")
 			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.settings.relativeLineNumbers);
 				toggle.onChange(async (val) => {
@@ -82,12 +87,11 @@ export class CSSEditorSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 					updateCSSEditorView(this.app, {
 						effects: relativeLineNumberGutter.reconfigure(
-					lineNumbers({
-						formatNumber: val
-						? relativeLineNumbersFormatter
-						: absoluteLineNumbers,
-							})
-							indentUnit.of("".padEnd(size)),
+							lineNumbers({
+								formatNumber: val
+									? relativeLineNumbersFormatter
+									: absoluteLineNumbers,
+							}),
 						),
 					});
 				});
