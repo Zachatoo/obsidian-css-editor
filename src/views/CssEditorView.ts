@@ -6,7 +6,7 @@ import {
 	ViewStateResult,
 	WorkspaceLeaf,
 } from "obsidian";
-import { EditorView } from "@codemirror/view";
+import { EditorView, lineNumbers } from "@codemirror/view";
 import { vim } from "@replit/codemirror-vim";
 import { CssFile } from "src/CssFile";
 import {
@@ -32,6 +32,7 @@ import { colorPickerPlugin } from "src/codemirror-extensions/color-picker";
 import { detachCssFileLeaves } from "src/obsidian/workspace-helpers";
 import { CssSnippetDeleteConfirmModal } from "src/modals/CssSnippetDeleteConfirmModal";
 import { handleError } from "src/utils/handle-error";
+import { relativeLineNumberGutter, relativeLineNumbersFormatter, absoluteLineNumbers } from "src/codemirror-extensions/relative-line-numbers";
 
 export const VIEW_TYPE_CSS = "css-editor-view";
 
@@ -62,6 +63,13 @@ export class CssEditorView extends ItemView {
 				),
 				historyCompartment.of(history()),
 				colorPickerPlugin,
+				relativeLineNumberGutter.of(
+					lineNumbers({
+					formatNumber: this.plugin.settings.relativeLineNumbers
+					? relativeLineNumbersFormatter
+					: absoluteLineNumbers,
+						})
+					),
 				this.app.vault.getConfig?.("vimMode") ? vim() : [],
 				EditorView.updateListener.of((update) => {
 					if (update.docChanged) {
