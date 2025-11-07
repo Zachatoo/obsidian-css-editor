@@ -2,7 +2,7 @@
 import { browser } from "@wdio/globals";
 import { obsidianPage } from "wdio-obsidian-service";
 
-describe("CSS snippet create modal", function () {
+describe("create modal", function () {
 	beforeEach(async () => {
 		await obsidianPage.loadWorkspaceLayout("empty");
 	});
