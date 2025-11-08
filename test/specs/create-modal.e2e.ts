@@ -1,6 +1,7 @@
 import { obsidianPage } from "wdio-obsidian-service";
 import CreateModal from "../page-objects/CreateModal.page";
 import CssEditorView from "../page-objects/CssEditorView.page";
+import Workspace from "test/page-objects/Workspace.page";
 
 describe("create modal", function () {
 	beforeEach(async () => {
@@ -11,6 +12,7 @@ describe("create modal", function () {
 		await CreateModal.open();
 		await CreateModal.enterSnippetName("can create snippet.css");
 		await CreateModal.save();
+		await expect(Workspace.activeTabEl).toHaveText("can create snippet");
 		await expect(CssEditorView.titleEl).toHaveText("can create snippet");
 	});
 
