@@ -25,6 +25,30 @@ describe("quick switcher", function () {
 	});
 
 	// TODO: Re-enable after fixing
+	it.skip("can open with mouse", async () => {
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.selectSuggestionByName(
+			"existing-snippet-1.css",
+		);
+		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
+	});
+
+	// TODO: Implement
+	it.skip("can open with enter", async () => {});
+
+	// TODO: Implement
+	it.skip("can open in new tab", async () => {});
+
+	// TODO: Implement
+	it.skip("can create with shift", async () => {});
+
+	// TODO: Implement
+	it.skip("can delete without confirmation", async () => {});
+
+	// TODO: Implement
+	it.skip("can delete with confirmation", async () => {});
+
+	// TODO: Re-enable after fixing
 	it.skip("can toggle status with tab", async () => {
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.toggleSelectedSuggestionStatus("keyboard");
@@ -38,12 +62,6 @@ describe("quick switcher", function () {
 		await QuickSwitcherModal.toggleSelectedSuggestionStatus("mouse");
 	});
 
-	// TODO: Re-enable after fixing
-	it.skip("can open with mouse", async () => {
-		await QuickSwitcherModal.open();
-		await QuickSwitcherModal.selectSuggestionByName(
-			"existing-snippet-1.css",
-		);
-		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
-	});
+	// TODO: Implement
+	it.skip("can close with escape", async () => {});
 });
