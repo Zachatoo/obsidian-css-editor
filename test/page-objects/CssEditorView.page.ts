@@ -18,6 +18,12 @@ class CssEditorView {
 	get renameMenuItemEl() {
 		return this.menuEl.$(".menu-item-title=Rename...");
 	}
+	get enableSnippetMenuItemEl() {
+		return this.menuEl.$(".menu-item-title=Enable snippet");
+	}
+	get disableSnippetMenuItemEl() {
+		return this.menuEl.$(".menu-item-title=Disable snippet");
+	}
 }
 
 export default new CssEditorView();
