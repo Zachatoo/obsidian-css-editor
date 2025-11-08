@@ -66,8 +66,26 @@ describe("quick switcher", function () {
 		await expect(await Workspace.getTabCount()).toBe(initialTabCount + 1);
 	});
 
-	// TODO: Implement
-	it.skip("can create with shift", async () => {});
+	it("can create with enter when no fuzzy matches", async () => {
+		const uniqueName = `unique-snippet-${Date.now()}`;
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue(uniqueName);
+		await expect(QuickSwitcherModal.emptyMessageEl).toHaveText(
+			"No CSS snippets found. Enter to create a new one.",
+		);
+		await browser.keys(Key.Enter);
+		await expect(Workspace.activeTabEl).toHaveText(uniqueName);
+		await expect(CssEditorView.titleEl).toHaveText(uniqueName);
+	});
+
+	it("can create with shift+enter when fuzzy matches exist", async () => {
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue("existing-snippet");
+		await expect(QuickSwitcherModal.emptyMessageEl).not.toBeDisplayed();
+		await browser.keys([Key.Shift, Key.Enter]);
+		await expect(Workspace.activeTabEl).toHaveText("existing-snippet");
+		await expect(CssEditorView.titleEl).toHaveText("existing-snippet");
+	});
 
 	// TODO: Implement
 	it.skip("can delete without confirmation", async () => {});

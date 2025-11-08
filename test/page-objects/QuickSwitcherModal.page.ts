@@ -20,6 +20,9 @@ class QuickSwitcherModal {
 	get selectedSuggestionStatusEl() {
 		return this.selectedSuggestionEl.$(".css-editor-status");
 	}
+	get emptyMessageEl() {
+		return this.modalEl.$(".suggestion-empty");
+	}
 
 	async open() {
 		await browser.executeObsidianCommand("css-editor:open-quick-switcher");
