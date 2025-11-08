@@ -5,7 +5,7 @@ export const config: WebdriverIO.Config = {
 	framework: "mocha",
 	specs: ["./test/specs/**/*.e2e.ts"],
 	// How many instances of Obsidian should be launched in parallel
-	maxInstances: 4,
+	maxInstances: 1,
 
 	capabilities: [
 		{
