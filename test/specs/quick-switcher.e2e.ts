@@ -5,6 +5,7 @@ import { Key } from "webdriverio";
 import QuickSwitcherModal from "../page-objects/QuickSwitcherModal.page";
 import CssEditorView from "../page-objects/CssEditorView.page";
 import Workspace from "../page-objects/Workspace.page";
+import DeleteConfirmModal from "../page-objects/DeleteConfirmModal.page";
 
 describe("quick switcher", function () {
 	beforeEach(async () => {
@@ -70,9 +71,7 @@ describe("quick switcher", function () {
 		const uniqueName = `unique-snippet-${Date.now()}`;
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue(uniqueName);
-		await expect(QuickSwitcherModal.emptyMessageEl).toHaveText(
-			"No CSS snippets found. Enter to create a new one.",
-		);
+		await QuickSwitcherModal.expectNoSnippetsFound();
 		await browser.keys(Key.Enter);
 		await expect(Workspace.activeTabEl).toHaveText(uniqueName);
 		await expect(CssEditorView.titleEl).toHaveText(uniqueName);
@@ -87,11 +86,68 @@ describe("quick switcher", function () {
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet");
 	});
 
-	// TODO: Implement
-	it.skip("can delete without confirmation", async () => {});
+	it("can delete without confirmation", async () => {
+		// Disable delete confirmation prompt
+		await browser.executeObsidian(
+			async ({ plugins }, settings) => {
+				Object.assign(plugins.cssEditor.settings, settings);
+				await plugins.cssEditor.saveSettings();
+			},
+			{ promptDelete: false },
+		);
 
-	// TODO: Implement
-	it.skip("can delete with confirmation", async () => {});
+		// Create a snippet to delete
+		const snippetName = `delete-test-${Date.now()}`;
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue(snippetName);
+		await browser.keys(Key.Enter);
+		await expect(CssEditorView.titleEl).toHaveText(snippetName);
+
+		// Open quick switcher and delete the snippet with Cmd+Delete
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue(snippetName);
+		await browser.keys([Key.Command, Key.Delete]);
+		await QuickSwitcherModal.modalEl.waitForDisplayed({ reverse: true });
+
+		// Verify the quick switcher shows no matches for the deleted snippet
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue(snippetName);
+		await QuickSwitcherModal.expectNoSnippetsFound();
+		await browser.keys(Key.Escape);
+	});
+
+	it("can delete with confirmation", async () => {
+		// Ensure delete confirmation prompt is enabled
+		await browser.executeObsidian(
+			async ({ plugins }, settings) => {
+				Object.assign(plugins.cssEditor.settings, settings);
+				await plugins.cssEditor.saveSettings();
+			},
+			{ promptDelete: true },
+		);
+
+		// Create a snippet to delete
+		const snippetName = `delete-test-2-${Date.now()}`;
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue(snippetName);
+		await browser.keys(Key.Enter);
+		await expect(CssEditorView.titleEl).toHaveText(snippetName);
+
+		// Open quick switcher and trigger delete - should show confirmation modal
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue(snippetName);
+		await browser.keys([Key.Command, Key.Delete]);
+		await QuickSwitcherModal.modalEl.waitForDisplayed({ reverse: true });
+
+		// Confirm deletion using the modal
+		await DeleteConfirmModal.confirmDelete();
+
+		// Verify deletion
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue(snippetName);
+		await QuickSwitcherModal.expectNoSnippetsFound();
+		await browser.keys(Key.Escape);
+	});
 
 	// TODO: Re-enable after fixing
 	it.skip("can toggle status with tab", async () => {

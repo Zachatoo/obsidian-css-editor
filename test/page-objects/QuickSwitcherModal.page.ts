@@ -65,6 +65,12 @@ class QuickSwitcherModal {
 		await foundEl.click();
 		await this.modalEl.waitForDisplayed({ reverse: true });
 	}
+
+	async expectNoSnippetsFound() {
+		await expect(this.emptyMessageEl).toHaveText(
+			"No CSS snippets found. Enter to create a new one.",
+		);
+	}
 }
 
 export default new QuickSwitcherModal();

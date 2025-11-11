@@ -7,6 +7,7 @@ import CssEditorView from "../page-objects/CssEditorView.page";
 import RenameModal from "../page-objects/RenameModal.page";
 import Workspace from "../page-objects/Workspace.page";
 import Notice from "../page-objects/Notice.page";
+import DeleteConfirmModal from "../page-objects/DeleteConfirmModal.page";
 
 describe("editor view", function () {
 	beforeEach(async () => {
@@ -160,17 +161,127 @@ describe("editor view", function () {
 		await browser.keys(Key.Escape); // Close menu
 	});
 
-	// TODO: Implement
-	it.skip("can delete with command without confirmation", async () => {});
+	it("can delete with command without confirmation", async () => {
+		// Disable delete confirmation prompt
+		await browser.executeObsidian(
+			async ({ plugins }, settings) => {
+				Object.assign(plugins.cssEditor.settings, settings);
+				await plugins.cssEditor.saveSettings();
+			},
+			{ promptDelete: false },
+		);
 
-	// TODO: Implement
-	it.skip("can delete with command with confirmation", async () => {});
+		// Create a snippet to delete
+		const snippetName = `delete-cmd-test-${Date.now()}`;
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue(snippetName);
+		await browser.keys(Key.Enter);
+		await expect(CssEditorView.titleEl).toHaveText(snippetName);
 
-	// TODO: Implement
-	it.skip("can delete with view header action without confirmation", async () => {});
+		// Delete with command
+		await browser.executeObsidianCommand("css-editor:delete-css-snippet");
 
-	// TODO: Implement
-	it.skip("can delete with view header action with confirmation", async () => {});
+		// Verify deletion - quick switcher should show no matches
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue(snippetName);
+		await QuickSwitcherModal.expectNoSnippetsFound();
+		await browser.keys(Key.Escape);
+	});
+
+	it("can delete with command with confirmation", async () => {
+		// Ensure delete confirmation prompt is enabled
+		await browser.executeObsidian(
+			async ({ plugins }, settings) => {
+				Object.assign(plugins.cssEditor.settings, settings);
+				await plugins.cssEditor.saveSettings();
+			},
+			{ promptDelete: true },
+		);
+
+		// Create a snippet to delete
+		const snippetName = `delete-cmd-confirm-test-${Date.now()}`;
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue(snippetName);
+		await browser.keys(Key.Enter);
+		await expect(CssEditorView.titleEl).toHaveText(snippetName);
+
+		// Delete with command - should show confirmation modal
+		await browser.executeObsidianCommand("css-editor:delete-css-snippet");
+
+		// Confirm deletion
+		await DeleteConfirmModal.confirmDelete();
+
+		// Verify deletion
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue(snippetName);
+		await QuickSwitcherModal.expectNoSnippetsFound();
+		await browser.keys(Key.Escape);
+	});
+
+	it("can delete with view header action without confirmation", async () => {
+		// Disable delete confirmation prompt
+		await browser.executeObsidian(
+			async ({ plugins }, settings) => {
+				Object.assign(plugins.cssEditor.settings, settings);
+				await plugins.cssEditor.saveSettings();
+			},
+			{ promptDelete: false },
+		);
+
+		// Create a snippet to delete
+		const snippetName = `delete-view-test-${Date.now()}`;
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue(snippetName);
+		await browser.keys(Key.Enter);
+		await expect(CssEditorView.titleEl).toHaveText(snippetName);
+
+		// Delete with view header action
+		await Notice.dismissAll();
+		await CssEditorView.moreOptionsButtonEl.waitForClickable();
+		await CssEditorView.moreOptionsButtonEl.click();
+		await CssEditorView.deleteMenuItemEl.waitForClickable();
+		await CssEditorView.deleteMenuItemEl.click();
+
+		// Verify deletion
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue(snippetName);
+		await QuickSwitcherModal.expectNoSnippetsFound();
+		await browser.keys(Key.Escape);
+	});
+
+	it("can delete with view header action with confirmation", async () => {
+		// Ensure delete confirmation prompt is enabled
+		await browser.executeObsidian(
+			async ({ plugins }, settings) => {
+				Object.assign(plugins.cssEditor.settings, settings);
+				await plugins.cssEditor.saveSettings();
+			},
+			{ promptDelete: true },
+		);
+
+		// Create a snippet to delete
+		const snippetName = `delete-view-confirm-test-${Date.now()}`;
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue(snippetName);
+		await browser.keys(Key.Enter);
+		await expect(CssEditorView.titleEl).toHaveText(snippetName);
+
+		// Delete with view header action - should show confirmation modal
+		await Notice.dismissAll();
+		await CssEditorView.moreOptionsButtonEl.waitForClickable();
+		await CssEditorView.moreOptionsButtonEl.click();
+		await CssEditorView.deleteMenuItemEl.waitForClickable();
+		await CssEditorView.deleteMenuItemEl.click();
+
+		// Confirm deletion
+		await DeleteConfirmModal.confirmDelete();
+
+		// Verify deletion
+		await QuickSwitcherModal.open();
+		await QuickSwitcherModal.inputEl.setValue(snippetName);
+		await QuickSwitcherModal.expectNoSnippetsFound();
+		await browser.keys(Key.Escape);
+	});
 
 	// TODO: Implement
 	it.skip("respects line wrap setting", async () => {});

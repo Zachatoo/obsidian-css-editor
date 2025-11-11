@@ -24,6 +24,9 @@ class CssEditorView {
 	get disableSnippetMenuItemEl() {
 		return this.menuEl.$(".menu-item-title=Disable snippet");
 	}
+	get deleteMenuItemEl() {
+		return this.menuEl.$(".menu-item-title=Delete snippet");
+	}
 }
 
 export default new CssEditorView();
