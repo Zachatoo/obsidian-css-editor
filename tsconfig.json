@@ -16,7 +16,12 @@
 		"strictBindCallApply": true,
 		"useUnknownInCatchVariables": true,
 		"allowSyntheticDefaultImports": true,
-		"lib": ["DOM", "ES5", "ES6", "ES7"]
+		"lib": ["DOM", "ES5", "ES6", "ES7"],
+		"types": [
+			"@wdio/globals/types",
+			"@wdio/mocha-framework",
+			"wdio-obsidian-service"
+		]
 	},
-	"include": ["**/*.ts"]
+	"include": ["**/*.ts", "wdio.conf.mts"]
 }
