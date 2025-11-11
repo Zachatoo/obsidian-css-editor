@@ -6,7 +6,6 @@ import QuickSwitcherModal from "../page-objects/QuickSwitcherModal.page";
 import CssEditorView from "../page-objects/CssEditorView.page";
 import RenameModal from "../page-objects/RenameModal.page";
 import Workspace from "../page-objects/Workspace.page";
-import Notice from "../page-objects/Notice.page";
 import DeleteConfirmModal from "../page-objects/DeleteConfirmModal.page";
 
 describe("editor view", function () {
@@ -39,11 +38,7 @@ describe("editor view", function () {
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
 
 		const newName = `renamed-snippet-${Date.now()}`;
-		await Notice.dismissAll();
-		await CssEditorView.moreOptionsButtonEl.waitForClickable();
-		await CssEditorView.moreOptionsButtonEl.click();
-		await CssEditorView.renameMenuItemEl.waitForClickable();
-		await CssEditorView.renameMenuItemEl.click();
+		await CssEditorView.selectMenuAction("rename");
 		await RenameModal.enterSnippetName(newName);
 		await RenameModal.save();
 
@@ -59,9 +54,7 @@ describe("editor view", function () {
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
 
 		// Check initial state by opening menu
-		await Notice.dismissAll();
-		await CssEditorView.moreOptionsButtonEl.waitForClickable();
-		await CssEditorView.moreOptionsButtonEl.click();
+		await CssEditorView.openMenu();
 		const initialIsEnabled =
 			await CssEditorView.disableSnippetMenuItemEl.isDisplayed();
 		await browser.keys(Key.Escape); // Close menu
@@ -72,9 +65,7 @@ describe("editor view", function () {
 		);
 
 		// Verify status changed
-		await Notice.dismissAll();
-		await CssEditorView.moreOptionsButtonEl.waitForClickable();
-		await CssEditorView.moreOptionsButtonEl.click();
+		await CssEditorView.openMenu();
 		if (initialIsEnabled) {
 			await expect(CssEditorView.enableSnippetMenuItemEl).toBeDisplayed();
 		} else {
@@ -90,9 +81,7 @@ describe("editor view", function () {
 		);
 
 		// Verify it's back to original state
-		await Notice.dismissAll();
-		await CssEditorView.moreOptionsButtonEl.waitForClickable();
-		await CssEditorView.moreOptionsButtonEl.click();
+		await CssEditorView.openMenu();
 		if (initialIsEnabled) {
 			await expect(
 				CssEditorView.disableSnippetMenuItemEl,
@@ -111,22 +100,19 @@ describe("editor view", function () {
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
 
 		// Check initial state and toggle
-		await Notice.dismissAll();
-		await CssEditorView.moreOptionsButtonEl.waitForClickable();
-		await CssEditorView.moreOptionsButtonEl.click();
+		await CssEditorView.openMenu();
 		const initialIsEnabled =
 			await CssEditorView.disableSnippetMenuItemEl.isDisplayed();
+		await browser.keys(Key.Escape); // Close menu to reopen with selectMenuAction
+
 		if (initialIsEnabled) {
-			await CssEditorView.disableSnippetMenuItemEl.waitForClickable();
-			await CssEditorView.disableSnippetMenuItemEl.click();
+			await CssEditorView.selectMenuAction("disable");
 		} else {
-			await CssEditorView.enableSnippetMenuItemEl.waitForClickable();
-			await CssEditorView.enableSnippetMenuItemEl.click();
+			await CssEditorView.selectMenuAction("enable");
 		}
 
 		// Verify status changed
-		await Notice.dismissAll();
-		await CssEditorView.moreOptionsButtonEl.click();
+		await CssEditorView.openMenu();
 		if (initialIsEnabled) {
 			await expect(CssEditorView.enableSnippetMenuItemEl).toBeDisplayed();
 		} else {
@@ -137,20 +123,14 @@ describe("editor view", function () {
 		await browser.keys(Key.Escape); // Close menu
 
 		// Toggle back
-		await Notice.dismissAll();
-		await CssEditorView.moreOptionsButtonEl.waitForClickable();
-		await CssEditorView.moreOptionsButtonEl.click();
 		if (initialIsEnabled) {
-			await CssEditorView.enableSnippetMenuItemEl.waitForClickable();
-			await CssEditorView.enableSnippetMenuItemEl.click();
+			await CssEditorView.selectMenuAction("enable");
 		} else {
-			await CssEditorView.disableSnippetMenuItemEl.waitForClickable();
-			await CssEditorView.disableSnippetMenuItemEl.click();
+			await CssEditorView.selectMenuAction("disable");
 		}
 
 		// Verify it's back to original state
-		await Notice.dismissAll();
-		await CssEditorView.moreOptionsButtonEl.click();
+		await CssEditorView.openMenu();
 		if (initialIsEnabled) {
 			await expect(
 				CssEditorView.disableSnippetMenuItemEl,
@@ -236,11 +216,7 @@ describe("editor view", function () {
 		await expect(CssEditorView.titleEl).toHaveText(snippetName);
 
 		// Delete with view header action
-		await Notice.dismissAll();
-		await CssEditorView.moreOptionsButtonEl.waitForClickable();
-		await CssEditorView.moreOptionsButtonEl.click();
-		await CssEditorView.deleteMenuItemEl.waitForClickable();
-		await CssEditorView.deleteMenuItemEl.click();
+		await CssEditorView.selectMenuAction("delete");
 
 		// Verify deletion
 		await QuickSwitcherModal.open();
@@ -267,11 +243,7 @@ describe("editor view", function () {
 		await expect(CssEditorView.titleEl).toHaveText(snippetName);
 
 		// Delete with view header action - should show confirmation modal
-		await Notice.dismissAll();
-		await CssEditorView.moreOptionsButtonEl.waitForClickable();
-		await CssEditorView.moreOptionsButtonEl.click();
-		await CssEditorView.deleteMenuItemEl.waitForClickable();
-		await CssEditorView.deleteMenuItemEl.click();
+		await CssEditorView.selectMenuAction("delete");
 
 		// Confirm deletion
 		await DeleteConfirmModal.confirmDelete();
