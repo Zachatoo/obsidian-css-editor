@@ -10,6 +10,7 @@ import DeleteConfirmModal from "../page-objects/DeleteConfirmModal.page";
 
 describe("editor view", function () {
 	beforeEach(async () => {
+		await browser.keys(Key.Escape); // Close any open modals/menus
 		await obsidianPage.loadWorkspaceLayout("empty");
 	});
 
@@ -89,7 +90,6 @@ describe("editor view", function () {
 		} else {
 			await expect(CssEditorView.enableSnippetMenuItemEl).toBeDisplayed();
 		}
-		await browser.keys(Key.Escape); // Close menu
 	});
 
 	it("can toggle status with view header action", async () => {
@@ -138,7 +138,6 @@ describe("editor view", function () {
 		} else {
 			await expect(CssEditorView.enableSnippetMenuItemEl).toBeDisplayed();
 		}
-		await browser.keys(Key.Escape); // Close menu
 	});
 
 	it("can delete with command without confirmation", async () => {
@@ -165,7 +164,6 @@ describe("editor view", function () {
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue(snippetName);
 		await QuickSwitcherModal.expectNoSnippetsFound();
-		await browser.keys(Key.Escape);
 	});
 
 	it("can delete with command with confirmation", async () => {
@@ -195,7 +193,6 @@ describe("editor view", function () {
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue(snippetName);
 		await QuickSwitcherModal.expectNoSnippetsFound();
-		await browser.keys(Key.Escape);
 	});
 
 	it("can delete with view header action without confirmation", async () => {
@@ -222,7 +219,6 @@ describe("editor view", function () {
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue(snippetName);
 		await QuickSwitcherModal.expectNoSnippetsFound();
-		await browser.keys(Key.Escape);
 	});
 
 	it("can delete with view header action with confirmation", async () => {
@@ -252,7 +248,6 @@ describe("editor view", function () {
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue(snippetName);
 		await QuickSwitcherModal.expectNoSnippetsFound();
-		await browser.keys(Key.Escape);
 	});
 
 	// TODO: Implement

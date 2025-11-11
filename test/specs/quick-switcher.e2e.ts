@@ -9,6 +9,7 @@ import DeleteConfirmModal from "../page-objects/DeleteConfirmModal.page";
 
 describe("quick switcher", function () {
 	beforeEach(async () => {
+		await browser.keys(Key.Escape); // Close any open modals/menus
 		await obsidianPage.loadWorkspaceLayout("empty");
 	});
 
@@ -113,7 +114,6 @@ describe("quick switcher", function () {
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue(snippetName);
 		await QuickSwitcherModal.expectNoSnippetsFound();
-		await browser.keys(Key.Escape);
 	});
 
 	it("can delete with confirmation", async () => {
@@ -146,18 +146,15 @@ describe("quick switcher", function () {
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue(snippetName);
 		await QuickSwitcherModal.expectNoSnippetsFound();
-		await browser.keys(Key.Escape);
 	});
 
-	// TODO: Re-enable after fixing
-	it.skip("can toggle status with tab", async () => {
+	it("can toggle status with tab", async () => {
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.toggleSelectedSuggestionStatus("keyboard");
 		await QuickSwitcherModal.toggleSelectedSuggestionStatus("keyboard");
 	});
 
-	// TODO: Re-enable after fixing
-	it.skip("can toggle status with mouse", async () => {
+	it("can toggle status with mouse", async () => {
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.toggleSelectedSuggestionStatus("mouse");
 		await QuickSwitcherModal.toggleSelectedSuggestionStatus("mouse");
