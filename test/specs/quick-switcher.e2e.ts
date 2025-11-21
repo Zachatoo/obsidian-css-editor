@@ -55,14 +55,14 @@ describe("quick switcher", function () {
 		const initialTabCount = await Workspace.getTabCount();
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue("existing-snippet-1.css");
-		await browser.keys([Key.Command, Key.Enter]);
+		await browser.keys([Key.Ctrl, Key.Enter]);
 		await expect(Workspace.activeTabEl).toHaveText("existing-snippet-1");
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
 		await expect(await Workspace.getTabCount()).toBe(initialTabCount);
 		// If not in empty workspace, then opening in new tab will open in new tab
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue("existing-snippet-1.css");
-		await browser.keys([Key.Command, Key.Enter]);
+		await browser.keys([Key.Ctrl, Key.Enter]);
 		await expect(Workspace.activeTabEl).toHaveText("existing-snippet-1");
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
 		await expect(await Workspace.getTabCount()).toBe(initialTabCount + 1);
@@ -107,7 +107,7 @@ describe("quick switcher", function () {
 		// Open quick switcher and delete the snippet with Cmd+Delete
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue(snippetName);
-		await browser.keys([Key.Command, Key.Delete]);
+		await browser.keys([Key.Ctrl, Key.Delete]);
 		await QuickSwitcherModal.modalEl.waitForDisplayed({ reverse: true });
 
 		// Verify the quick switcher shows no matches for the deleted snippet
@@ -136,7 +136,7 @@ describe("quick switcher", function () {
 		// Open quick switcher and trigger delete - should show confirmation modal
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue(snippetName);
-		await browser.keys([Key.Command, Key.Delete]);
+		await browser.keys([Key.Ctrl, Key.Delete]);
 		await QuickSwitcherModal.modalEl.waitForDisplayed({ reverse: true });
 
 		// Confirm deletion using the modal
