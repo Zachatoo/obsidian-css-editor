@@ -1,0 +1,61 @@
+name: Test
+
+on:
+    push:
+        branches:
+            - "main"
+        pull_request:
+            branches: ["main"]
+        paths-ignore:
+            - "**.md"
+            - ".github/**"
+            - "!.github/workflows/test.yaml"
+            - ".vscode/**"
+    workflow_dispatch:
+
+permissions: {}
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: "22.x"
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Lint code
+              run: npm run lint
+
+            - name: Build plugin
+              run: npm run build
+
+            # Get key to use for the .obsidian-cache GitHub cache. Run wdio.conf.mts directly,
+            # which will logs the Obsidian versions to test (see the `if (process.env.CI)` bit
+            # in wdio.conf.mts). We'll use that output as the cache key.
+            - name: "Get Obsidian cache key"
+              run: |
+                  npx tsx wdio.conf.mts | grep 'obsidian-cache-key:' > obsidian-versions-lock.txt
+                  # Delete the cache created by wdio.conf.mts so it doesn't conflict with restore
+                  rm -rf .obsidian-cache
+              env:
+                  # Beta versions require an Obsidian Insiders account to download. If you want to
+                  # test beta versions, you'll need add your credentials to GitHub secrets as
+                  # OBSIDIAN_EMAIL and OBSIDIAN_PASSWORD. 2FA needs to be disabled.
+                  # Note that workflows triggered by fork PRs won't have access to GitHub secrets.
+                  OBSIDIAN_EMAIL: ${{ secrets.OBSIDIAN_EMAIL }}
+                  OBSIDIAN_PASSWORD: ${{ secrets.OBSIDIAN_PASSWORD }}
+
+            - name: Cache Obsidian
+              uses: actions/cache@v4
+              with:
+                  path: .obsidian-cache
+                  key: obsidian-cache-${{ matrix.os }}-${{ hashFiles('obsidian-versions-lock.txt') }}
+
+            - name: Run tests
+              run: npm run test
