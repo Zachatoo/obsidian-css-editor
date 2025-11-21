@@ -56,4 +56,4 @@ Releasing a new version involves the following steps:
 
 ### Running tests
 
-Tests are run within Obsidian, they cannot be run in a CLI. Running `npm run test` will output a plugin that has one command to run the tests. You can then run that command in Obsidian and the tests results will be output to the console in Obsidian.
+Tests are run using [wdio-obsidian-service](https://jesse-r-s-hines.github.io/wdio-obsidian-service/index.html). Tests are run automatically during PR checks and before releasing. You can also run tests manually with `npm test`.
