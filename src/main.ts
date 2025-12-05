@@ -1,4 +1,4 @@
-import { Notice, Plugin } from "obsidian";
+import { addIcon, Notice, Plugin } from "obsidian";
 import { CssEditorView, VIEW_TYPE_CSS } from "src/views/CssEditorView";
 import { CssSnippetFuzzySuggestModal } from "src/modals/CssSnippetFuzzySuggestModal";
 import { ignoreObsidianHotkey } from "src/obsidian/ignore-obsidian-hotkey";
@@ -13,6 +13,7 @@ import { CssFile } from "./CssFile";
 import { CSSEditorSettingTab } from "./obsidian/setting-tab";
 import { CssSnippetDeleteConfirmModal } from "./modals/CssSnippetDeleteConfirmModal";
 import { handleError } from "./utils/handle-error";
+import icon from "./icons/css-icon.svg";
 
 export interface CssEditorPluginSettings {
 	promptDelete: boolean;
@@ -35,9 +36,12 @@ export default class CssEditorPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
+		addIcon("css-editor-logo", icon);
+
 		this.addCommand({
 			id: "create-css-snippet",
 			name: "Create CSS snippet",
+			icon: "file-plus",
 			callback: () => {
 				new CssSnippetCreateModal(this.app, this).open();
 			},
@@ -45,6 +49,7 @@ export default class CssEditorPlugin extends Plugin {
 		this.addCommand({
 			id: "open-quick-switcher",
 			name: "Open quick switcher",
+			icon: "file-search",
 			callback: () => {
 				new CssSnippetFuzzySuggestModal(this.app, this).open();
 			},
@@ -52,6 +57,7 @@ export default class CssEditorPlugin extends Plugin {
 		this.addCommand({
 			id: "delete-css-snippet",
 			name: "Delete CSS snippet",
+			icon: "trash-2",
 			checkCallback: (checking) => {
 				const activeCssEditorView =
 					this.app.workspace.getActiveViewOfType(CssEditorView);
@@ -99,6 +105,14 @@ export default class CssEditorPlugin extends Plugin {
 				return true;
 			},
 		});
+
+		this.addRibbonIcon(
+			"css-editor-logo",
+			"Open CSS editor quick switcher",
+			() => {
+				new CssSnippetFuzzySuggestModal(this.app, this).open();
+			},
+		);
 
 		this.register(
 			ignoreObsidianHotkey(

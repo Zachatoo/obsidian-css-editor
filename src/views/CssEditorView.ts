@@ -106,7 +106,7 @@ export class CssEditorView extends ItemView {
 	}
 
 	getIcon() {
-		return "file-code";
+		return "css-editor-logo";
 	}
 
 	getDisplayText(): string {
