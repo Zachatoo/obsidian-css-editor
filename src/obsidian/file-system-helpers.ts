@@ -68,6 +68,7 @@ export async function checkSnippetExists(
 	);
 }
 
+/** Prefer to call a method from `utils/delete-snippet.ts` */
 export async function deleteSnippetFile(app: App, file: CssFile) {
 	await app.vault.adapter.remove(
 		normalizePath(`${getSnippetDirectory(app)}${file.name}`),

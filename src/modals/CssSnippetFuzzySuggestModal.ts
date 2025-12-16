@@ -8,15 +8,14 @@ import {
 } from "obsidian";
 import CssEditorPlugin from "src/main";
 import {
-	deleteSnippetFile,
 	getSnippetDirectory,
 	toggleSnippetFileState,
 } from "src/obsidian/file-system-helpers";
-import { detachCssFileLeaves, openView } from "src/obsidian/workspace-helpers";
+import { openView } from "src/obsidian/workspace-helpers";
 import { VIEW_TYPE_CSS } from "src/views/CssEditorView";
 import { CssFile } from "src/CssFile";
 import { handleError } from "src/utils/handle-error";
-import { CssSnippetDeleteConfirmModal } from "./CssSnippetDeleteConfirmModal";
+import { tryDeleteSnippet } from "src/utils/delete-snippet";
 
 export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 	plugin: CssEditorPlugin;
@@ -239,24 +238,13 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 					}).catch(handleError);
 				}
 			} else if (evt.key === "Delete") {
-				if (this.plugin.settings.promptDelete) {
-					new CssSnippetDeleteConfirmModal(
-						this.app,
-						this.plugin,
-						item,
-					).open();
-				} else {
-					Promise.all([
-						detachCssFileLeaves(this.app.workspace, item),
-						deleteSnippetFile(this.app, item),
-					])
-						.then(() => {
-							new Notice(`${item.name} was deleted.`);
-						})
-						.catch((err) => {
-							handleError(err, "Failed to delete CSS file.");
-						});
-				}
+				tryDeleteSnippet(this.plugin, item)
+					.then(() => {
+						new Notice(`${item.name} was deleted.`);
+					})
+					.catch((err) => {
+						handleError(err, "Failed to delete CSS file.");
+					});
 			}
 		} else {
 			const openInNewTab = evt.metaKey;

@@ -10,7 +10,6 @@ import { EditorView, lineNumbers } from "@codemirror/view";
 import { vim } from "@replit/codemirror-vim";
 import { CssFile } from "src/CssFile";
 import {
-	deleteSnippetFile,
 	readSnippetFile,
 	renameSnippetFile,
 	toggleSnippetFileState,
@@ -29,14 +28,13 @@ import { indentUnit } from "@codemirror/language";
 import { CssSnippetRenameModal } from "src/modals/CssSnippetRenameModal";
 import { focusAndSelectElement } from "src/obsidian/view-helpers";
 import { colorPickerPlugin } from "src/codemirror-extensions/color-picker";
-import { detachCssFileLeaves } from "src/obsidian/workspace-helpers";
-import { CssSnippetDeleteConfirmModal } from "src/modals/CssSnippetDeleteConfirmModal";
 import { handleError } from "src/utils/handle-error";
 import {
 	relativeLineNumberGutter,
 	relativeLineNumbersFormatter,
 	absoluteLineNumbers,
 } from "src/codemirror-extensions/relative-line-numbers";
+import { tryDeleteSnippet } from "src/utils/delete-snippet";
 
 export const VIEW_TYPE_CSS = "css-editor-view";
 
@@ -219,28 +217,16 @@ export class CssEditorView extends ItemView {
 							.setWarning(true)
 							.onClick(async () => {
 								if (this.file) {
-									if (this.plugin.settings.promptDelete) {
-										new CssSnippetDeleteConfirmModal(
-											this.app,
+									try {
+										await tryDeleteSnippet(
 											this.plugin,
 											this.file,
-										).open();
-									} else {
-										try {
-											await detachCssFileLeaves(
-												this.app.workspace,
-												this.file,
-											);
-											await deleteSnippetFile(
-												this.app,
-												this.file,
-											);
-										} catch (err) {
-											handleError(
-												err,
-												"Failed to delete CSS file.",
-											);
-										}
+										);
+									} catch (err) {
+										handleError(
+											err,
+											"Failed to delete CSS file.",
+										);
 									}
 								}
 							});
