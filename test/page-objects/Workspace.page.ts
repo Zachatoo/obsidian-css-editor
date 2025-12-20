@@ -1,3 +1,5 @@
+import { obsidianPage } from "wdio-obsidian-service";
+
 class Workspace {
 	get activeTabEl() {
 		return browser.$(
@@ -11,17 +13,13 @@ class Workspace {
 		);
 	}
 
-	async getActiveTabTitle(): Promise<string> {
-		return this.activeTabEl.getText();
-	}
-
-	async getAllTabTitles(): Promise<string[]> {
-		const tabs = this.allTabEls;
-		const titles: string[] = [];
-		for (const tab of tabs) {
-			titles.push(await tab.getText());
+	async expectActiveTabToHaveText(text: string) {
+		const platform = await obsidianPage.getPlatform();
+		if (platform.isMobile) {
+			// On mobile, the active tab title is not shown in the UI
+			return;
 		}
-		return titles;
+		await expect(this.activeTabEl).toHaveText(text);
 	}
 
 	async getTabCount(): Promise<number> {

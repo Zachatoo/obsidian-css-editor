@@ -35,7 +35,7 @@ describe("quick switcher", function () {
 		await QuickSwitcherModal.selectSuggestionByName(
 			"existing-snippet-1.css",
 		);
-		await expect(Workspace.activeTabEl).toHaveText("existing-snippet-1");
+		await Workspace.expectActiveTabToHaveText("existing-snippet-1");
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
 	});
 
@@ -44,7 +44,7 @@ describe("quick switcher", function () {
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue("existing-snippet-1.css");
 		await browser.keys(Key.Enter);
-		await expect(Workspace.activeTabEl).toHaveText("existing-snippet-1");
+		await Workspace.expectActiveTabToHaveText("existing-snippet-1");
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
 		const finalTabCount = await Workspace.getTabCount();
 		await expect(finalTabCount).toBe(initialTabCount);
@@ -56,14 +56,14 @@ describe("quick switcher", function () {
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue("existing-snippet-1.css");
 		await browser.keys([Key.Ctrl, Key.Enter]);
-		await expect(Workspace.activeTabEl).toHaveText("existing-snippet-1");
+		await Workspace.expectActiveTabToHaveText("existing-snippet-1");
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
 		await expect(await Workspace.getTabCount()).toBe(initialTabCount);
 		// If not in empty workspace, then opening in new tab will open in new tab
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue("existing-snippet-1.css");
 		await browser.keys([Key.Ctrl, Key.Enter]);
-		await expect(Workspace.activeTabEl).toHaveText("existing-snippet-1");
+		await Workspace.expectActiveTabToHaveText("existing-snippet-1");
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
 		await expect(await Workspace.getTabCount()).toBe(initialTabCount + 1);
 	});
@@ -74,7 +74,7 @@ describe("quick switcher", function () {
 		await QuickSwitcherModal.inputEl.setValue(uniqueName);
 		await QuickSwitcherModal.expectNoSnippetsFound();
 		await browser.keys(Key.Enter);
-		await expect(Workspace.activeTabEl).toHaveText(uniqueName);
+		await Workspace.expectActiveTabToHaveText(uniqueName);
 		await expect(CssEditorView.titleEl).toHaveText(uniqueName);
 	});
 
@@ -83,7 +83,7 @@ describe("quick switcher", function () {
 		await QuickSwitcherModal.inputEl.setValue("existing-snippet");
 		await expect(QuickSwitcherModal.emptyMessageEl).not.toBeDisplayed();
 		await browser.keys([Key.Shift, Key.Enter]);
-		await expect(Workspace.activeTabEl).toHaveText("existing-snippet");
+		await Workspace.expectActiveTabToHaveText("existing-snippet");
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet");
 	});
 

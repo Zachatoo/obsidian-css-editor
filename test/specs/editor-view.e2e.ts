@@ -7,6 +7,7 @@ import CssEditorView from "../page-objects/CssEditorView.page";
 import RenameModal from "../page-objects/RenameModal.page";
 import Workspace from "../page-objects/Workspace.page";
 import DeleteConfirmModal from "../page-objects/DeleteConfirmModal.page";
+import EmptyStateViewPage from "test/page-objects/EmptyStateView.page";
 
 describe("editor view", function () {
 	beforeEach(async () => {
@@ -14,7 +15,11 @@ describe("editor view", function () {
 		await obsidianPage.loadWorkspaceLayout("empty");
 	});
 
-	it("can rename with f2 keybind", async () => {
+	it("can rename with f2 keybind", async function () {
+		const platform = await obsidianPage.getPlatform();
+		if (platform.isMobile) {
+			this.skip();
+		}
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue("existing-snippet-1.css");
 		await browser.keys(Key.Enter);
@@ -28,7 +33,7 @@ describe("editor view", function () {
 		await browser.keys(newName);
 		await browser.keys(Key.Enter);
 
-		await expect(Workspace.activeTabEl).toHaveText(newName);
+		await Workspace.expectActiveTabToHaveText(newName);
 		await expect(CssEditorView.titleEl).toHaveText(newName);
 	});
 
@@ -43,7 +48,7 @@ describe("editor view", function () {
 		await RenameModal.enterSnippetName(newName);
 		await RenameModal.save();
 
-		await expect(Workspace.activeTabEl).toHaveText(newName);
+		await Workspace.expectActiveTabToHaveText(newName);
 		await expect(CssEditorView.titleEl).toHaveText(newName);
 	});
 
@@ -159,6 +164,7 @@ describe("editor view", function () {
 
 		// Delete with command
 		await browser.executeObsidianCommand("css-editor:delete-css-snippet");
+		await expect(EmptyStateViewPage.contentEl).toBeDisplayed();
 
 		// Verify deletion - quick switcher should show no matches
 		await QuickSwitcherModal.open();
@@ -188,6 +194,7 @@ describe("editor view", function () {
 
 		// Confirm deletion
 		await DeleteConfirmModal.confirmDelete();
+		await expect(EmptyStateViewPage.contentEl).toBeDisplayed();
 
 		// Verify deletion
 		await QuickSwitcherModal.open();
@@ -214,6 +221,7 @@ describe("editor view", function () {
 
 		// Delete with view header action
 		await CssEditorView.selectMenuAction("delete");
+		await expect(EmptyStateViewPage.contentEl).toBeDisplayed();
 
 		// Verify deletion
 		await QuickSwitcherModal.open();
@@ -243,6 +251,7 @@ describe("editor view", function () {
 
 		// Confirm deletion
 		await DeleteConfirmModal.confirmDelete();
+		await expect(EmptyStateViewPage.contentEl).toBeDisplayed();
 
 		// Verify deletion
 		await QuickSwitcherModal.open();

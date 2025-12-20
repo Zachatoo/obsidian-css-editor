@@ -15,7 +15,7 @@ describe("create modal", function () {
 		await CreateModal.open();
 		await CreateModal.enterSnippetName("can create snippet.css");
 		await CreateModal.save();
-		await expect(Workspace.activeTabEl).toHaveText("can create snippet");
+		await Workspace.expectActiveTabToHaveText("can create snippet");
 		await expect(CssEditorView.titleEl).toHaveText("can create snippet");
 	});
 

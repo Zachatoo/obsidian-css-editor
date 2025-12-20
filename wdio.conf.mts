@@ -17,6 +17,10 @@ const desktopVersions = await parseObsidianVersions(
 	env.OBSIDIAN_VERSIONS ?? defaultVersions,
 	{ cacheDir },
 );
+const mobileVersions = await parseObsidianVersions(
+	env.OBSIDIAN_MOBILE_VERSIONS ?? defaultVersions,
+	{ cacheDir },
+);
 if (env.CI) {
 	// Print the resolved Obsidian versions to use as the workflow cache key
 	// (see .github/workflows/test.yaml)
@@ -42,6 +46,28 @@ export const config: WebdriverIO.Config = {
 					// If you need to switch between multiple vaults, you can omit this and
 					// use `reloadObsidian` to open vaults during the test.
 					vault: "test/vault",
+				},
+			}),
+		),
+		...mobileVersions.map<WebdriverIO.Capabilities>(
+			([appVersion, installerVersion]) => ({
+				browserName: "obsidian",
+				"wdio:obsidianOptions": {
+					appVersion,
+					installerVersion,
+					emulateMobile: true,
+					plugins: ["."],
+					// If you need to switch between multiple vaults, you can omit this and
+					// use `reloadObsidian` to open vaults during the test.
+					vault: "test/vault",
+				},
+				"goog:chromeOptions": {
+					mobileEmulation: {
+						// can also set deviceName: "iPad" etc. instead of hard-coding size.
+						// If you have issues getting click events etc. to work properly, try
+						// setting `touch: false` here.
+						deviceMetrics: { width: 390, height: 844 },
+					},
 				},
 			}),
 		),
