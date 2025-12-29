@@ -15,6 +15,7 @@ class DeleteConfirmModal {
 	async confirmDelete(dontAskAgain = false) {
 		await this.modalEl.waitForDisplayed();
 		if (dontAskAgain) {
+			await this.dontAskAgainCheckboxEl.waitForClickable();
 			await this.dontAskAgainCheckboxEl.click();
 		}
 		await this.deleteButtonEl.waitForClickable();
