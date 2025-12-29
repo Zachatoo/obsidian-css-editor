@@ -86,4 +86,5 @@ export const config: WebdriverIO.Config = {
 		// You can set mocha settings like "retry" and "bail"
 	},
 	logLevel: "warn",
+	waitforTimeout: 10000,
 };
