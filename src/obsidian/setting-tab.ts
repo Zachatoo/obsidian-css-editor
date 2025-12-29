@@ -1,14 +1,14 @@
 import { indentUnit } from "@codemirror/language";
 import { TransactionSpec } from "@codemirror/state";
 import { EditorView, lineNumbers } from "@codemirror/view";
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, PluginSettingTab, SettingGroup } from "obsidian";
 import { indentSize, lineWrap } from "src/codemirror-extensions/compartments";
 import {
 	relativeLineNumberGutter,
 	relativeLineNumbersFormatter,
 	absoluteLineNumbers,
 } from "src/codemirror-extensions/relative-line-numbers";
-import CssEditorPlugin from "src/main";
+import CssEditorPlugin, { DEFAULT_SETTINGS } from "src/main";
 import { CssEditorView, VIEW_TYPE_CSS } from "src/views/CssEditorView";
 
 function updateCSSEditorView(app: App, spec: TransactionSpec) {
@@ -21,6 +21,7 @@ function updateCSSEditorView(app: App, spec: TransactionSpec) {
 
 export class CSSEditorSettingTab extends PluginSettingTab {
 	plugin: CssEditorPlugin;
+	icon = "css-editor-logo";
 
 	constructor(app: App, plugin: CssEditorPlugin) {
 		super(app, plugin);
@@ -30,71 +31,99 @@ export class CSSEditorSettingTab extends PluginSettingTab {
 	display(): void {
 		this.containerEl.empty();
 
-		new Setting(this.containerEl)
-			.setName("Confirm CSS snippet deletion")
-			.setDesc("Prompt before CSS snippet deletion.")
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.promptDelete);
-				toggle.onChange(async (val) => {
-					this.plugin.settings.promptDelete = val;
-					await this.plugin.saveSettings();
-				});
-			});
+		const editorGroup = new SettingGroup(this.containerEl);
 
-		new Setting(this.containerEl)
-			.setName("Line wrap")
-			.setDesc("Toggle line wrap in the editor.")
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.lineWrap);
-				toggle.onChange(async (val) => {
-					this.plugin.settings.lineWrap = val;
-					await this.plugin.saveSettings();
-					updateCSSEditorView(this.app, {
-						effects: lineWrap.reconfigure(
-							val ? EditorView.lineWrapping : [],
-						),
+		editorGroup.addSetting((setting) => {
+			setting
+				.setName("Line wrap")
+				.setDesc("Toggle line wrap in the editor.")
+				.addToggle((toggle) => {
+					toggle.setValue(this.plugin.settings.lineWrap);
+					toggle.onChange(async (val) => {
+						this.plugin.settings.lineWrap = val;
+						await this.plugin.saveSettings();
+						updateCSSEditorView(this.app, {
+							effects: lineWrap.reconfigure(
+								val ? EditorView.lineWrapping : [],
+							),
+						});
 					});
 				});
-			});
+		});
 
-		new Setting(this.containerEl)
-			.setName("Indent size")
-			.setDesc("Adjust the amount of spaces used for indentation.")
-			.addText((field) => {
-				field.setPlaceholder("2");
-				field.setValue(this.plugin.settings.indentSize.toString());
-				field.onChange(async (val) => {
-					val = val.replace(/\D/g, "");
-					field.setValue(val);
-					const size = parseInt(val);
-					this.plugin.settings.indentSize = size;
-					await this.plugin.saveSettings();
-					updateCSSEditorView(this.app, {
-						effects: indentSize.reconfigure(
-							indentUnit.of("".padEnd(size)),
-						),
+		editorGroup.addSetting((setting) => {
+			setting
+				.setName("Indent size")
+				.setDesc("Adjust the amount of spaces used for indentation.")
+				.addExtraButton((btn) => {
+					btn.setIcon("reset")
+						.setTooltip("Restore default")
+						.onClick(async () => {
+							this.plugin.settings.indentSize =
+								DEFAULT_SETTINGS.indentSize;
+							await this.plugin.saveSettings();
+							updateCSSEditorView(this.app, {
+								effects: indentSize.reconfigure(
+									indentUnit.of("".padEnd(2)),
+								),
+							});
+							this.display();
+						});
+				})
+				.addSlider((slider) => {
+					slider
+						.setLimits(1, 8, 1)
+						.setValue(this.plugin.settings.indentSize)
+						.setDynamicTooltip()
+						.onChange(async (val) => {
+							this.plugin.settings.indentSize = val;
+							await this.plugin.saveSettings();
+							updateCSSEditorView(this.app, {
+								effects: indentSize.reconfigure(
+									indentUnit.of("".padEnd(val)),
+								),
+							});
+						});
+				});
+		});
+
+		editorGroup.addSetting((setting) => {
+			setting
+				.setName("Relative line numbers")
+				.setDesc("Show line numbers relative to cursor position.")
+				.addToggle((toggle) => {
+					toggle.setValue(this.plugin.settings.relativeLineNumbers);
+					toggle.onChange(async (val) => {
+						this.plugin.settings.relativeLineNumbers = val;
+						await this.plugin.saveSettings();
+						updateCSSEditorView(this.app, {
+							effects: relativeLineNumberGutter.reconfigure(
+								lineNumbers({
+									formatNumber: val
+										? relativeLineNumbersFormatter
+										: absoluteLineNumbers,
+								}),
+							),
+						});
 					});
 				});
-			});
+		});
 
-		new Setting(this.containerEl)
-			.setName("Relative line numbers")
-			.setDesc("Show line numbers relative to cursor position.")
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.relativeLineNumbers);
-				toggle.onChange(async (val) => {
-					this.plugin.settings.relativeLineNumbers = val;
-					await this.plugin.saveSettings();
-					updateCSSEditorView(this.app, {
-						effects: relativeLineNumberGutter.reconfigure(
-							lineNumbers({
-								formatNumber: val
-									? relativeLineNumbersFormatter
-									: absoluteLineNumbers,
-							}),
-						),
+		const trashGroup = new SettingGroup(this.containerEl).setHeading(
+			"Trash",
+		);
+
+		trashGroup.addSetting((setting) => {
+			setting
+				.setName("Confirm file deletion")
+				.setDesc("Ask before deleting a file.")
+				.addToggle((toggle) => {
+					toggle.setValue(this.plugin.settings.promptDelete);
+					toggle.onChange(async (val) => {
+						this.plugin.settings.promptDelete = val;
+						await this.plugin.saveSettings();
 					});
 				});
-			});
+		});
 	}
 }
