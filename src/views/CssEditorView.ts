@@ -14,7 +14,7 @@ import {
 	renameSnippetFile,
 	toggleSnippetFileState,
 	writeSnippetFile,
-} from "../obsidian/file-system-helpers";
+} from "../utils/file-system-helpers";
 import { basicExtensions } from "../codemirror-extensions/basic-extensions";
 import { TransactionSpec } from "@codemirror/state";
 import { history } from "@codemirror/commands";
@@ -26,7 +26,7 @@ import {
 } from "src/codemirror-extensions/compartments";
 import { indentUnit } from "@codemirror/language";
 import { CssSnippetRenameModal } from "src/modals/CssSnippetRenameModal";
-import { focusAndSelectElement } from "src/obsidian/view-helpers";
+import { focusAndSelectElement } from "src/utils/view-helpers";
 import { colorPickerPlugin } from "src/codemirror-extensions/color-picker";
 import { handleError } from "src/utils/handle-error";
 import {

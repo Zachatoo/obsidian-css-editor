@@ -8,7 +8,8 @@ import {
 	relativeLineNumbersFormatter,
 	absoluteLineNumbers,
 } from "src/codemirror-extensions/relative-line-numbers";
-import CssEditorPlugin, { DEFAULT_SETTINGS } from "src/main";
+import CssEditorPlugin from "src/main";
+import { DEFAULT_SETTINGS } from "./settings";
 import { CssEditorView, VIEW_TYPE_CSS } from "src/views/CssEditorView";
 
 function updateCSSEditorView(app: App, spec: TransactionSpec) {
