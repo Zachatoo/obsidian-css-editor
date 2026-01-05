@@ -1,32 +1,19 @@
 import { addIcon, Notice, Plugin } from "obsidian";
 import { CssEditorView, VIEW_TYPE_CSS } from "src/views/CssEditorView";
 import { CssSnippetFuzzySuggestModal } from "src/modals/CssSnippetFuzzySuggestModal";
-import { ignoreObsidianHotkey } from "src/obsidian/ignore-obsidian-hotkey";
+import { ignoreObsidianHotkey } from "src/utils/ignore-obsidian-hotkey";
 import {
 	createSnippetFile,
 	toggleSnippetFileState,
-} from "./obsidian/file-system-helpers";
-import { openView } from "./obsidian/workspace-helpers";
+} from "./utils/file-system-helpers";
+import { openView } from "./utils/workspace-helpers";
 import { CssSnippetCreateModal } from "./modals/CssSnippetCreateModal";
 import { CssFile } from "./CssFile";
-import { CSSEditorSettingTab } from "./obsidian/setting-tab";
+import { CSSEditorSettingTab } from "./settings/CssEditorSettingTab";
+import { CssEditorPluginSettings, DEFAULT_SETTINGS } from "./settings/settings";
 import { handleError } from "./utils/handle-error";
 import { tryDeleteSnippet } from "./utils/delete-snippet";
 import icon from "./icons/css-icon.svg";
-
-export interface CssEditorPluginSettings {
-	promptDelete: boolean;
-	lineWrap: boolean;
-	indentSize: number;
-	relativeLineNumbers: boolean;
-}
-
-export const DEFAULT_SETTINGS: CssEditorPluginSettings = {
-	promptDelete: true,
-	lineWrap: true,
-	indentSize: 2,
-	relativeLineNumbers: false,
-};
 
 export default class CssEditorPlugin extends Plugin {
 	settings: CssEditorPluginSettings;

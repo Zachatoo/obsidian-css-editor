@@ -1,5 +1,5 @@
 import { App, ButtonComponent, Modal, TextComponent } from "obsidian";
-import { renameSnippetFile } from "src/obsidian/file-system-helpers";
+import { renameSnippetFile } from "src/utils/file-system-helpers";
 import { CssFile } from "src/CssFile";
 import { handleError } from "src/utils/handle-error";
 

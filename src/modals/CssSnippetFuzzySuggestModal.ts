@@ -10,8 +10,8 @@ import CssEditorPlugin from "src/main";
 import {
 	getSnippetDirectory,
 	toggleSnippetFileState,
-} from "src/obsidian/file-system-helpers";
-import { openView } from "src/obsidian/workspace-helpers";
+} from "src/utils/file-system-helpers";
+import { openView } from "src/utils/workspace-helpers";
 import { VIEW_TYPE_CSS } from "src/views/CssEditorView";
 import { CssFile } from "src/CssFile";
 import { handleError } from "src/utils/handle-error";

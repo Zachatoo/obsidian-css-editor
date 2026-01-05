@@ -2,8 +2,8 @@ import { App } from "obsidian";
 import { CssFile } from "src/CssFile";
 import CssEditorPlugin from "src/main";
 import { CssSnippetDeleteConfirmModal } from "src/modals/CssSnippetDeleteConfirmModal";
-import { deleteSnippetFile } from "src/obsidian/file-system-helpers";
-import { detachCssFileLeaves } from "src/obsidian/workspace-helpers";
+import { deleteSnippetFile } from "src/utils/file-system-helpers";
+import { detachCssFileLeaves } from "src/utils/workspace-helpers";
 
 export async function tryDeleteSnippet(
 	plugin: CssEditorPlugin,

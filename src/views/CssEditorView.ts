@@ -14,7 +14,7 @@ import {
 	renameSnippetFile,
 	toggleSnippetFileState,
 	writeSnippetFile,
-} from "../obsidian/file-system-helpers";
+} from "../utils/file-system-helpers";
 import { basicExtensions } from "../codemirror-extensions/basic-extensions";
 import { TransactionSpec } from "@codemirror/state";
 import { history } from "@codemirror/commands";
@@ -26,7 +26,7 @@ import {
 } from "src/codemirror-extensions/compartments";
 import { indentUnit } from "@codemirror/language";
 import { CssSnippetRenameModal } from "src/modals/CssSnippetRenameModal";
-import { focusAndSelectElement } from "src/obsidian/view-helpers";
+import { focusAndSelectElement } from "src/utils/view-helpers";
 import { colorPickerPlugin } from "src/codemirror-extensions/color-picker";
 import { handleError } from "src/utils/handle-error";
 import {
@@ -35,6 +35,7 @@ import {
 	absoluteLineNumbers,
 } from "src/codemirror-extensions/relative-line-numbers";
 import { tryDeleteSnippet } from "src/utils/delete-snippet";
+import { Search } from "src/components/Search";
 
 export const VIEW_TYPE_CSS = "css-editor-view";
 
@@ -45,6 +46,9 @@ export class CssEditorView extends ItemView {
 	private isSavingTitle = false;
 	/** If the editor contents differ from the file contents on disk */
 	private isEditorDirty = false;
+	private search: Search | null;
+	scope: Scope;
+	private initialScope: Scope;
 
 	constructor(leaf: WorkspaceLeaf, plugin: CssEditorPlugin) {
 		super(leaf);
@@ -84,11 +88,15 @@ export class CssEditorView extends ItemView {
 								update.state.doc.toString(),
 							);
 						}
+						if (this.search) {
+							this.search.updateQuery();
+						}
 					}
 				}),
 			],
 		});
 		this.scope = new Scope(this.app.scope);
+		this.initialScope = this.scope;
 		this.scope.register(null, "F2", () => {
 			if (!this.file) return;
 			if (this.titleEl.isShown()) {
@@ -352,6 +360,22 @@ export class CssEditorView extends ItemView {
 			this.file.basename,
 		);
 		return currentState || false;
+	}
+
+	showSearch() {
+		if (!this.search) {
+			this.search = new Search(
+				this.scope,
+				this.editor,
+				this.contentEl,
+				() => {
+					this.search = null;
+					this.scope = this.initialScope;
+				},
+			);
+			this.scope = this.search.scope;
+		}
+		this.search.focus();
 	}
 
 	requestSave = debounce(this.save.bind(this), 1000);
