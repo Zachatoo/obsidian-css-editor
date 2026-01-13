@@ -28,6 +28,7 @@ import { lintKeymap } from "@codemirror/lint";
 import { obsidian } from "./obsidian-theme";
 import { css } from "./reconfigured-css";
 import { highlightActiveLine } from "./highlight-active-line";
+import { highlightSearchMatch } from "./highlight-search-match";
 
 export const basicExtensions: Extension[] = [
 	keymap.of([
@@ -53,5 +54,6 @@ export const basicExtensions: Extension[] = [
 	autocompletion(),
 	closeBrackets(),
 	highlightSelectionMatches(),
+	highlightSearchMatch,
 	obsidian,
 ].filter((ext) => ext);
