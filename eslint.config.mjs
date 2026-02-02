@@ -11,6 +11,7 @@ const obsidianGlobals = {
 	createSpan: "readonly",
 	createSvg: "readonly",
 	createFragment: "readonly",
+	activeWindow: "readonly",
 };
 
 export default defineConfig([
