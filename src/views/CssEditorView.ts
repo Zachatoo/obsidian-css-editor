@@ -89,7 +89,7 @@ export class CssEditorView extends ItemView {
 							);
 						}
 						if (this.search) {
-							this.search.updateQuery();
+							this.search.clearHighlights();
 						}
 					}
 				}),
@@ -104,6 +104,10 @@ export class CssEditorView extends ItemView {
 			} else {
 				new CssSnippetRenameModal(this.app, this.file).open();
 			}
+		});
+		this.scope.register(null, "F3", (e) => {
+			// Prevent showing Codemirror's native search
+			e.preventDefault();
 		});
 	}
 

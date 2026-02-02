@@ -27,11 +27,16 @@
 	& > .view-content {
 		display: flex;
 		flex-direction: column;
+		padding: 0px;
 	}
 
 	& .cm-editor {
 		min-height: 0px;
 		flex: 1 1 0%;
+	}
+
+	& .cm-scroller {
+		padding: var(--file-margins);
 	}
 
 	& .obsidian-search-match-highlight {

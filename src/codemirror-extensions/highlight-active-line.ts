@@ -17,6 +17,7 @@ const activeLineLayer = layer({
 		const selection = view.state.selection,
 			markers: LayerMarker[] = [],
 			paddingTop = view.documentPadding.top,
+			scrollerTop = parseInt(getComputedStyle(view.scrollDOM).paddingTop, 10),
 			{ width, left: contentLeft } =
 				view.contentDOM.getBoundingClientRect(),
 			{ left: scrollerLeft } = view.scrollDOM.getBoundingClientRect();
@@ -26,7 +27,7 @@ const activeLineLayer = layer({
 				layer = new RectangleMarker(
 					"cm-activeLine",
 					contentLeft - scrollerLeft,
-					top + paddingTop,
+					top + paddingTop + scrollerTop,
 					width,
 					height,
 				);
