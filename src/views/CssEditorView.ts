@@ -223,6 +223,14 @@ export class CssEditorView extends ItemView {
 							});
 					});
 					menu.addItem((item) => {
+						item.setIcon("lucide-file-search")
+							.setSection("find")
+							.setTitle("Find... ")
+							.onClick(() => {
+								this.showSearch();
+							});
+					});
+					menu.addItem((item) => {
 						item.setIcon("lucide-trash-2")
 							.setSection("danger")
 							.setTitle("Delete snippet")
