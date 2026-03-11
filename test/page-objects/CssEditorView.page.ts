@@ -1,4 +1,6 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import Notice from "./Notice.page";
+import { Key } from "webdriverio";
 
 class CssEditorView {
 	get activeEditorEl() {
@@ -28,6 +30,44 @@ class CssEditorView {
 	}
 	get deleteMenuItemEl() {
 		return this.menuEl.$(".menu-item-title=Delete snippet");
+	}
+
+	async waitForFocus() {
+		await this.activeEditorEl.waitForDisplayed();
+		await this.activeEditorEl.click();
+		await browser.waitUntil(async () => {
+			return browser.execute(() => {
+				const active = document.activeElement;
+				return !!active?.closest(
+					".workspace-leaf.mod-active .workspace-leaf-content[data-type=css-editor-view]",
+				);
+			});
+		});
+	}
+
+	private async waitForTitleFocus() {
+		await browser.waitUntil(async () => {
+			return browser.execute(() => {
+				const titleEl = document.querySelector(
+					".workspace-leaf.mod-active .workspace-leaf-content[data-type=css-editor-view] .view-header-title",
+				);
+				return titleEl === document.activeElement;
+			});
+		});
+	}
+
+	async renameWithF2(newName: string) {
+		// Let the view's initial editor autofocus timer finish so it doesn't
+		// steal focus from the title immediately after F2.
+		// eslint-disable-next-line wdio/no-pause
+		await browser.pause(250);
+		await this.waitForFocus();
+
+		await browser.keys(Key.F2);
+		await this.waitForTitleFocus();
+		await browser.keys([Key.Ctrl, "a"]); // Select all
+		await browser.keys(newName);
+		await browser.keys(Key.Enter);
 	}
 
 	async openMenu() {

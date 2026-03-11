@@ -23,15 +23,12 @@ describe("editor view", function () {
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue("existing-snippet-1.css");
 		await browser.keys(Key.Enter);
+		await QuickSwitcherModal.modalEl.waitForDisplayed({ reverse: true });
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
+		await CssEditorView.waitForFocus();
 
 		const newName = `renamed-snippet-${Date.now()}`;
-		await browser.keys(Key.F2);
-		await CssEditorView.titleEl.waitForClickable();
-		await CssEditorView.titleEl.click();
-		await browser.keys([Key.Ctrl, "a"]); // Select all
-		await browser.keys(newName);
-		await browser.keys(Key.Enter);
+		await CssEditorView.renameWithF2(newName);
 
 		await Workspace.expectActiveTabToHaveText(newName);
 		await expect(CssEditorView.titleEl).toHaveText(newName);
