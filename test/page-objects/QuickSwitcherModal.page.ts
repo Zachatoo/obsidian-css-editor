@@ -67,9 +67,12 @@ class QuickSwitcherModal {
 	}
 
 	async expectNoSnippetsFound() {
-		await expect(this.emptyMessageEl).toHaveText(
-			"No CSS snippets found. Enter to create a new one.",
-		);
+		const expected = "No CSS snippets found. Enter to create a new one.";
+		await browser.waitUntil(async () => {
+			const emptyEl = this.emptyMessageEl;
+			if (!(await emptyEl.isExisting())) return false;
+			return (await emptyEl.getText()) === expected;
+		});
 	}
 }
 
