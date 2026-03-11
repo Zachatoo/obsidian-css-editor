@@ -177,10 +177,12 @@ export class Search {
 				to: this.cursor.value.to,
 			};
 			this.editor.dispatch({
-				effects: highlightEffect.of([
-					highlightDecoration.range(this.match.from, this.match.to),
-				]),
-				scrollIntoView: true,
+				effects: [
+					highlightEffect.of([
+						highlightDecoration.range(this.match.from, this.match.to),
+					]),
+					EditorView.scrollIntoView(this.match.from)
+				]
 			});
 		}
 		this.collectMatches();
