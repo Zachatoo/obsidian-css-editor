@@ -19,9 +19,9 @@ jobs:
     test:
         runs-on: macOS-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
 
-            - uses: actions/setup-node@v4
+            - uses: actions/setup-node@v5
               with:
                   node-version: "22.x"
                   cache: "npm"
@@ -52,7 +52,7 @@ jobs:
                   OBSIDIAN_PASSWORD: ${{ secrets.OBSIDIAN_PASSWORD }}
 
             - name: Cache Obsidian
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                   path: .obsidian-cache
                   key: obsidian-cache-${{ matrix.os }}-${{ hashFiles('obsidian-versions-lock.txt') }}

@@ -75,7 +75,7 @@ jobs:
 
             - name: Checkout PR branch
               if: steps.ensure-bot.outputs.skip != 'true' && steps.check-bot.outputs.skip != 'true'
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
               with:
                   token: ${{ secrets.BOT_PAT }}
                   ref: ${{ github.event.pull_request.head.ref }}
@@ -83,7 +83,7 @@ jobs:
 
             - name: Use Node.js
               if: steps.ensure-bot.outputs.skip != 'true' && steps.check-bot.outputs.skip != 'true'
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v5
               with:
                   node-version: "18"
                   cache: npm
