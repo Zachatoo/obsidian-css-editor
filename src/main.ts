@@ -53,8 +53,10 @@ export default class CssEditorPlugin extends Plugin {
 				if (checking) return true;
 				const cssFile = new CssFile(file);
 				tryDeleteSnippet(this, cssFile)
-					.then(() => {
-						new Notice(`"${cssFile.name}" was deleted.`);
+					.then((deleted) => {
+						if (deleted) {
+							new Notice(`"${cssFile.name}" was deleted.`);
+						}
 					})
 					.catch((err) => {
 						handleError(err, "Failed to delete CSS file.");
@@ -125,7 +127,7 @@ export default class CssEditorPlugin extends Plugin {
 	async createAndOpenSnippet(filename: string, openInNewTab: boolean) {
 		const file = await createSnippetFile(this.app, filename, "");
 		this.app.customCss?.setCssEnabledStatus?.(file.basename, true);
-		new Notice(`${file.name} was created.`);
+		new Notice(`"${file.name}" was created.`);
 		await openView(this.app.workspace, VIEW_TYPE_CSS, openInNewTab, {
 			file,
 		});

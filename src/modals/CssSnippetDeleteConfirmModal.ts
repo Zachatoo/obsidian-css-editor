@@ -7,11 +7,19 @@ import { deleteSnippet } from "src/utils/delete-snippet";
 export class CssSnippetDeleteConfirmModal extends Modal {
 	private plugin: CssEditorPlugin;
 	private file: CssFile;
+	private onDone: (deleted: boolean) => void;
+	private deleted = false;
 
-	constructor(app: App, plugin: CssEditorPlugin, file: CssFile) {
+	constructor(
+		app: App,
+		plugin: CssEditorPlugin,
+		file: CssFile,
+		onDone: (deleted: boolean) => void,
+	) {
 		super(app);
 		this.plugin = plugin;
 		this.file = file;
+		this.onDone = onDone;
 	}
 
 	async onOpen() {
@@ -57,9 +65,14 @@ export class CssSnippetDeleteConfirmModal extends Modal {
 				await this.plugin.saveSettings();
 			}
 			await deleteSnippet(this.app, this.file);
+			this.deleted = true;
 			this.close();
 		} catch (err) {
 			handleError(err, "Failed to delete CSS file.");
 		}
+	}
+
+	onClose() {
+		this.onDone(this.deleted);
 	}
 }

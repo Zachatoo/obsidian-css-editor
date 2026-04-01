@@ -6,6 +6,7 @@ import QuickSwitcherModal from "../page-objects/QuickSwitcherModal.page";
 import CssEditorView from "../page-objects/CssEditorView.page";
 import Workspace from "../page-objects/Workspace.page";
 import DeleteConfirmModal from "../page-objects/DeleteConfirmModal.page";
+import Notice from "../page-objects/Notice.page";
 
 describe("quick switcher", function () {
 	beforeEach(async () => {
@@ -104,11 +105,18 @@ describe("quick switcher", function () {
 		await browser.keys(Key.Enter);
 		await expect(CssEditorView.titleEl).toHaveText(snippetName);
 
+		// Dismiss any existing notices
+		await Notice.dismissAll();
+
 		// Open quick switcher and delete the snippet with Cmd+Delete
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue(snippetName);
 		await browser.keys([Key.Ctrl, Key.Delete]);
 		await QuickSwitcherModal.modalEl.waitForDisplayed({ reverse: true });
+
+		// Verify a notice confirms the deletion
+		const deleteNotice = `"${snippetName}.css" was deleted.`;
+		await expect(Notice.noticeElWithText(deleteNotice)).toBeDisplayed();
 
 		// Verify the quick switcher shows no matches for the deleted snippet
 		await QuickSwitcherModal.open();
@@ -133,14 +141,24 @@ describe("quick switcher", function () {
 		await browser.keys(Key.Enter);
 		await expect(CssEditorView.titleEl).toHaveText(snippetName);
 
+		// Dismiss any existing notices
+		await Notice.dismissAll();
+
 		// Open quick switcher and trigger delete - should show confirmation modal
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue(snippetName);
 		await browser.keys([Key.Ctrl, Key.Delete]);
 		await QuickSwitcherModal.modalEl.waitForDisplayed({ reverse: true });
 
+		// Verify no notice is shown before confirming deletion
+		const deleteNotice = `"${snippetName}.css" was deleted.`;
+		await expect(Notice.noticeElWithText(deleteNotice)).not.toBeDisplayed();
+
 		// Confirm deletion using the modal
 		await DeleteConfirmModal.confirmDelete();
+
+		// Verify a notice confirms the deletion after confirming
+		await expect(Notice.noticeElWithText(deleteNotice)).toBeDisplayed();
 
 		// Verify deletion
 		await QuickSwitcherModal.open();

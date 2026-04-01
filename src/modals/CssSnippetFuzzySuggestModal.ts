@@ -239,8 +239,10 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 				}
 			} else if (evt.key === "Delete") {
 				tryDeleteSnippet(this.plugin, item)
-					.then(() => {
-						new Notice(`${item.name} was deleted.`);
+					.then((deleted) => {
+						if (deleted) {
+							new Notice(`"${item.name}" was deleted.`);
+						}
 					})
 					.catch((err) => {
 						handleError(err, "Failed to delete CSS file.");

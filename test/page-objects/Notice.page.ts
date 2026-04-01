@@ -3,6 +3,19 @@ class Notice {
 		return browser.$(".notice-container .notice");
 	}
 
+	noticeElWithText(text: string) {
+		// XPath concat() to safely handle text containing double quotes
+		const xpathStr = text.includes('"')
+			? `concat(${text
+					.split('"')
+					.map((part, i) => (i === 0 ? `"${part}"` : `'"',"${part}"`))
+					.join(",")})`
+			: `"${text}"`;
+		return browser.$(
+			`//div[contains(@class,"notice-container")]//div[contains(@class,"notice") and contains(., ${xpathStr})]`,
+		);
+	}
+
 	async dismissAll() {
 		let attempts = 0;
 		const maxAttempts = 10;

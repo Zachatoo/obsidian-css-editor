@@ -8,16 +8,20 @@ import { detachCssFileLeaves } from "src/utils/workspace-helpers";
 export async function tryDeleteSnippet(
 	plugin: CssEditorPlugin,
 	file: CssFile,
-): Promise<void> {
+): Promise<boolean> {
 	if (plugin.settings.promptDelete) {
-		const modal = new CssSnippetDeleteConfirmModal(
-			plugin.app,
-			plugin,
-			file,
-		);
-		modal.open();
+		return new Promise<boolean>((resolve) => {
+			const modal = new CssSnippetDeleteConfirmModal(
+				plugin.app,
+				plugin,
+				file,
+				resolve,
+			);
+			modal.open();
+		});
 	} else {
 		await deleteSnippet(plugin.app, file);
+		return true;
 	}
 }
 
