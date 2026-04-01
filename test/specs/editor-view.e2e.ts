@@ -7,6 +7,7 @@ import CssEditorView from "../page-objects/CssEditorView.page";
 import RenameModal from "../page-objects/RenameModal.page";
 import Workspace from "../page-objects/Workspace.page";
 import DeleteConfirmModal from "../page-objects/DeleteConfirmModal.page";
+import Notice from "../page-objects/Notice.page";
 import EmptyStateViewPage from "test/page-objects/EmptyStateView.page";
 
 describe("editor view", function () {
@@ -95,51 +96,31 @@ describe("editor view", function () {
 	});
 
 	it("can toggle status with view header action", async () => {
+		// Ensure a deterministic initial state
+		await browser.executeObsidian(({ app }) => {
+			app.customCss?.setCssEnabledStatus?.("existing-snippet-1", true);
+		});
+
 		// Open an existing snippet
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue("existing-snippet-1.css");
 		await browser.keys(Key.Enter);
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
 
-		// Check initial state and toggle
-		await CssEditorView.openMenu();
-		const initialIsEnabled =
-			await CssEditorView.disableSnippetMenuItemEl.isDisplayed();
-		await browser.keys(Key.Escape); // Close menu to reopen with selectMenuAction
-
-		if (initialIsEnabled) {
-			await CssEditorView.selectMenuAction("disable");
-		} else {
-			await CssEditorView.selectMenuAction("enable");
-		}
+		// Toggle from enabled -> disabled
+		await CssEditorView.selectMenuAction("disable");
 
 		// Verify status changed
 		await CssEditorView.openMenu();
-		if (initialIsEnabled) {
-			await expect(CssEditorView.enableSnippetMenuItemEl).toBeDisplayed();
-		} else {
-			await expect(
-				CssEditorView.disableSnippetMenuItemEl,
-			).toBeDisplayed();
-		}
+		await expect(CssEditorView.enableSnippetMenuItemEl).toBeDisplayed();
 		await browser.keys(Key.Escape); // Close menu
 
-		// Toggle back
-		if (initialIsEnabled) {
-			await CssEditorView.selectMenuAction("enable");
-		} else {
-			await CssEditorView.selectMenuAction("disable");
-		}
+		// Toggle back from disabled -> enabled
+		await CssEditorView.selectMenuAction("enable");
 
 		// Verify it's back to original state
 		await CssEditorView.openMenu();
-		if (initialIsEnabled) {
-			await expect(
-				CssEditorView.disableSnippetMenuItemEl,
-			).toBeDisplayed();
-		} else {
-			await expect(CssEditorView.enableSnippetMenuItemEl).toBeDisplayed();
-		}
+		await expect(CssEditorView.disableSnippetMenuItemEl).toBeDisplayed();
 	});
 
 	it("can delete with command without confirmation", async () => {
@@ -185,6 +166,7 @@ describe("editor view", function () {
 		await QuickSwitcherModal.inputEl.setValue(snippetName);
 		await browser.keys(Key.Enter);
 		await expect(CssEditorView.titleEl).toHaveText(snippetName);
+		await Notice.dismissAll();
 
 		// Delete with command - should show confirmation modal
 		await browser.executeObsidianCommand("css-editor:delete-css-snippet");
@@ -242,6 +224,7 @@ describe("editor view", function () {
 		await QuickSwitcherModal.inputEl.setValue(snippetName);
 		await browser.keys(Key.Enter);
 		await expect(CssEditorView.titleEl).toHaveText(snippetName);
+		await Notice.dismissAll();
 
 		// Delete with view header action - should show confirmation modal
 		await CssEditorView.selectMenuAction("delete");

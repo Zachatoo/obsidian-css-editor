@@ -1,3 +1,5 @@
+import Notice from "./Notice.page";
+
 class DeleteConfirmModal {
 	get modalEl() {
 		return browser.$(".css-editor-delete-confirm-modal");
@@ -14,6 +16,7 @@ class DeleteConfirmModal {
 
 	async confirmDelete(dontAskAgain = false) {
 		await this.modalEl.waitForDisplayed();
+		await Notice.dismissAll();
 		if (dontAskAgain) {
 			await this.dontAskAgainCheckboxEl.waitForClickable();
 			await this.dontAskAgainCheckboxEl.click();
