@@ -1,9 +1,9 @@
-![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%23483699&label=downloads&query=%24%5B%22css-editor%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
+![Obsidian Downloads](https://img.shields.io/badge/dynamic/json?logo=obsidian&color=%237C3AED&label=downloads&query=%24%5B%22css-editor%22%5D.downloads&url=https%3A%2F%2Fraw.githubusercontent.com%2Fobsidianmd%2Fobsidian-releases%2Fmaster%2Fcommunity-plugin-stats.json)
 [![Test](https://github.com/Zachatoo/obsidian-css-editor/actions/workflows/test.yaml/badge.svg)](https://github.com/Zachatoo/obsidian-css-editor/actions/workflows/test.yaml)
 
 # CSS Editor
 
-This plugin allows you to edit CSS files in the `.obsidian/snippets/` directory.
+This plugin allows you to edit CSS files in the `.obsidian/snippets/` directory, with syntax highlighting and code completion, no external editor required.
 
 ## Features
 
@@ -14,9 +14,8 @@ This plugin allows you to edit CSS files in the `.obsidian/snippets/` directory.
 
 ## Installation
 
-Recommended to install from the Obsidian community store.
-
-You can manually install this using the [BRAT](https://github.com/TfTHacker/obsidian42-brat) Obsidian plugin. Generic installation instructions are available on that plugin's documentation.
+1. Open Obsidian **Settings → Community plugins → Browse**.
+2. Search for "CSS Editor" and click **Install**, then **Enable**.
 
 ## Commands
 
@@ -24,7 +23,7 @@ You can manually install this using the [BRAT](https://github.com/TfTHacker/obsi
 
 Opens a prompt to create a CSS snippet in your `.obsidian/snippets/` directory. Upon creation, show editor to edit that CSS file.
 
-### Open quick switcher
+### Open CSS snippet quick switcher
 
 Opens a suggestion modal to create, edit, or delete a CSS snippet. Has similar functionality to the core quick switcher where holding down a secondary key will modify the action that will take place.
 
