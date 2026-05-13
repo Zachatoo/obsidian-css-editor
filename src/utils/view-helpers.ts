@@ -1,6 +1,6 @@
 export function focusAndSelectElement(el: HTMLElement) {
 	el.focus({ preventScroll: true });
-	const range = document.createRange();
+	const range = activeDocument.createRange();
 	range.selectNodeContents(el);
 	const selection = getSelection();
 	if (selection) {

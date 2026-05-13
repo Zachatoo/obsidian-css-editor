@@ -123,11 +123,10 @@ export class CssEditorView extends ItemView {
 		return this.file?.basename ?? "No file open";
 	}
 
-	// eslint-disable-next-line @typescript-eslint/require-await
 	async onOpen(): Promise<void> {
 		const timer = window.setInterval(() => {
 			this.editor.focus();
-			if (this.editor.hasFocus) clearInterval(timer);
+			if (this.editor.hasFocus) window.clearInterval(timer);
 		}, 200);
 		this.registerInterval(timer);
 		if (Platform.isMobileApp) {
@@ -401,7 +400,6 @@ export class CssEditorView extends ItemView {
 		}
 	}
 
-	// eslint-disable-next-line @typescript-eslint/require-await
 	async onClose() {
 		this.editor.destroy();
 	}

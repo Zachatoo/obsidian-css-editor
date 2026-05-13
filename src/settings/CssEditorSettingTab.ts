@@ -91,6 +91,7 @@ export class CSSEditorSettingTab extends PluginSettingTab {
 		editorGroup.addSetting((setting) => {
 			setting
 				.setName("Relative line numbers")
+				// eslint-disable-next-line obsidianmd/ui/sentence-case -- cursor should be lowercase
 				.setDesc("Show line numbers relative to cursor position.")
 				.addToggle((toggle) => {
 					toggle.setValue(this.plugin.settings.relativeLineNumbers);

@@ -34,7 +34,7 @@ class ColorPickerWidget extends WidgetType {
 	}
 
 	toDOM(): HTMLElement {
-		const wrapper = document.createElement("span");
+		const wrapper = createSpan();
 		wrapper.className = "css-editor-color-picker-wrapper";
 
 		new ColorComponent(wrapper)

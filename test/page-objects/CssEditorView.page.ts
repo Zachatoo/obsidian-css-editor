@@ -37,7 +37,7 @@ class CssEditorView {
 		await this.activeEditorEl.click();
 		await browser.waitUntil(async () => {
 			return browser.execute(() => {
-				const active = document.activeElement;
+				const active = activeDocument.activeElement;
 				return !!active?.closest(
 					".workspace-leaf.mod-active .workspace-leaf-content[data-type=css-editor-view]",
 				);
@@ -48,10 +48,10 @@ class CssEditorView {
 	private async waitForTitleFocus() {
 		await browser.waitUntil(async () => {
 			return browser.execute(() => {
-				const titleEl = document.querySelector(
+				const titleEl = activeDocument.querySelector(
 					".workspace-leaf.mod-active .workspace-leaf-content[data-type=css-editor-view] .view-header-title",
 				);
-				return titleEl === document.activeElement;
+				return titleEl === activeDocument.activeElement;
 			});
 		});
 	}

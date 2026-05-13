@@ -45,7 +45,7 @@ export class CssSnippetFuzzySuggestModal extends FuzzySuggestModal<CssFile> {
 			}
 			return true;
 		});
-		this.scope.register([], "Tab", (evt: KeyboardEvent) => {
+		this.scope.register([], "Tab", (_evt: KeyboardEvent) => {
 			if (this.chooser) {
 				const selectedItem = this.chooser.selectedItem;
 				const file = this.chooser.values[selectedItem]?.item;

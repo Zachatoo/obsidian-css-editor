@@ -11,6 +11,7 @@ const obsidianGlobals = {
 	createSpan: "readonly",
 	createSvg: "readonly",
 	createFragment: "readonly",
+	activeDocument: "readonly",
 	activeWindow: "readonly",
 };
 
@@ -27,7 +28,12 @@ export default defineConfig([
 			},
 			parserOptions: {
 				projectService: {
-					allowDefaultProject: ["eslint.config.mjs", "manifest.json"],
+					allowDefaultProject: [
+						"eslint.config.mjs",
+						"manifest.json",
+						"package.json",
+						"tsconfig.json",
+					],
 				},
 				tsconfigRootDir: import.meta.dirname,
 				extraFileExtensions: [".json"],
@@ -35,13 +41,25 @@ export default defineConfig([
 		},
 	},
 	...obsidianmd.configs.recommended,
+	{
+		files: ["**/*.json"],
+		rules: {
+			"obsidianmd/no-plugin-as-component": "off",
+			"@typescript-eslint/no-unused-expressions": "off",
+		},
+	},
 	wdioConfigs["flat/recommended"],
 	globalIgnores([
 		"node_modules",
 		"dist",
+		".obsidian-cache",
+		".vscode",
 		"esbuild.config.mjs",
 		"version-bump.mjs",
 		"versions.json",
 		"main.js",
+		"package-lock.json",
+		"data.json",
+		"test/vault",
 	]),
 ]);
