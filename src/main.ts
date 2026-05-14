@@ -16,8 +16,7 @@ import { tryDeleteSnippet } from "./utils/delete-snippet";
 import icon from "./icons/css-icon.svg";
 
 export default class CssEditorPlugin extends Plugin {
-	settings: CssEditorPluginSettings;
-	settingTab: CSSEditorSettingTab;
+	settings: CssEditorPluginSettings = DEFAULT_SETTINGS;
 
 	async onload() {
 		await this.loadSettings();
@@ -106,8 +105,9 @@ export default class CssEditorPlugin extends Plugin {
 			(leaf) => new CssEditorView(leaf, this),
 		);
 
-		this.settingTab = new CSSEditorSettingTab(this.app, this);
-		this.addSettingTab(this.settingTab);
+		this.addSettingTab(
+			new CSSEditorSettingTab(this.app, this, this.settings),
+		);
 	}
 
 	onunload() {}

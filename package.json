@@ -40,7 +40,7 @@
 		"eslint-plugin-wdio": "^9.16.2",
 		"globals": "^16.3.0",
 		"mocha": "^11.7.5",
-		"obsidian": "^1.11.0",
+		"obsidian": "obsidianmd/obsidian-api#4c5889aa06d3ceb3d4d3a20931fbeaede6d399a0",
 		"prettier": "^3.6.2",
 		"tslib": "2.4.0",
 		"typescript": "^4.9.5",
