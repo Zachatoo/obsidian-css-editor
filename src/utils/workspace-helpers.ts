@@ -1,4 +1,4 @@
-import { requireApiVersion, ViewState, Workspace } from "obsidian";
+import { ViewState, Workspace } from "obsidian";
 import { CssFile } from "src/CssFile";
 import { VIEW_TYPE_CSS } from "src/views/CssEditorView";
 
@@ -19,9 +19,7 @@ export async function openView(
 export async function detachCssFileLeaves(workspace: Workspace, file: CssFile) {
 	const leaves = workspace.getLeavesOfType(VIEW_TYPE_CSS);
 	for (const leaf of leaves) {
-		if (requireApiVersion("1.7.2")) {
-			await leaf.loadIfDeferred();
-		}
+		await leaf.loadIfDeferred();
 		if (leaf.getViewState().state?.file === file.name) {
 			leaf.detach();
 		}
