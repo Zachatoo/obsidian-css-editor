@@ -1,12 +1,10 @@
-import { App, Modal, ButtonComponent } from "obsidian";
+import { App, ConfirmationModal, Platform } from "obsidian";
 import { CssFile } from "src/CssFile";
 import CssEditorPlugin from "src/main";
 import { handleError } from "src/utils/handle-error";
 import { deleteSnippet } from "src/utils/delete-snippet";
 
-export class CssSnippetDeleteConfirmModal extends Modal {
-	private plugin: CssEditorPlugin;
-	private file: CssFile;
+export class CssSnippetDeleteConfirmModal extends ConfirmationModal {
 	private onDone: (deleted: boolean) => void;
 	private deleted = false;
 
@@ -17,62 +15,49 @@ export class CssSnippetDeleteConfirmModal extends Modal {
 		onDone: (deleted: boolean) => void,
 	) {
 		super(app);
-		this.plugin = plugin;
-		this.file = file;
 		this.onDone = onDone;
-	}
-
-	async onOpen() {
-		await super.onOpen();
-		this.titleEl.setText("Delete CSS snippet");
-		this.containerEl.addClass("css-editor-delete-confirm-modal");
-		this.buildForm();
-	}
-
-	private buildForm() {
+		this.setTitle("Delete CSS snippet");
+		this.modalEl.addClass("css-editor-delete-confirm-modal");
 		this.contentEl.createEl("p", {
-			text: `Are you sure you want to delete "${this.file.name}"?`,
+			text: `Are you sure you want to delete "${file.name}"?`,
 		});
 		this.contentEl.createEl("p", {
 			text: "This action cannot be undone.",
 		});
-		const buttonContainer = this.contentEl.createDiv(
-			"modal-button-container",
-		);
-		const dontAskAgainLabel = buttonContainer.createEl("label", {
-			cls: "mod-checkbox",
-		});
-		const dontAskAgainCheckbox = dontAskAgainLabel.createEl("input", {
-			type: "checkbox",
-		});
-		dontAskAgainCheckbox.insertAdjacentText("afterend", "Don't ask again");
-		new ButtonComponent(buttonContainer)
-			.setButtonText("Delete")
-			.setDestructive()
-			.onClick(() => this.delete());
-		new ButtonComponent(buttonContainer)
-			.setButtonText("Cancel")
-			.onClick(() => this.close());
-	}
 
-	private async delete() {
-		try {
-			const dontAskAgain = this.contentEl.querySelector(
-				'input[type="checkbox"]',
-			) as HTMLInputElement;
-			if (dontAskAgain?.checked) {
-				this.plugin.settings.promptDelete = false;
-				await this.plugin.saveSettings();
-			}
-			await deleteSnippet(this.app, this.file);
-			this.deleted = true;
-			this.close();
-		} catch (err) {
-			handleError(err, "Failed to delete CSS file.");
+		let dontAskAgain = false;
+		if (!Platform.isMobile) {
+			this.addCheckbox("Don't ask again", (checked) => {
+				dontAskAgain = checked;
+			});
 		}
+
+		this.addButton((btn) => {
+			btn.setButtonText("Delete")
+				.setDestructive()
+				.setCta()
+				.onClick(async () => {
+					try {
+						if (dontAskAgain) {
+							plugin.settings.promptDelete = false;
+							await plugin.saveSettings();
+						}
+						await deleteSnippet(app, file);
+						this.deleted = true;
+						return false;
+					} catch (err) {
+						handleError(err, "Failed to delete CSS file.");
+						// Keep the modal open so the user can retry or cancel.
+						return true;
+					}
+				});
+		});
+
+		this.addCancelButton();
 	}
 
 	onClose() {
+		super.onClose();
 		this.onDone(this.deleted);
 	}
 }
