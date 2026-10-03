@@ -48,7 +48,7 @@ export class CssSnippetDeleteConfirmModal extends Modal {
 		dontAskAgainCheckbox.insertAdjacentText("afterend", "Don't ask again");
 		new ButtonComponent(buttonContainer)
 			.setButtonText("Delete")
-			.setWarning()
+			.setDestructive()
 			.onClick(() => this.delete());
 		new ButtonComponent(buttonContainer)
 			.setButtonText("Cancel")

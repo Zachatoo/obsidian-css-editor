@@ -71,10 +71,6 @@ declare module "obsidian" {
 		updateHeader(): void;
 	}
 
-	interface MenuItem {
-		setWarning: (value: boolean) => this;
-	}
-
 	interface Scope {
 		handleKey: (command: Command) => void;
 	}

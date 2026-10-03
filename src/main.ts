@@ -10,13 +10,13 @@ import { openView } from "./utils/workspace-helpers";
 import { CssSnippetCreateModal } from "./modals/CssSnippetCreateModal";
 import { CssFile } from "./CssFile";
 import { CSSEditorSettingTab } from "./settings/CssEditorSettingTab";
-import { CssEditorPluginSettings, DEFAULT_SETTINGS } from "./settings/settings";
+import { DEFAULT_SETTINGS } from "./settings/settings";
 import { handleError } from "./utils/handle-error";
 import { tryDeleteSnippet } from "./utils/delete-snippet";
 import icon from "./icons/css-icon.svg";
 
 export default class CssEditorPlugin extends Plugin {
-	settings: CssEditorPluginSettings = DEFAULT_SETTINGS;
+	settings = DEFAULT_SETTINGS;
 
 	async onload() {
 		await this.loadSettings();
@@ -105,9 +105,7 @@ export default class CssEditorPlugin extends Plugin {
 			(leaf) => new CssEditorView(leaf, this),
 		);
 
-		this.addSettingTab(
-			new CSSEditorSettingTab(this.app, this, this.settings),
-		);
+		this.addSettingTab(new CSSEditorSettingTab(this.app, this));
 	}
 
 	onunload() {}

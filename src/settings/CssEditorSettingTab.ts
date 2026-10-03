@@ -1,16 +1,7 @@
 import { indentUnit } from "@codemirror/language";
 import { TransactionSpec } from "@codemirror/state";
 import { EditorView, lineNumbers } from "@codemirror/view";
-import {
-	App,
-	PluginSettingTab,
-	requireApiVersion,
-	Setting,
-	SettingDefinition,
-	SettingDefinitionGroup,
-	SettingDefinitionItem,
-	SettingGroup,
-} from "obsidian";
+import { App, PluginSettingTab, SettingDefinitionItem } from "obsidian";
 import { indentSize, lineWrap } from "src/codemirror-extensions/compartments";
 import {
 	relativeLineNumberGutter,
@@ -18,7 +9,7 @@ import {
 	absoluteLineNumbers,
 } from "src/codemirror-extensions/relative-line-numbers";
 import CssEditorPlugin from "src/main";
-import { CssEditorPluginSettings, DEFAULT_SETTINGS } from "./settings";
+import { CssEditorPluginSettings } from "./settings";
 import { CssEditorView, VIEW_TYPE_CSS } from "src/views/CssEditorView";
 
 function updateCSSEditorView(app: App, spec: TransactionSpec) {
@@ -29,16 +20,12 @@ function updateCSSEditorView(app: App, spec: TransactionSpec) {
 	});
 }
 
-export class CSSEditorSettingTab extends PluginSettingTab<CssEditorPluginSettings> {
+export class CSSEditorSettingTab extends PluginSettingTab {
 	plugin: CssEditorPlugin;
 	icon = "css-editor-logo";
 
-	constructor(
-		app: App,
-		plugin: CssEditorPlugin,
-		settings: CssEditorPluginSettings,
-	) {
-		super(app, plugin, settings);
+	constructor(app: App, plugin: CssEditorPlugin) {
+		super(app, plugin);
 		this.plugin = plugin;
 	}
 
@@ -52,93 +39,23 @@ export class CSSEditorSettingTab extends PluginSettingTab<CssEditorPluginSetting
 					{
 						name: "Line wrap",
 						desc: "Toggle line wrap in the editor.",
-						render: (setting: Setting) => {
-							setting.addToggle((toggle) => {
-								toggle.setValue(this.plugin.settings.lineWrap);
-								toggle.onChange(async (val) => {
-									this.plugin.settings.lineWrap = val;
-									await this.plugin.saveSettings();
-									updateCSSEditorView(this.app, {
-										effects: lineWrap.reconfigure(
-											val ? EditorView.lineWrapping : [],
-										),
-									});
-								});
-							});
-						},
+						control: { type: "toggle", key: "lineWrap" },
 					},
 					{
 						name: "Indent size",
 						desc: "Adjust the amount of spaces used for indentation.",
-						render: (setting: Setting) => {
-							setting
-								.addExtraButton((btn) => {
-									btn.setIcon("reset")
-										.setTooltip("Restore default")
-										.onClick(async () => {
-											this.plugin.settings.indentSize =
-												DEFAULT_SETTINGS.indentSize;
-											await this.plugin.saveSettings();
-											updateCSSEditorView(this.app, {
-												effects: indentSize.reconfigure(
-													indentUnit.of("".padEnd(2)),
-												),
-											});
-											if (requireApiVersion("1.13.0")) {
-												this.update();
-											} else {
-												// eslint-disable-next-line @typescript-eslint/no-deprecated -- remove when minAppVersion is 1.13.0 or higher
-												this.display();
-											}
-										});
-								})
-								.addSlider((slider) => {
-									slider
-										.setLimits(1, 8, 1)
-										.setValue(
-											this.plugin.settings.indentSize,
-										)
-										.setDynamicTooltip()
-										.onChange(async (val) => {
-											this.plugin.settings.indentSize =
-												val;
-											await this.plugin.saveSettings();
-											updateCSSEditorView(this.app, {
-												effects: indentSize.reconfigure(
-													indentUnit.of(
-														"".padEnd(val),
-													),
-												),
-											});
-										});
-								});
+						control: {
+							type: "slider",
+							key: "indentSize",
+							min: 1,
+							max: 8,
+							step: 1,
 						},
 					},
 					{
 						name: "Relative line numbers",
 						desc: "Show line numbers relative to cursor position.",
-						render: (setting: Setting) => {
-							setting.addToggle((toggle) => {
-								toggle.setValue(
-									this.plugin.settings.relativeLineNumbers,
-								);
-								toggle.onChange(async (val) => {
-									this.plugin.settings.relativeLineNumbers =
-										val;
-									await this.plugin.saveSettings();
-									updateCSSEditorView(this.app, {
-										effects:
-											relativeLineNumberGutter.reconfigure(
-												lineNumbers({
-													formatNumber: val
-														? relativeLineNumbersFormatter
-														: absoluteLineNumbers,
-												}),
-											),
-									});
-								});
-							});
-						},
+						control: { type: "toggle", key: "relativeLineNumbers" },
 					},
 				],
 			},
@@ -149,17 +66,7 @@ export class CSSEditorSettingTab extends PluginSettingTab<CssEditorPluginSetting
 					{
 						name: "Confirm before deleting files",
 						desc: "Avoid accidentally deleting files.",
-						render: (setting: Setting) => {
-							setting.addToggle((toggle) => {
-								toggle.setValue(
-									this.plugin.settings.promptDelete,
-								);
-								toggle.onChange(async (val) => {
-									this.plugin.settings.promptDelete = val;
-									await this.plugin.saveSettings();
-								});
-							});
-						},
+						control: { type: "toggle", key: "promptDelete" },
 					},
 				],
 			},
@@ -167,54 +74,40 @@ export class CSSEditorSettingTab extends PluginSettingTab<CssEditorPluginSetting
 	}
 
 	/**
-	 * Keeping around for backwards compatibility, remove when minAppVersion is 1.13.0 or higher.
-	 * Only supports rendering settings that are of type "group" and have a render function.
+	 * Persist the value, then apply it to any open CSS editors.
 	 */
-	display(): void {
-		this.containerEl.empty();
+	async setControlValue(key: string, value: unknown): Promise<void> {
+		await super.setControlValue(key, value);
+		if (key === "lineWrap") {
+			this.#applyLineWrap(value as boolean);
+		} else if (key === "indentSize") {
+			this.#applyIndentSize(value as number);
+		} else if (key === "relativeLineNumbers") {
+			this.#applyRelativeLineNumbers(value as boolean);
+		}
+	}
 
-		const settingDefinitions = this.getSettingDefinitions();
-
-		settingDefinitions.forEach((def) => {
-			if ("type" in def && def.type === "group") {
-				this.#renderGroup(def);
-				return;
-			}
+	#applyLineWrap(val: boolean): void {
+		updateCSSEditorView(this.app, {
+			effects: lineWrap.reconfigure(val ? EditorView.lineWrapping : []),
 		});
 	}
 
-	#renderGroup(
-		groupDef: SettingDefinitionGroup<keyof CssEditorPluginSettings>,
-	): void {
-		const group = new SettingGroup(this.containerEl);
-		if (groupDef.heading) {
-			group.setHeading(groupDef.heading);
-		}
-		if (
-			"items" in groupDef &&
-			Array.isArray(groupDef.items) &&
-			groupDef.items.length > 0
-		) {
-			groupDef.items.forEach((itemDef) => {
-				this.#renderSetting(itemDef, group);
-			});
-		}
+	#applyIndentSize(val: number): void {
+		updateCSSEditorView(this.app, {
+			effects: indentSize.reconfigure(indentUnit.of("".padEnd(val))),
+		});
 	}
 
-	#renderSetting(
-		settingDef: SettingDefinition<keyof CssEditorPluginSettings>,
-		group: SettingGroup,
-	): void {
-		if ("render" in settingDef && typeof settingDef.render === "function") {
-			group.addSetting((setting) => {
-				if (settingDef.name) {
-					setting.setName(settingDef.name);
-				}
-				if (settingDef.desc) {
-					setting.setDesc(settingDef.desc);
-				}
-				settingDef.render(setting, group);
-			});
-		}
+	#applyRelativeLineNumbers(val: boolean): void {
+		updateCSSEditorView(this.app, {
+			effects: relativeLineNumberGutter.reconfigure(
+				lineNumbers({
+					formatNumber: val
+						? relativeLineNumbersFormatter
+						: absoluteLineNumbers,
+				}),
+			),
+		});
 	}
 }
