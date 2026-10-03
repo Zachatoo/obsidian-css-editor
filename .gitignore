@@ -20,3 +20,9 @@ data.json
 
 # Exclude Obsidian cache files
 .obsidian-cache
+
+# Exclude Obsidian plugin files in the test vault
+
+test/vault/.obsidian/plugins/css-editor/main.js
+test/vault/.obsidian/plugins/css-editor/manifest.json
+test/vault/.obsidian/plugins/css-editor/styles.css
