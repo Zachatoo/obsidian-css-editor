@@ -20,11 +20,11 @@ describe("quick switcher", function () {
 		await browser.keys(Key.ArrowDown);
 		const newSelected =
 			await QuickSwitcherModal.selectedSuggestionEl.getText();
-		await expect(newSelected).not.toEqual(initialSelected);
+		expect(newSelected).not.toEqual(initialSelected);
 		await browser.keys(Key.ArrowUp);
 		const revertedSelected =
 			await QuickSwitcherModal.selectedSuggestionEl.getText();
-		await expect(revertedSelected).toEqual(initialSelected);
+		expect(revertedSelected).toEqual(initialSelected);
 		await browser.keys([Key.Escape]);
 		await expect(QuickSwitcherModal.modalEl).not.toBeDisplayed();
 	});
@@ -47,7 +47,7 @@ describe("quick switcher", function () {
 		await Workspace.expectActiveTabToHaveText("existing-snippet-1");
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
 		const finalTabCount = await Workspace.getTabCount();
-		await expect(finalTabCount).toBe(initialTabCount);
+		expect(finalTabCount).toBe(initialTabCount);
 	});
 
 	it("can open in new tab", async () => {
@@ -58,14 +58,14 @@ describe("quick switcher", function () {
 		await browser.keys([Key.Ctrl, Key.Enter]);
 		await Workspace.expectActiveTabToHaveText("existing-snippet-1");
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
-		await expect(await Workspace.getTabCount()).toBe(initialTabCount);
+		expect(await Workspace.getTabCount()).toBe(initialTabCount);
 		// If not in empty workspace, then opening in new tab will open in new tab
 		await QuickSwitcherModal.open();
 		await QuickSwitcherModal.inputEl.setValue("existing-snippet-1.css");
 		await browser.keys([Key.Ctrl, Key.Enter]);
 		await Workspace.expectActiveTabToHaveText("existing-snippet-1");
 		await expect(CssEditorView.titleEl).toHaveText("existing-snippet-1");
-		await expect(await Workspace.getTabCount()).toBe(initialTabCount + 1);
+		expect(await Workspace.getTabCount()).toBe(initialTabCount + 1);
 	});
 
 	it("can create with enter when no fuzzy matches", async () => {
