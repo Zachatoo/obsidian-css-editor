@@ -5,7 +5,7 @@ class DeleteConfirmModal {
 		return browser.$(".css-editor-delete-confirm-modal");
 	}
 	get deleteButtonEl() {
-		return this.modalEl.$("button.mod-warning");
+		return this.modalEl.$("button=Delete");
 	}
 	get cancelButtonEl() {
 		return this.modalEl.$("button=Cancel");
