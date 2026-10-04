@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import Notice from "./Notice.page";
 import { Key } from "webdriverio";
 
@@ -59,7 +58,7 @@ class CssEditorView {
 	async renameWithF2(newName: string) {
 		// Let the view's initial editor autofocus timer finish so it doesn't
 		// steal focus from the title immediately after F2.
-		// eslint-disable-next-line wdio/no-pause
+		// eslint-disable-next-line wdio/no-pause -- no element state to wait on during the transition
 		await browser.pause(250);
 		await this.waitForFocus();
 
@@ -75,7 +74,7 @@ class CssEditorView {
 		await this.moreOptionsButtonEl.waitForClickable();
 		await this.moreOptionsButtonEl.click();
 		await this.menuEl.waitForDisplayed();
-		// eslint-disable-next-line wdio/no-pause
+		// eslint-disable-next-line wdio/no-pause -- no element state to wait on during the transition
 		await browser.pause(100); // Wait for menu animation
 	}
 

@@ -42,6 +42,24 @@ export default defineConfig([
 	},
 	...obsidianmd.configs.recommended,
 	{
+		files: ["src/**/*.ts"],
+		rules: {
+			// Keyboard shortcut hints in tooltips, e.g. "Next\nF3"
+			"obsidianmd/ui/sentence-case": [
+				"warn",
+				{ ignoreWords: ["F3", "Enter"] },
+			],
+		},
+	},
+	{
+		files: ["test/**/*.ts", "wdio.conf.mts"],
+		rules: {
+			"import/no-extraneous-dependencies": "off",
+			"obsidianmd/no-nodejs-modules": "off",
+			"obsidianmd/rule-custom-message": "off",
+		},
+	},
+	{
 		files: ["**/*.json"],
 		rules: {
 			"obsidianmd/no-plugin-as-component": "off",

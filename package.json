@@ -36,7 +36,7 @@
 		"@wdio/spec-reporter": "^9.20.0",
 		"esbuild": "0.25.0",
 		"eslint": "^9.35.0",
-		"eslint-plugin-obsidianmd": "^0.3.0",
+		"eslint-plugin-obsidianmd": "^0.4.2",
 		"eslint-plugin-wdio": "^9.16.2",
 		"globals": "^16.3.0",
 		"mocha": "^11.7.5",

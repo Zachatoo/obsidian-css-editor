@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { browser } from "@wdio/globals";
 import { obsidianPage } from "wdio-obsidian-service";
 import { Key } from "webdriverio";

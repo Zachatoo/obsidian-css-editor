@@ -1,5 +1,4 @@
-/* eslint-disable no-undef */
-import "obsidian";
+import type { Command, EventRef, FuzzyMatch, Menu, Plugin } from "obsidian";
 import { CssFile } from "src/CssFile";
 
 declare module "obsidian" {

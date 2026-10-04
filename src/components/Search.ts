@@ -59,21 +59,18 @@ export class Search {
 			.setClass("document-search-button")
 			.setClass("clickable-icon")
 			.setIcon("lucide-arrow-up")
-			// eslint-disable-next-line obsidianmd/ui/sentence-case
 			.setTooltip("Previous\n⇧ F3", { placement: "top" })
 			.onClick(() => this.findPrevious());
 		new ButtonComponent(searchButtonContainerEl)
 			.setClass("document-search-button")
 			.setClass("clickable-icon")
 			.setIcon("lucide-arrow-down")
-			// eslint-disable-next-line obsidianmd/ui/sentence-case
 			.setTooltip("Next\nF3", { placement: "top" })
 			.onClick(() => this.findNext());
 		new ButtonComponent(searchButtonContainerEl)
 			.setClass("document-search-button")
 			.setClass("clickable-icon")
 			.setIcon("lucide-text-select")
-			// eslint-disable-next-line obsidianmd/ui/sentence-case
 			.setTooltip("Find all\n⌥ Enter", { placement: "top" })
 			.onClick(() => this.findAll());
 

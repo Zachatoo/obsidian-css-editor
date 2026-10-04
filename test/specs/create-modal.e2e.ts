@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { obsidianPage } from "wdio-obsidian-service";
 import { Key } from "webdriverio";
 import CreateModal from "../page-objects/CreateModal.page";

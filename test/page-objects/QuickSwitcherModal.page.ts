@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { Key } from "webdriverio";
 
 class QuickSwitcherModal {
